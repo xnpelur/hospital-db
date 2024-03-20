@@ -43,7 +43,7 @@ export function PatientsTable({ data }: { data: Patient[] }) {
     }
 
     return (
-        <div className="w-full h-full flex flex-col justify-between">
+        <div className="flex h-full w-full flex-col justify-between">
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
