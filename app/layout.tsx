@@ -15,7 +15,21 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={inter.className}>{children}</body>
+            <body className={inter.className}>
+                <div className="flex h-full w-full flex-col">
+                    <header className="h-20 px-6">
+                        <div className="flex h-full items-center justify-between">
+                            <a href="/">
+                                <span className="text-3xl font-bold text-gray-600">
+                                    Hospital
+                                </span>
+                            </a>
+                            <span className="text-2xl">Иван Иванов</span>
+                        </div>
+                    </header>
+                    <main className="flex-1 bg-slate-200">{children}</main>
+                </div>
+            </body>
         </html>
     );
 }

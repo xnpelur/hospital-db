@@ -22,9 +22,11 @@ import {
 import { Patient } from "@/lib/types";
 import TableRowsShownInfo from "./tableRowsShownInfo";
 import { columns } from "./columnDefs/patient";
+import { useRouter } from "next/navigation";
 
 export function PatientsTable({ data }: { data: Patient[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
+    const router = useRouter();
 
     const table = useReactTable({
         data,
@@ -37,10 +39,6 @@ export function PatientsTable({ data }: { data: Patient[] }) {
             sorting,
         },
     });
-
-    function changeHref(url: string) {
-        window.location.href = url;
-    }
 
     return (
         <div className="flex h-full w-full flex-col justify-between">
@@ -72,7 +70,9 @@ export function PatientsTable({ data }: { data: Patient[] }) {
                                     key={i}
                                     className="h-12 cursor-pointer"
                                     onClick={() =>
-                                        changeHref("http://google.com")
+                                        router.push(
+                                            `/patient/${row.original.id}`
+                                        )
                                     }
                                     data-state={
                                         row.getIsSelected() && "selected"
