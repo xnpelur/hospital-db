@@ -6,3 +6,18 @@ export type Patient = {
     admission_date: Date;
     discharge_date: Date;
 };
+
+export type Disease = {
+    id: number;
+    title: string;
+};
+
+export type Treatment = {
+    id: number;
+    title: string;
+    cost: number;
+    start_date: Date;
+    end_date: Date;
+    repeat_interval: string;
+    disease: string;
+};

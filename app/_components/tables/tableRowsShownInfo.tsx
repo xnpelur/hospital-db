@@ -1,17 +1,17 @@
 import { useMemo } from "react";
 import { Table as TanstackTable } from "@tanstack/react-table";
-import { Patient } from "@/lib/types";
+import { Patient, Treatment } from "@/lib/types";
 
 export default function TableRowsShownInfo({
     table,
 }: {
-    table: TanstackTable<Patient>;
+    table: TanstackTable<Patient> | TanstackTable<Treatment>;
 }) {
     const { pageIndex, pageSize } = table.getState().pagination;
     const rowsCount = table.getFilteredRowModel().rows.length;
 
     const rowsShownString = useMemo(() => {
-        const startRow = pageIndex * pageSize + 1;
+        const startRow = rowsCount != 0 ? pageIndex * pageSize + 1 : 0;
         const endRow = Math.min((pageIndex + 1) * pageSize, rowsCount);
 
         return `${startRow} - ${endRow} из ${rowsCount}`;

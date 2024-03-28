@@ -19,12 +19,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Patient } from "@/lib/types";
+import { Treatment } from "@/lib/types";
 import TableRowsShownInfo from "./tableRowsShownInfo";
-import { columns } from "./columnDefs/patient";
+import { columns } from "../columnDefs/treatment";
 import { useRouter } from "next/navigation";
 
-export function PatientsTable({ data }: { data: Patient[] }) {
+export function TreatmentsTable({ data }: { data: Treatment[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const router = useRouter();
 
@@ -41,7 +41,7 @@ export function PatientsTable({ data }: { data: Patient[] }) {
     });
 
     return (
-        <div className="flex h-full w-full flex-col justify-between">
+        <div className="flex w-full flex-1 flex-col justify-between">
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
