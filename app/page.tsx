@@ -1,8 +1,8 @@
-import { getPatients } from "@/lib/db";
+import { runFunction } from "@/lib/db";
 import { PatientsTable } from "./_components/tables/patients";
 
 export default async function Home() {
-    const data = await getPatients();
+    const data = await runFunction("get_patients_by_doctor", [1]);
 
     return (
         <div className="flex h-full items-center justify-center">

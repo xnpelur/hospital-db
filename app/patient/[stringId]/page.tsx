@@ -1,9 +1,6 @@
 import { TreatmentsTable } from "@/app/_components/tables/treatments";
-import {
-    getDiseasesOfPatient,
-    getPatient,
-    getTreatmentsOfPatient,
-} from "@/lib/db";
+import { runFunction } from "@/lib/db";
+import { Disease, Patient, Treatment } from "@/lib/types";
 
 export default async function PatientPage({
     params,
@@ -12,9 +9,16 @@ export default async function PatientPage({
 }) {
     const patientId = parseInt(params.stringId);
 
-    const patient = await getPatient(patientId);
-    const diseases = await getDiseasesOfPatient(patientId);
-    const treatments = await getTreatmentsOfPatient(patientId);
+    const patient = (
+        (await runFunction("get_patient_by_id", [patientId])) as Patient[]
+    )[0];
+    const diseases = (await runFunction("get_diseases_by_patient_record_id", [
+        patientId,
+    ])) as Disease[];
+    const treatments = (await runFunction(
+        "get_treatments_by_patient_record_id",
+        [patientId]
+    )) as Treatment[];
 
     return (
         <div className="flex h-full items-center justify-center">
