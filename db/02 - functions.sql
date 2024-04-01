@@ -1,10 +1,5 @@
 SET client_encoding TO 'utf8';
 
-DROP FUNCTION IF EXISTS get_patients_by_doctor(INT);
-DROP FUNCTION IF EXISTS get_patient_by_id(INT);
-DROP FUNCTION IF EXISTS get_diseases_by_patient_record_id(INT);
-DROP FUNCTION IF EXISTS get_treatments_by_patient_record_id(INT);
-
 CREATE FUNCTION get_patients_by_doctor(
     doctor_id_param INT
 )

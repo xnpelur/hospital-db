@@ -1,80 +1,69 @@
-drop table if exists treatment_record;
-drop table if exists clinical_record;
-drop table if exists treatment;
-drop table if exists disease;
-drop table if exists patient_record;
-drop table if exists doctor;
-drop table if exists department;
-drop table if exists patient;
-drop table if exists social_status;
-drop table if exists app_user;
-
-create table app_user (
-  id serial unique,
-  username varchar(255) not null,
-  password_hash varchar(255) not null,
-  user_role varchar(255) not null
+CREATE TABLE app_user (
+  id SERIAL UNIQUE,
+  username VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  user_role VARCHAR(255) NOT NULL
 );
 
-create table social_status (
-  id serial unique,
-  title varchar(255) not null
+CREATE TABLE social_status (
+  id SERIAL UNIQUE,
+  title VARCHAR(255) NOT NULL
 );
 
-create table patient (
-  id serial unique,
-  full_name varchar(255) not null,
-  birth_date date not null,
-  social_status_id integer not null references social_status(id),
-  user_id integer not null references app_user(id)
+CREATE TABLE patient (
+  id SERIAL UNIQUE,
+  full_name VARCHAR(255) NOT NULL,
+  birth_date DATE NOT NULL,
+  social_status_id INTEGER NOT NULL REFERENCES social_status(id),
+  user_id INTEGER NOT NULL REFERENCES app_user(id)
 );
 
-create table department (
-  id serial unique,
-  title varchar(255) not null,
-  beds_number integer not null,
-  phone varchar(255) not null
+CREATE TABLE department (
+  id SERIAL UNIQUE,
+  title VARCHAR(255) NOT NULL,
+  beds_number INTEGER NOT NULL,
+  phone VARCHAR(255) NOT NULL
 );
 
-create table doctor (
-  id serial unique,
-  full_name varchar(255) not null,
-  department_id integer not null references department(id),
-  enrollment_date date not null,
-  salary integer not null,
-  user_id integer not null references app_user(id)
+CREATE TABLE doctor (
+  id SERIAL UNIQUE,
+  full_name VARCHAR(255) NOT NULL,
+  department_id INTEGER NOT NULL REFERENCES department(id),
+  enrollment_date DATE NOT NULL,
+  salary INTEGER NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES app_user(id)
 );
 
-create table patient_record (
-  id serial unique,
-  patient_id integer not null references patient(id),
-  doctor_id integer not null references doctor(id),
-  admission_date date not null,
-  discharge_date date not null
+CREATE TABLE patient_record (
+  id SERIAL UNIQUE,
+  patient_id INTEGER NOT NULL REFERENCES patient(id),
+  doctor_id INTEGER NOT NULL REFERENCES doctor(id),
+  admission_date DATE NOT NULL,
+  discharge_date DATE NOT NULL
 );
 
-create table disease (
-  id serial unique,
-  title varchar(255) not null
+CREATE TABLE disease (
+  id SERIAL UNIQUE,
+  title VARCHAR(255) NOT NULL
 );
 
-create table treatment (
-  id serial unique,
-  title varchar(255) not null,
-  cost integer not null
+CREATE TABLE treatment (
+  id SERIAL UNIQUE,
+  title VARCHAR(255) NOT NULL,
+  cost INTEGER NOT NULL
 );
 
-create table clinical_record (
-  id serial unique,
-  patient_record_id integer not null references patient_record(id),
-  disease_id integer not null references disease(id)
+CREATE TABLE clinical_record (
+  id SERIAL UNIQUE,
+  patient_record_id INTEGER NOT NULL REFERENCES patient_record(id),
+  disease_id INTEGER NOT NULL REFERENCES disease(id)
 );
 
-create table treatment_record (
-  id serial unique,
-  treatment_id integer not null references treatment(id),
-  clinical_record_id integer not null references clinical_record(id),
-  start_date timestamp not null,
-  end_date timestamp not null,
-  repeat_interval interval not null
+CREATE TABLE treatment_record (
+  id SERIAL UNIQUE,
+  treatment_id INTEGER NOT NULL REFERENCES treatment(id),
+  clinical_record_id INTEGER NOT NULL REFERENCES clinical_record(id),
+  start_date TIMESTAMP NOT NULL,
+  end_date TIMESTAMP NOT NULL,
+  repeat_interval interval NOT NULL
 );
