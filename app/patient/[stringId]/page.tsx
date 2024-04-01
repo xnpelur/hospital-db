@@ -10,15 +10,16 @@ export default async function PatientPage({
     const patientId = parseInt(params.stringId);
 
     const patient = (
-        (await runFunction("get_patient_by_id", [patientId])) as Patient[]
+        await runFunction<Patient>("get_patient_by_id", [patientId])
     )[0];
-    const diseases = (await runFunction("get_diseases_by_patient_record_id", [
-        patientId,
-    ])) as Disease[];
-    const treatments = (await runFunction(
+    const diseases = await runFunction<Disease>(
+        "get_diseases_by_patient_record_id",
+        [patientId]
+    );
+    const treatments = await runFunction<Treatment>(
         "get_treatments_by_patient_record_id",
         [patientId]
-    )) as Treatment[];
+    );
 
     return (
         <div className="flex h-full items-center justify-center">

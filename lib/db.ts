@@ -35,10 +35,10 @@ async function runQuery(query: string) {
     }
 }
 
-export async function runFunction(
+export async function runFunction<T>(
     functionName: string,
     params: any[]
-): Promise<any> {
+): Promise<T[]> {
     const hasUndefinedValues = Object.values(dbConfig).some(
         (value) => value === undefined
     );
@@ -58,7 +58,8 @@ export async function runFunction(
             `SELECT * FROM ${funcCallString}`,
             params
         );
-        return result.rows;
+
+        return result.rows as T[];
     } catch (error) {
         console.error("Error executing function:", error);
         throw error;
