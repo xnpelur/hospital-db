@@ -121,3 +121,23 @@ BEGIN
         pr.id = id_param;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_current_user()
+RETURNS TABLE (
+    username NAME,
+    user_role NAME
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        current_user AS username,
+        (
+            SELECT c.rolname
+            FROM pg_roles a
+            INNER JOIN pg_auth_members b ON a.oid = b.member
+            INNER JOIN pg_roles c ON b.roleid = c.oid
+            WHERE a.rolname = current_user
+        ) AS user_role;
+END;
+$$ LANGUAGE plpgsql;

@@ -1,10 +1,3 @@
-CREATE TABLE app_user (
-  id SERIAL UNIQUE,
-  username VARCHAR(255) NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  user_role VARCHAR(255) NOT NULL
-);
-
 CREATE TABLE social_status (
   id SERIAL UNIQUE,
   title VARCHAR(255) NOT NULL
@@ -15,7 +8,7 @@ CREATE TABLE patient (
   full_name VARCHAR(255) NOT NULL,
   birth_date DATE NOT NULL,
   social_status_id INTEGER NOT NULL REFERENCES social_status(id),
-  user_id INTEGER NOT NULL REFERENCES app_user(id)
+  username NAME NOT NULL UNIQUE
 );
 
 CREATE TABLE department (
@@ -31,7 +24,7 @@ CREATE TABLE doctor (
   department_id INTEGER NOT NULL REFERENCES department(id),
   enrollment_date DATE NOT NULL,
   salary INTEGER NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES app_user(id)
+  username NAME NOT NULL UNIQUE
 );
 
 CREATE TABLE patient_record (
