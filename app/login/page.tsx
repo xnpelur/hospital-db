@@ -2,8 +2,9 @@ import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { getSession, login } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { login } from "@/lib/login";
 
 export default async function LoginPage() {
     const session = await getSession();
@@ -19,19 +20,31 @@ export default async function LoginPage() {
                 </CardHeader>
                 <CardContent>
                     <form
-                        action={async () => {
+                        action={async (formData: FormData) => {
                             "use server";
-                            await login();
+                            await login(formData);
                         }}
                     >
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="email">Имя пользователя</Label>
-                                <Input id="username" required type="text" />
+                                <Label htmlFor="username">
+                                    Имя пользователя
+                                </Label>
+                                <Input
+                                    id="username"
+                                    name="username"
+                                    required
+                                    type="text"
+                                />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Пароль</Label>
-                                <Input id="password" required type="password" />
+                                <Input
+                                    id="password"
+                                    name="password"
+                                    required
+                                    type="password"
+                                />
                             </div>
                             <div className="pt-2">
                                 <Button className="w-full" type="submit">
