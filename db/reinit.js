@@ -5,43 +5,48 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const dbConfig = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT ?? "5432"),
-    database: process.env.DB_NAME,
-};
-
-const hasUndefinedValues = Object.values(dbConfig).some(
-    (value) => value === undefined
-);
-if (hasUndefinedValues) {
-    throw new Error(
-        "One or more database configuration values are undefined. Please check your .env file."
-    );
+if (!process.env.DB_HOST || !process.env.DB_PORT || !process.env.DB_NAME) {
+    throw new Error("Database credentials are not set in .env");
 }
 
 async function reinitDatabase() {
     const initDirPath = __dirname;
-    const postgresDbConfig = { ...dbConfig, database: "postgres" };
 
-    const client = new Client(postgresDbConfig);
+    const firstClient = new Client({
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT ?? "5432"),
+        database: "postgres",
+        user: "postgres",
+        password: "",
+    });
 
     try {
-        await client.connect();
-        await client.query(
+        await firstClient.connect();
+        await firstClient.query(
             `UPDATE pg_database SET datallowconn = 'false' WHERE datname = '${process.env.DB_NAME}'`
         );
-        await client.query(
+        await firstClient.query(
             `SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${process.env.DB_NAME}' AND pid <> pg_backend_pid()`
         );
-        await client.query("DROP DATABASE IF EXISTS hospital");
-        await client.query("CREATE DATABASE hospital");
-        await client.end();
+        await firstClient.query("DROP DATABASE IF EXISTS hospital");
+        await firstClient.query("CREATE DATABASE hospital");
+    } catch (err) {
+        console.error("Error during database reinitialization:", err);
+        return;
+    } finally {
+        await firstClient.end();
+    }
 
-        const newClient = new Client(dbConfig);
-        await newClient.connect();
+    const secondClient = new Client({
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT ?? "5432"),
+        database: process.env.DB_NAME,
+        user: "postgres",
+        password: "",
+    });
+
+    try {
+        await secondClient.connect();
 
         const initFiles = fs
             .readdirSync(initDirPath)
@@ -49,16 +54,16 @@ async function reinitDatabase() {
 
         for (const file of initFiles) {
             const sql = fs.readFileSync(path.join(initDirPath, file), "utf8");
-            await newClient.query(sql);
+            await secondClient.query(sql);
         }
-
-        await newClient.end();
-        console.log("Database reinitialization completed successfully.");
     } catch (err) {
         console.error("Error during database reinitialization:", err);
+        return;
     } finally {
-        await client.end();
+        await secondClient.end();
     }
+
+    console.log("Database reinitialization completed successfully.");
 }
 
 reinitDatabase();
