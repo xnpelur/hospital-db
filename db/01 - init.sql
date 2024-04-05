@@ -23,6 +23,7 @@ CREATE TABLE doctor (
   full_name VARCHAR(255) NOT NULL,
   department_id INTEGER NOT NULL REFERENCES department(id),
   enrollment_date DATE NOT NULL,
+  category VARCHAR(255) NOT NULL,
   salary INTEGER NOT NULL,
   username NAME NOT NULL UNIQUE
 );

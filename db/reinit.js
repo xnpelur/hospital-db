@@ -2,6 +2,7 @@ const { Client } = require("pg");
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
+const { getGeneratedData } = require("./generator");
 
 dotenv.config();
 
@@ -56,6 +57,9 @@ async function reinitDatabase() {
             const sql = fs.readFileSync(path.join(initDirPath, file), "utf8");
             await secondClient.query(sql);
         }
+
+        const sql = getGeneratedData(100000);
+        await secondClient.query(sql);
     } catch (err) {
         console.error("Error during database reinitialization:", err);
         return;
