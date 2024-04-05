@@ -38,6 +38,11 @@ export function TreatmentsTable({ data }: { data: Treatment[] }) {
         state: {
             sorting,
         },
+        initialState: {
+            pagination: {
+                pageSize: 5,
+            },
+        },
     });
 
     return (
