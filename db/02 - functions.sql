@@ -85,6 +85,49 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION format_interval(num INT, unit_words TEXT[])
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    result TEXT;
+    last_digit INT;
+BEGIN
+    last_digit := num % 10;
+    
+    IF num = 1 THEN
+        result := 'каждый ' || unit_words[1];
+    ELSIF last_digit = 1 AND num <> 11 THEN
+        result := 'каждый ' || num || ' ' || unit_words[1];
+    ELSIF last_digit >= 2 AND last_digit <= 4 AND (num < 12 OR num > 14) THEN
+        result := 'каждые ' || num || ' ' || unit_words[2];
+    ELSE
+        result := 'каждые ' || num || ' ' || unit_words[3];
+    END IF;
+    
+    RETURN result;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_human_readable_interval(interval_value INTERVAL)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    result TEXT;
+BEGIN
+    IF interval_value < INTERVAL '24 hour' THEN
+        result := format_interval(round(extract(hour from interval_value))::INT, ARRAY['час', 'часа', 'часов']::TEXT[]);
+    ELSIF interval_value < INTERVAL '1 month' THEN
+        result := format_interval(round(extract(day from interval_value))::INT,  ARRAY['день', 'дня', 'дней']::TEXT[]);
+    ELSE
+        result := format_interval(round(extract(month from interval_value))::INT, ARRAY['месяц', 'месяца', 'месяцев']::TEXT[]);
+    END IF;
+
+    RETURN result;
+END;
+$$;
+
 CREATE FUNCTION get_treatments_by_patient_record_id(
     id_param INT
 )
@@ -105,7 +148,7 @@ BEGIN
         t.cost,
         tr.start_date,
         tr.end_date,
-        TO_CHAR(tr.repeat_interval, 'DD" дней" HH24" часов"') as repeat_interval,
+        get_human_readable_interval(tr.repeat_interval) as repeat_interval,
         d.title as disease
     FROM
         public.treatment_record tr
