@@ -5,6 +5,8 @@ const {
     getUsername,
     getPassword,
     getPhoneNumber,
+    getRandomInterval,
+    getDateAfterInterval,
 } = require("./randomizer");
 
 const socialStatuses = ["Предприниматель", "Служащий", "Рабочий", "Пенсионер"];
@@ -174,8 +176,8 @@ function getTreatmentRecords(count, clinicalRecordsCount) {
         const treatmentId = 1 + getRandomInt(treatments.length);
         const clinicalRecordId = 1 + getRandomInt(clinicalRecordsCount);
         const startDate = getRandomDate("2020-01-01", "2024-04-01");
-        const endDate = getRandomDate("2020-01-01", "2024-04-01");
-        const repeatInterval = "1 day";
+        const repeatInterval = getRandomInterval();
+        const endDate = getDateAfterInterval(startDate, repeatInterval);
 
         treatmentRecords.push([
             treatmentId,

@@ -414,6 +414,52 @@ function getRandomDate(start, end) {
     return randomDate.toISOString().substring(0, 10);
 }
 
+function getRandomInterval() {
+    const units = ["hour", "day", "month"];
+    const unit = units[getRandomInt(units.length)];
+
+    const maxAmount = unit == "hour" ? 24 : unit == "day" ? 30 : 12;
+    const amount = getRandomInt(maxAmount);
+
+    return `${amount} ${unit}`;
+}
+
+function getDateAfterInterval(firstDate, interval) {
+    const startDate = new Date(firstDate);
+
+    const [num, unit] = interval.split(" ");
+    let value = parseInt(num, 10);
+    let endDate;
+
+    switch (unit) {
+        case "hour":
+            startDate.setHours(startDate.getHours() + value);
+            endDate = new Date(
+                new Date(startDate).getTime() + 2 * 30 * 24 * 60 * 60 * 1000
+            );
+            break;
+        case "day":
+            startDate.setDate(startDate.getDate() + value);
+            endDate = new Date(
+                new Date(startDate).getTime() + 6 * 30 * 24 * 60 * 60 * 1000
+            );
+            break;
+        case "month":
+            startDate.setMonth(startDate.getMonth() + value);
+            endDate = new Date(
+                new Date(startDate).getTime() + 24 * 30 * 24 * 60 * 60 * 1000
+            );
+            break;
+        default:
+            throw new Error(`Invalid time unit: ${unit}`);
+    }
+
+    const secondDate = endDate.toISOString().substring(0, 10);
+    const date = getRandomDate(firstDate, secondDate);
+
+    return date;
+}
+
 function getRandomString(characters, length) {
     const array = [];
 
@@ -458,6 +504,8 @@ module.exports = {
     getRandomInt,
     getFullName,
     getRandomDate,
+    getRandomInterval,
+    getDateAfterInterval,
     getUsername,
     getPassword,
     getPhoneNumber,
