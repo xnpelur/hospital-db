@@ -138,3 +138,36 @@ CREATE TRIGGER check_patient_record_admission_date_trigger
 BEFORE INSERT OR UPDATE ON patient_record
 FOR EACH ROW
 EXECUTE FUNCTION check_patient_record_admission_date();
+
+CREATE OR REPLACE FUNCTION check_patient_record_intervals()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    overlapping_record RECORD;
+BEGIN
+    SELECT pr.id, pr.admission_date, pr.discharge_date
+    INTO overlapping_record
+    FROM patient_record pr
+    WHERE pr.patient_id = NEW.patient_id
+    AND pr.id <> NEW.id
+    AND (
+        (NEW.admission_date >= pr.admission_date AND NEW.admission_date <= pr.discharge_date)
+        OR (NEW.discharge_date >= pr.admission_date AND NEW.discharge_date <= pr.discharge_date)
+        OR (NEW.admission_date <= pr.admission_date AND NEW.discharge_date >= pr.discharge_date)
+    );
+
+    IF FOUND THEN
+        RAISE EXCEPTION 'New patient record (admission: %, discharge: %) overlaps with existing record (id: %, admission: %, discharge: %)',
+            NEW.admission_date, NEW.discharge_date,
+            overlapping_record.id, overlapping_record.admission_date, overlapping_record.discharge_date;
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER check_patient_record_intervals_trigger
+BEFORE INSERT OR UPDATE ON patient_record
+FOR EACH ROW
+EXECUTE FUNCTION check_patient_record_intervals();

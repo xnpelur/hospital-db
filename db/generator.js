@@ -119,7 +119,7 @@ function getDoctors(count, departmentsCount) {
     for (let i = 0; i < count; i++) {
         const fullName = getFullName();
         const departmentId = 1 + getRandomInt(departmentsCount);
-        const enrollmentDate = getRandomDate("2000-01-01", "2020-01-01");
+        const enrollmentDate = getRandomDate("1990-01-01", "2000-01-01");
         const category = categories[getRandomInt(categories.length)];
         const salary = (40 + getRandomInt(100)) * 1000;
         const username = getUsername();
@@ -142,14 +142,35 @@ function getDoctors(count, departmentsCount) {
     return [doctors, users];
 }
 
-function getPatientRecords(count, patientsCount, doctorsCount) {
+function getPatientRecords(count, patients, doctors) {
     const patientRecords = [];
+    const lastAdmissions = new Map();
 
     for (let i = 0; i < count; i++) {
-        const patientId = 1 + getRandomInt(patientsCount);
-        const doctorId = 1 + getRandomInt(doctorsCount);
-        const admissionDate = getRandomDate("2020-01-01", "2024-04-01");
+        const patientId = 1 + getRandomInt(patients.length);
+        const doctorId = 1 + getRandomInt(doctors.length);
+
+        const lastAdmission = lastAdmissions.get(patientId);
+        const admissionDateMax =
+            lastAdmission !== undefined
+                ? getDateAfterNDays(lastAdmission, -750)
+                : "2024-04-01";
+        const admissionDateMin = getDateAfterNDays(admissionDateMax, -1000);
+
+        const admissionDate = getRandomDate(admissionDateMin, admissionDateMax);
         const dischargeDate = getDateAfterNDays(admissionDate, 7);
+
+        const recordAdmissionDate = new Date(admissionDate);
+        const doctorEnrollmentDate = new Date(doctors[doctorId - 1][2]);
+        const patientBirthDate = new Date(patients[patientId - 1][1]);
+        if (
+            recordAdmissionDate < doctorEnrollmentDate ||
+            recordAdmissionDate <= patientBirthDate
+        ) {
+            continue;
+        }
+
+        lastAdmissions.set(patientId, admissionDate);
 
         patientRecords.push([
             patientId,
@@ -210,7 +231,7 @@ function getValues(x) {
 }
 
 function getGeneratedData(maxRecordsNumber) {
-    const patientsCount = maxRecordsNumber / 150 + getRandomInt(50);
+    const patientsCount = maxRecordsNumber / 90 + getRandomInt(50);
     const doctorsCount = maxRecordsNumber / 2000 + getRandomInt(10);
     const patientRecordsCount = maxRecordsNumber / 30 + getRandomInt(250);
     const clinicalRecordsCount = maxRecordsNumber / 10 + getRandomInt(500);
@@ -221,12 +242,12 @@ function getGeneratedData(maxRecordsNumber) {
     const [doctors, doctorUsers] = getDoctors(doctorsCount, departments.length);
     const patientRecords = getPatientRecords(
         patientRecordsCount,
-        patientsCount,
-        doctorsCount
+        patients,
+        doctors
     );
     const clinicalRecords = getClinicalRecords(
         clinicalRecordsCount,
-        patientRecordsCount
+        patientRecords.length
     );
     const treatmentRecords = getTreatmentRecords(
         treatmentRecordCount,

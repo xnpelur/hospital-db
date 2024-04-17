@@ -447,7 +447,7 @@ function getDateAfterInterval(firstDate, interval) {
         case "month":
             startDate.setMonth(startDate.getMonth() + value);
             endDate = new Date(
-                new Date(startDate).getTime() + 24 * 30 * 24 * 60 * 60 * 1000
+                new Date(startDate).getTime() + 12 * 30 * 24 * 60 * 60 * 1000
             );
             break;
         default:
