@@ -62,6 +62,12 @@ const treatments = [
     ["Дарсонвализация", 2700],
 ];
 
+function getDateAfterNDays(dateString, days) {
+    const newDate = new Date(dateString);
+    newDate.setDate(newDate.getDate() + days);
+    return newDate.toISOString().substring(0, 10);
+}
+
 function getPatients(count) {
     const patients = [];
     const users = [];
@@ -143,7 +149,7 @@ function getPatientRecords(count, patientsCount, doctorsCount) {
         const patientId = 1 + getRandomInt(patientsCount);
         const doctorId = 1 + getRandomInt(doctorsCount);
         const admissionDate = getRandomDate("2020-01-01", "2024-04-01");
-        const dischargeDate = admissionDate;
+        const dischargeDate = getDateAfterNDays(admissionDate, 7);
 
         patientRecords.push([
             patientId,
@@ -169,13 +175,21 @@ function getClinicalRecords(count, patientRecordsCount) {
     return clinicalRecords;
 }
 
-function getTreatmentRecords(count, clinicalRecordsCount) {
+function getTreatmentRecords(count, clinicalRecords, patientRecords) {
     const treatmentRecords = [];
 
     for (let i = 0; i < count; i++) {
         const treatmentId = 1 + getRandomInt(treatments.length);
-        const clinicalRecordId = 1 + getRandomInt(clinicalRecordsCount);
-        const startDate = getRandomDate("2020-01-01", "2024-04-01");
+        const clinicalRecordId = 1 + getRandomInt(clinicalRecords.length);
+
+        const clinicalRecord = clinicalRecords[clinicalRecordId - 1];
+        const patientRecordId = clinicalRecord[0];
+        const patientRecord = patientRecords[patientRecordId - 1];
+
+        const startDateMin = patientRecord[2];
+        const startDateMax = getDateAfterNDays(startDateMin, 14);
+
+        const startDate = getRandomDate(startDateMin, startDateMax);
         const repeatInterval = getRandomInterval();
         const endDate = getDateAfterInterval(startDate, repeatInterval);
 
@@ -199,7 +213,7 @@ function getGeneratedData(maxRecordsNumber) {
     const patientsCount = maxRecordsNumber / 150 + getRandomInt(50);
     const doctorsCount = maxRecordsNumber / 2000 + getRandomInt(10);
     const patientRecordsCount = maxRecordsNumber / 30 + getRandomInt(250);
-    const clinicalRecordsCount = maxRecordsNumber / 7 + getRandomInt(1000);
+    const clinicalRecordsCount = maxRecordsNumber / 10 + getRandomInt(500);
     const treatmentRecordCount = maxRecordsNumber - 5000 + getRandomInt(5000);
 
     const departments = getDepartments();
@@ -216,7 +230,8 @@ function getGeneratedData(maxRecordsNumber) {
     );
     const treatmentRecords = getTreatmentRecords(
         treatmentRecordCount,
-        clinicalRecordsCount
+        clinicalRecords,
+        patientRecords
     );
 
     let query = "";

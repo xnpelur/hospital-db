@@ -70,7 +70,7 @@ async function up() {
             await client.query(sql);
         }
 
-        const sql = getGeneratedData(10000);
+        const sql = getGeneratedData(5000);
         await client.query(sql);
     } catch (err) {
         return err;
