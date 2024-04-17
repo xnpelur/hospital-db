@@ -50,7 +50,8 @@ CREATE TABLE treatment (
 CREATE TABLE clinical_record (
   id SERIAL UNIQUE,
   patient_record_id INTEGER NOT NULL REFERENCES patient_record(id),
-  disease_id INTEGER NOT NULL REFERENCES disease(id)
+  disease_id INTEGER NOT NULL REFERENCES disease(id),
+  CONSTRAINT unique_patient_record_disease UNIQUE (patient_record_id, disease_id)
 );
 
 CREATE TABLE treatment_record (

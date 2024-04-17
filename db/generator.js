@@ -185,10 +185,17 @@ function getPatientRecords(count, patients, doctors) {
 
 function getClinicalRecords(count, patientRecordsCount) {
     const clinicalRecords = [];
+    const pairs = new Set();
 
     for (let i = 0; i < count; i++) {
         const patientRecordId = 1 + getRandomInt(patientRecordsCount);
         const diseaseId = 1 + getRandomInt(diseases.length);
+
+        const pairString = `${patientRecordId},${diseaseId}`;
+        if (pairs.has(pairString)) {
+            continue;
+        }
+        pairs.add(pairString);
 
         clinicalRecords.push([patientRecordId, diseaseId]);
     }
