@@ -264,13 +264,6 @@ function getGeneratedData(maxRecordsNumber) {
 
     let query = "";
 
-    query += `CREATE ROLE patient;\n`;
-    query += `CREATE ROLE doctor;\n`;
-    query += `CREATE USER admin WITH PASSWORD 'admin';\n`;
-    query += `GRANT postgres TO patient;\n`;
-    query += `GRANT postgres TO doctor;\n`;
-    query += `GRANT postgres TO admin;\n`;
-
     for (let i = 0; i < patientUsers.length; i++) {
         const { username, password } = patientUsers[i];
         query += `CREATE USER ${username} WITH PASSWORD '${password}';\n`;
@@ -282,6 +275,13 @@ function getGeneratedData(maxRecordsNumber) {
         query += `CREATE USER ${username} WITH PASSWORD '${password}';\n`;
         query += `GRANT doctor TO ${username};\n`;
     }
+
+    console.log(
+        `First patient: ${patientUsers[0].username} - ${patientUsers[0].password}`
+    );
+    console.log(
+        `First doctor: ${doctorUsers[0].username} - ${doctorUsers[0].password}`
+    );
 
     query += `INSERT INTO social_status (title) VALUES ${socialStatuses.map((x) => `('${x}')`).join(", ")};\n`;
     query += `INSERT INTO disease (title) VALUES ${diseases.map((x) => `('${x}')`).join(", ")};\n`;

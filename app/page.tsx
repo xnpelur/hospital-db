@@ -3,7 +3,7 @@ import { PatientsTable } from "./_components/tables/patients";
 import { Patient } from "@/lib/types";
 
 export default async function Home() {
-    const data = await runFunction<Patient>("get_patients_by_doctor", [1]);
+    const data = await runFunction<Patient>("get_patients", []);
 
     return (
         <div className="flex h-full items-center justify-center">

@@ -1,8 +1,6 @@
 SET client_encoding TO 'utf8';
 
-CREATE FUNCTION get_patients_by_doctor(
-    doctor_id_param INT
-)
+CREATE FUNCTION get_patients()
 RETURNS TABLE (
     id INT,
     full_name VARCHAR(255),
@@ -25,9 +23,7 @@ BEGIN
     LEFT JOIN
         public.patient p ON pr.patient_id = p.id
     LEFT JOIN
-        public.social_status s ON p.social_status_id = s.id
-    WHERE
-        pr.doctor_id = doctor_id_param;
+        public.social_status s ON p.social_status_id = s.id;
 END;
 $$ LANGUAGE plpgsql;
 
