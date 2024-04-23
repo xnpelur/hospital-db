@@ -1,7 +1,8 @@
 "use server";
 
-import { Client } from "pg";
+import { Client, DatabaseError } from "pg";
 import { getSession } from "./auth";
+import { redirect } from "next/navigation";
 
 if (!process.env.DB_HOST || !process.env.DB_PORT || !process.env.DB_NAME) {
     throw new Error("Database credentials are not set in .env");
@@ -16,15 +17,15 @@ export async function runFunction<T>(
         return [];
     }
 
-    const client = new Client({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT!),
-        database: process.env.DB_NAME,
-        user: session.user.username,
-        password: session.user.password,
-    });
-
     try {
+        const client = new Client({
+            host: process.env.DB_HOST,
+            port: parseInt(process.env.DB_PORT!),
+            database: process.env.DB_NAME,
+            user: session.user.username,
+            password: session.user.password,
+        });
+
         await client.connect();
         const funcCallString = `${functionName}(${params.map((_, i) => `$${i + 1}`).join(",")})`;
         const result = await client.query(
@@ -34,6 +35,9 @@ export async function runFunction<T>(
 
         return result.rows as T[];
     } catch (error) {
+        if (error instanceof DatabaseError && error.code == "28P01") {
+            redirect("/api/logout");
+        }
         console.error("Error executing function:", error);
         throw error;
     }
