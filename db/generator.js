@@ -68,6 +68,11 @@ function getDateAfterNDays(dateString, days) {
     return newDate.toISOString().substring(0, 10);
 }
 
+function getToday() {
+    const date = new Date();
+    return date.toISOString().substring(0, 10);
+}
+
 function getPatients(count) {
     const patients = [];
     const users = [];
@@ -151,11 +156,15 @@ function getPatientRecords(count, patients, doctors) {
         const doctorId = 1 + getRandomInt(doctors.length);
 
         const lastAdmission = lastAdmissions.get(patientId);
-        const admissionDateMax =
-            lastAdmission !== undefined
-                ? getDateAfterNDays(lastAdmission, -750)
-                : "2024-04-01";
-        const admissionDateMin = getDateAfterNDays(admissionDateMax, -1000);
+
+        let admissionDateMin, admissionDateMax;
+        if (lastAdmission !== undefined) {
+            admissionDateMax = getDateAfterNDays(lastAdmission, -750);
+            admissionDateMin = getDateAfterNDays(admissionDateMax, -1000);
+        } else {
+            admissionDateMax = getToday();
+            admissionDateMin = getDateAfterNDays(admissionDateMax, -30);
+        }
 
         const admissionDate = getRandomDate(admissionDateMin, admissionDateMax);
         const dischargeDate = getDateAfterNDays(admissionDate, 7);
