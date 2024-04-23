@@ -8,6 +8,8 @@ const {
     getRandomInterval,
     getDateAfterInterval,
 } = require("./randomizer");
+const path = require("node:path");
+const fs = require("node:fs");
 
 const socialStatuses = ["Предприниматель", "Служащий", "Рабочий", "Пенсионер"];
 const diseases = [
@@ -246,6 +248,28 @@ function getValues(x) {
     return `(${x.map((y) => (typeof y === "number" ? y : `'${y}'`)).join(", ")})`;
 }
 
+function dumpUsers(patientUsers, doctorUsers) {
+    const folderPath = path.join(__dirname, "credentials");
+
+    if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath);
+    }
+
+    const patientUsersCSV = patientUsers
+        .map((user) => `${user.username},${user.password}`)
+        .join("\n");
+    const patientsFilePath = path.join(folderPath, "patients.csv");
+    fs.writeFileSync(patientsFilePath, patientUsersCSV);
+    console.log(`Patient users CSV file created: ${patientsFilePath}`);
+
+    const doctorUsersCSV = doctorUsers
+        .map((user) => `${user.username},${user.password}`)
+        .join("\n");
+    const doctorsFilePath = path.join(folderPath, "doctors.csv");
+    fs.writeFileSync(doctorsFilePath, doctorUsersCSV);
+    console.log(`Doctor users CSV file created: ${doctorsFilePath}`);
+}
+
 function getGeneratedData(maxRecordsNumber) {
     const patientsCount = maxRecordsNumber / 90 + getRandomInt(50);
     const doctorsCount = maxRecordsNumber / 2000 + getRandomInt(10);
@@ -285,12 +309,7 @@ function getGeneratedData(maxRecordsNumber) {
         query += `GRANT doctor TO ${username};\n`;
     }
 
-    console.log(
-        `First patient: ${patientUsers[0].username} - ${patientUsers[0].password}`
-    );
-    console.log(
-        `First doctor: ${doctorUsers[0].username} - ${doctorUsers[0].password}`
-    );
+    dumpUsers(patientUsers, doctorUsers);
 
     query += `INSERT INTO social_status (title) VALUES ${socialStatuses.map((x) => `('${x}')`).join(", ")};\n`;
     query += `INSERT INTO disease (title) VALUES ${diseases.map((x) => `('${x}')`).join(", ")};\n`;
