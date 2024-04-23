@@ -1,6 +1,7 @@
 import { TreatmentsTable } from "@/app/_components/tables/treatments";
 import { runFunction } from "@/lib/db";
 import { Disease, Patient, Treatment } from "@/lib/types";
+import { notFound } from "next/navigation";
 
 export default async function PatientPage({
     params,
@@ -12,6 +13,11 @@ export default async function PatientPage({
     const patient = (
         await runFunction<Patient>("get_patient_by_id", [patientId])
     )[0];
+
+    if (!patient) {
+        notFound();
+    }
+
     const diseases = await runFunction<Disease>(
         "get_diseases_by_patient_record_id",
         [patientId]
