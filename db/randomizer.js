@@ -419,7 +419,7 @@ function getRandomInterval() {
     const unit = units[getRandomInt(units.length)];
 
     const maxAmount = unit == "hour" ? 24 : unit == "day" ? 30 : 12;
-    const amount = getRandomInt(maxAmount);
+    const amount = 1 + getRandomInt(maxAmount - 1);
 
     return `${amount} ${unit}`;
 }
