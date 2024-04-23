@@ -163,7 +163,7 @@ function getPatientRecords(count, patients, doctors) {
             admissionDateMin = getDateAfterNDays(admissionDateMax, -1000);
         } else {
             admissionDateMax = getToday();
-            admissionDateMin = getDateAfterNDays(admissionDateMax, -30);
+            admissionDateMin = getDateAfterNDays(admissionDateMax, -100);
         }
 
         const admissionDate = getRandomDate(admissionDateMin, admissionDateMax);

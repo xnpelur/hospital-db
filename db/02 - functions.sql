@@ -27,6 +27,36 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE FUNCTION get_current_patients()
+RETURNS TABLE (
+    id INT,
+    full_name VARCHAR(255),
+    birth_date DATE,
+    social_status VARCHAR(255),
+    admission_date DATE,
+    discharge_date DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        pr.id,
+        p.full_name,
+        p.birth_date,
+        s.title as social_status,
+        pr.admission_date,
+        pr.discharge_date
+    FROM
+        public.patient_record pr
+    LEFT JOIN
+        public.patient p ON pr.patient_id = p.id
+    LEFT JOIN
+        public.social_status s ON p.social_status_id = s.id
+    WHERE
+        pr.admission_date <= CURRENT_DATE
+        AND pr.discharge_date >= CURRENT_DATE;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE FUNCTION get_patient_by_id(
     id_param INT
 )
