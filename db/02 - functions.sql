@@ -81,7 +81,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION format_interval(num INT, unit_words TEXT[])
+CREATE FUNCTION format_interval(num INT, unit_words TEXT[])
 RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
@@ -105,7 +105,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION get_human_readable_interval(interval_value INTERVAL)
+CREATE FUNCTION get_human_readable_interval(interval_value INTERVAL)
 RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
