@@ -59,4 +59,9 @@ export const columns: ColumnDef<Patient>[] = [
             <div>{toDateString(row.getValue("discharge_date") as Date)}</div>
         ),
     },
+    {
+        accessorKey: "status",
+        header: "Статус",
+        cell: ({ row }) => <div>{row.getValue("status")}</div>,
+    },
 ];

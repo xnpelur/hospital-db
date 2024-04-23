@@ -7,23 +7,15 @@ RETURNS TABLE (
     birth_date DATE,
     social_status VARCHAR(255),
     admission_date DATE,
-    discharge_date DATE
+    discharge_date DATE,
+    status TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        pr.id,
-        p.full_name,
-        p.birth_date,
-        s.title as social_status,
-        pr.admission_date,
-        pr.discharge_date
+        *
     FROM
-        public.patient_record pr
-    LEFT JOIN
-        public.patient p ON pr.patient_id = p.id
-    LEFT JOIN
-        public.social_status s ON p.social_status_id = s.id;
+        patient_records_view;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -34,23 +26,15 @@ RETURNS TABLE (
     birth_date DATE,
     social_status VARCHAR(255),
     admission_date DATE,
-    discharge_date DATE
+    discharge_date DATE,
+    status TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        pr.id,
-        p.full_name,
-        p.birth_date,
-        s.title as social_status,
-        pr.admission_date,
-        pr.discharge_date
+        *
     FROM
-        public.patient_record pr
-    LEFT JOIN
-        public.patient p ON pr.patient_id = p.id
-    LEFT JOIN
-        public.social_status s ON p.social_status_id = s.id
+        patient_records_view pr
     WHERE
         pr.admission_date <= CURRENT_DATE
         AND pr.discharge_date >= CURRENT_DATE;
@@ -66,23 +50,15 @@ RETURNS TABLE (
     birth_date DATE,
     social_status VARCHAR(255),
     admission_date DATE,
-    discharge_date DATE
+    discharge_date DATE,
+    status TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        pr.id,
-        p.full_name,
-        p.birth_date,
-        s.title as social_status,
-        pr.admission_date,
-        pr.discharge_date
+        *
     FROM
-        public.patient_record pr
-    LEFT JOIN
-        public.patient p ON pr.patient_id = p.id
-    LEFT JOIN
-        public.social_status s ON p.social_status_id = s.id
+        patient_records_view pr
     WHERE
         pr.id = id_param;
 END;
