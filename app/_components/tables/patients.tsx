@@ -20,9 +20,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Patient } from "@/lib/types";
-import TableRowsShownInfo from "./tableRowsShownInfo";
 import { columns } from "../columnDefs/patient";
 import { useRouter } from "next/navigation";
+import TableFooter from "./tableFooter";
 
 export function PatientsTable({ data }: { data: Patient[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -101,27 +101,7 @@ export function PatientsTable({ data }: { data: Patient[] }) {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-between space-x-2 py-4">
-                <TableRowsShownInfo table={table} />
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
+            <TableFooter table={table} />
         </div>
     );
 }

@@ -10,7 +10,6 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -20,9 +19,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Treatment } from "@/lib/types";
-import TableRowsShownInfo from "./tableRowsShownInfo";
 import { columns } from "../columnDefs/treatment";
 import { useRouter } from "next/navigation";
+import TableFooter from "./tableFooter";
 
 export function TreatmentsTable({ data }: { data: Treatment[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -106,27 +105,7 @@ export function TreatmentsTable({ data }: { data: Treatment[] }) {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-between space-x-2 py-4">
-                <TableRowsShownInfo table={table} />
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
+            <TableFooter table={table} />
         </div>
     );
 }
