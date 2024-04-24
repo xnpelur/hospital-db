@@ -62,13 +62,15 @@ export default async function PatientPage({
                         <p className="font-semibold text-gray-600">
                             Заболевания:
                         </p>
-                        <ul className="list-inside list-disc">
-                            {diseases.map((disease, index) => (
-                                <li key={index} className="text-gray-600">
-                                    {disease.title}
-                                </li>
-                            ))}
-                        </ul>
+                        <p className="text-gray-600">
+                            {diseases
+                                .map((disease, index) =>
+                                    index == 0
+                                        ? disease.title
+                                        : disease.title.toLowerCase()
+                                )
+                                .join(", ")}
+                        </p>
                     </div>
                 </div>
                 <div className="flex flex-1 flex-col space-y-5">
