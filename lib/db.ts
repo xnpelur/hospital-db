@@ -17,15 +17,15 @@ export async function runFunction<T>(
         return [];
     }
 
-    try {
-        const client = new Client({
-            host: process.env.DB_HOST,
-            port: parseInt(process.env.DB_PORT!),
-            database: process.env.DB_NAME,
-            user: session.user.username,
-            password: session.user.password,
-        });
+    const client = new Client({
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT!),
+        database: process.env.DB_NAME,
+        user: session.user.username,
+        password: session.user.password,
+    });
 
+    try {
         await client.connect();
         const funcCallString = `${functionName}(${params.map((_, i) => `$${i + 1}`).join(",")})`;
         const result = await client.query(
@@ -40,6 +40,8 @@ export async function runFunction<T>(
         }
         console.error("Error executing function:", error);
         throw error;
+    } finally {
+        await client.end();
     }
 }
 
@@ -65,5 +67,7 @@ export async function getUserRole(
         return result.rows[0] as string;
     } catch (error) {
         return null;
+    } finally {
+        await client.end();
     }
 }
