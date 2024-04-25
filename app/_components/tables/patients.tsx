@@ -44,12 +44,15 @@ export function PatientsTable({ data }: { data: Patient[] }) {
         <div className="flex h-full w-full flex-col justify-between">
             <div className="rounded-md border">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-gray-200 text-gray-700">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead
+                                            key={header.id}
+                                            className="font-bold"
+                                        >
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(

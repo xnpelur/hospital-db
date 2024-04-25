@@ -27,7 +27,7 @@ export default function LogoutButton() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="px-2 py-1">
+                <Button variant="outline" className="bg-transparent px-2 py-1">
                     <ExitIcon />
                 </Button>
             </DialogTrigger>

@@ -15,6 +15,21 @@ function toDateString(date: Date): string {
     });
 }
 
+function showStatusBadge(value: string) {
+    return (
+        <span
+            className={
+                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
+                (value == "На лечении"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-yellow-100 text-yellow-800")
+            }
+        >
+            {value}
+        </span>
+    );
+}
+
 export const columns: ColumnDef<Patient>[] = [
     {
         accessorKey: "full_name",
@@ -25,6 +40,7 @@ export const columns: ColumnDef<Patient>[] = [
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
+                    className="font-inherit"
                 >
                     ФИО
                     <CaretSortIcon className="ml-2 h-4 w-4" />
@@ -62,6 +78,6 @@ export const columns: ColumnDef<Patient>[] = [
     {
         accessorKey: "status",
         header: "Статус",
-        cell: ({ row }) => <div>{row.getValue("status")}</div>,
+        cell: ({ row }) => <div>{showStatusBadge(row.getValue("status"))}</div>,
     },
 ];
