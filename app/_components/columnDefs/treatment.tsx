@@ -25,6 +25,7 @@ export const columns: ColumnDef<Treatment>[] = [
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
+                    className="font-inherit"
                 >
                     Процедура
                     <CaretSortIcon className="ml-2 h-4 w-4" />

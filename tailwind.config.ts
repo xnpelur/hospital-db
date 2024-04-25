@@ -83,7 +83,7 @@ const config = {
             bold: "700",
             extrabold: "800",
             black: "900",
-            inherit: "inherit",
+            inherit: "inherit !important",
         },
     },
     plugins: [require("tailwindcss-animate")],
