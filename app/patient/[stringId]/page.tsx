@@ -1,3 +1,4 @@
+import DiseasesEditModal from "@/app/_components/modals/diseasesEditModal";
 import { TreatmentsTable } from "@/app/_components/tables/treatments";
 import { Button } from "@/components/ui/button";
 import { runFunction } from "@/lib/db";
@@ -79,9 +80,7 @@ export default async function PatientPage({
                                         .join(", ")}
                                 </p>
                             ) : null}
-                            <Button variant="outline" className="px-2">
-                                <Pencil2Icon />
-                            </Button>
+                            <DiseasesEditModal diseases={diseases} />
                         </div>
                     </div>
                 </div>
