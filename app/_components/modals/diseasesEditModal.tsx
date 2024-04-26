@@ -11,26 +11,83 @@ import {
     Dialog,
 } from "@/components/ui/dialog";
 import { Disease } from "@/lib/types";
-import { Pencil2Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import {
+    CheckIcon,
+    Cross2Icon,
+    Pencil2Icon,
+    PlusIcon,
+    TrashIcon,
+} from "@radix-ui/react-icons";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
     diseases: Disease[];
 };
 
 export default function DiseasesEditModal(props: Props) {
+    const [diseases, setDiseases] = useState(
+        props.diseases.map((disease) => disease.title)
+    );
+
     const [open, setOpen] = useState(false);
 
+    const [editing, setEditing] = useState(false);
+    const [newDisease, setNewDisease] = useState("");
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
     function cancel() {
-        setOpen(false);
+        changeOpen(false);
     }
 
     function save() {
-        setOpen(false);
+        changeOpen(false);
+    }
+
+    function changeOpen(value: boolean) {
+        if (value) {
+            setOpen(true);
+        } else {
+            setOpen(false);
+            resetAll();
+        }
+    }
+
+    function resetAll() {
+        setEditing(false);
+        setNewDisease("");
+        setDiseases(props.diseases.map((disease) => disease.title));
+    }
+
+    function startEditing() {
+        setEditing(true);
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 1);
+    }
+
+    function cancelAdd() {
+        setEditing(false);
+        setNewDisease("");
+    }
+
+    function confirmAdd() {
+        setDiseases([...diseases, newDisease]);
+        setEditing(false);
+        setNewDisease("");
+    }
+
+    function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === "Escape") {
+            cancelAdd();
+            event.stopPropagation();
+        } else if (event.key === "Enter") {
+            confirmAdd();
+        }
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={changeOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" className="px-2">
                     <Pencil2Icon />
@@ -45,14 +102,14 @@ export default function DiseasesEditModal(props: Props) {
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                     <div className="grid gap-4">
-                        {props.diseases.map((disease) => (
+                        {diseases.map((disease, index) => (
                             <div
                                 className="flex items-center justify-between rounded-md bg-gray-100 px-4 py-3 dark:bg-gray-800"
-                                key={disease.id}
+                                key={index}
                             >
                                 <div className="flex items-center gap-3">
                                     <span className="font-medium">
-                                        {disease.title}
+                                        {disease}
                                     </span>
                                 </div>
                                 <Button
@@ -66,10 +123,50 @@ export default function DiseasesEditModal(props: Props) {
                             </div>
                         ))}
                     </div>
-                    <Button variant="outline" className="px-3">
-                        <PlusIcon className="mr-2 h-4 w-4" />
-                        Добавить
-                    </Button>
+                    {editing ? (
+                        <div className="flex items-center justify-between gap-1 rounded-md bg-gray-100 px-4 py-3 dark:bg-gray-800">
+                            <div className="flex flex-1 items-center gap-3">
+                                <input
+                                    ref={inputRef}
+                                    className="w-full bg-inherit font-medium outline-none"
+                                    value={newDisease}
+                                    onChange={(e) =>
+                                        setNewDisease(e.target.value)
+                                    }
+                                    onKeyDown={handleKeyDown}
+                                />
+                            </div>
+                            <div className="space-x-1">
+                                <Button
+                                    className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={cancelAdd}
+                                >
+                                    <Cross2Icon className="h-5 w-5" />
+                                    <span className="sr-only">Убрать</span>
+                                </Button>
+                                <Button
+                                    className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={confirmAdd}
+                                >
+                                    <CheckIcon className="h-6 w-6" />
+                                    <span className="sr-only">Подтвердить</span>
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <Button
+                            variant="outline"
+                            className="px-3"
+                            onClick={startEditing}
+                        >
+                            <PlusIcon className="mr-2 h-4 w-4" />
+                            Добавить
+                        </Button>
+                    )}
                 </div>
                 <DialogFooter>
                     <Button variant="ghost" onClick={cancel}>
