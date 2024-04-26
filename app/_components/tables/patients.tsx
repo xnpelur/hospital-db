@@ -97,7 +97,7 @@ export function PatientsTable({ data }: { data: Patient[] }) {
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    Записи не найдены.
                                 </TableCell>
                             </TableRow>
                         )}

@@ -101,7 +101,7 @@ export function TreatmentsTable({ data }: { data: Treatment[] }) {
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    Записи не найдены.
                                 </TableCell>
                             </TableRow>
                         )}
