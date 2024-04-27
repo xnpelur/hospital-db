@@ -18,7 +18,8 @@ import {
     PlusIcon,
     TrashIcon,
 } from "@radix-ui/react-icons";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import ConfirmationButton from "./confirmationButton";
 
 type Props = {
     diseases: Disease[];
@@ -35,6 +36,25 @@ export default function DiseasesEditModal(props: Props) {
     const [newDisease, setNewDisease] = useState("");
 
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const [elementsToInsert, setElementsToInsert] = useState<string[]>([]);
+    const [elementsToRemove, setElementsToRemove] = useState<string[]>([]);
+
+    useEffect(() => {
+        const oldDiseases = props.diseases.map((disease) => disease.title);
+        const uniqueOldDiseases = oldDiseases.filter(
+            (disease) => !diseases.includes(disease)
+        );
+        const uniqueNewDiseases = diseases.filter(
+            (disease) => !oldDiseases.includes(disease)
+        );
+
+        setElementsToInsert(uniqueNewDiseases);
+        setElementsToRemove(uniqueOldDiseases);
+
+        console.log(uniqueNewDiseases);
+        console.log(uniqueOldDiseases);
+    }, [diseases, props.diseases]);
 
     function cancel() {
         changeOpen(false);
@@ -179,9 +199,14 @@ export default function DiseasesEditModal(props: Props) {
                     <Button variant="ghost" onClick={cancel}>
                         Отмена
                     </Button>
-                    <Button className="ml-auto" onClick={save}>
-                        Сохранить
-                    </Button>
+                    <ConfirmationButton
+                        text="Сохранить"
+                        variant="destructive"
+                        modalTitle="Подтвердите удаление"
+                        modalDescription="В результате изменения списка были удалены элементы, которые ранее были в нём. Это значит, что все элементы и связанные с ними данные будут удалены. Продолжить?"
+                        onConfirm={save}
+                        skipConfirmation={elementsToRemove.length == 0}
+                    />
                 </DialogFooter>
             </DialogContent>
         </Dialog>
