@@ -18,7 +18,7 @@ import {
     PlusIcon,
     TrashIcon,
 } from "@radix-ui/react-icons";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 type Props = {
     diseases: Disease[];
@@ -86,6 +86,12 @@ export default function DiseasesEditModal(props: Props) {
         }
     }
 
+    function removeElement(index: number) {
+        const newDiseases = [...diseases];
+        newDiseases.splice(index, 1);
+        setDiseases(newDiseases);
+    }
+
     return (
         <Dialog open={open} onOpenChange={changeOpen}>
             <DialogTrigger asChild>
@@ -116,6 +122,7 @@ export default function DiseasesEditModal(props: Props) {
                                     className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
                                     size="icon"
                                     variant="ghost"
+                                    onClick={() => removeElement(index)}
                                 >
                                     <TrashIcon className="h-6 w-6" />
                                     <span className="sr-only">Удалить</span>
