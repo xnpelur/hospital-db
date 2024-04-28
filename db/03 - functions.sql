@@ -166,3 +166,46 @@ BEGIN
         pr.id = id_param;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION update_clinical_records(
+    patientRecordId INTEGER,
+    diseasesToInsert TEXT[],
+    diseasesToRemove TEXT[]
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    diseaseId INTEGER;
+    diseaseTitle TEXT;
+BEGIN
+    FOREACH diseaseTitle IN ARRAY diseasesToInsert
+    LOOP
+        SELECT id INTO diseaseId
+        FROM disease
+        WHERE title = diseaseTitle;
+
+        IF diseaseId IS NULL THEN
+            RAISE EXCEPTION 'Disease title "%" not found in the disease table', diseaseTitle;
+        END IF;
+
+        INSERT INTO clinical_record (patient_record_id, disease_id)
+        VALUES (patientRecordId, diseaseId);
+    END LOOP;
+
+    FOREACH diseaseTitle IN ARRAY diseasesToRemove
+    LOOP
+        SELECT id INTO diseaseId
+        FROM disease
+        WHERE title = diseaseTitle;
+
+        IF diseaseId IS NULL THEN
+            RAISE EXCEPTION 'Disease title "%" not found in the disease table', diseaseTitle;
+        END IF;
+
+        DELETE FROM clinical_record
+        WHERE patient_record_id = patientRecordId
+            AND disease_id = diseaseId;
+    END LOOP;
+END;
+$$;

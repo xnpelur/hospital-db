@@ -20,8 +20,11 @@ import {
 } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import ConfirmationButton from "./confirmationButton";
+import { runFunction } from "@/lib/db";
+import { useRouter } from "next/navigation";
 
 type Props = {
+    patientRecordId: number;
     diseases: Disease[];
 };
 
@@ -40,6 +43,8 @@ export default function DiseasesEditModal(props: Props) {
     const [elementsToInsert, setElementsToInsert] = useState<string[]>([]);
     const [elementsToRemove, setElementsToRemove] = useState<string[]>([]);
 
+    const router = useRouter();
+
     useEffect(() => {
         const oldDiseases = props.diseases.map((disease) => disease.title);
         const uniqueOldDiseases = oldDiseases.filter(
@@ -51,17 +56,20 @@ export default function DiseasesEditModal(props: Props) {
 
         setElementsToInsert(uniqueNewDiseases);
         setElementsToRemove(uniqueOldDiseases);
-
-        console.log(uniqueNewDiseases);
-        console.log(uniqueOldDiseases);
     }, [diseases, props.diseases]);
 
     function cancel() {
         changeOpen(false);
     }
 
-    function save() {
-        changeOpen(false);
+    async function save() {
+        await runFunction<null>("update_clinical_records", [
+            props.patientRecordId,
+            elementsToInsert,
+            elementsToRemove,
+        ]);
+        setOpen(false);
+        router.refresh();
     }
 
     function changeOpen(value: boolean) {

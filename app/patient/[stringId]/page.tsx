@@ -80,7 +80,10 @@ export default async function PatientPage({
                                         .join(", ")}
                                 </p>
                             ) : null}
-                            <DiseasesEditModal diseases={diseases} />
+                            <DiseasesEditModal
+                                patientRecordId={patientId}
+                                diseases={diseases}
+                            />
                         </div>
                     </div>
                 </div>
