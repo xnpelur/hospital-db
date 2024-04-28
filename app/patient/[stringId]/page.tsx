@@ -81,8 +81,8 @@ export default async function PatientPage({
                                 </p>
                             ) : null}
                             <DiseasesEditModal
-                                patientRecordId={patientId}
                                 diseases={diseases}
+                                patientRecordId={patientId}
                             />
                         </div>
                     </div>
