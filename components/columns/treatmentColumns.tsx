@@ -74,11 +74,6 @@ export const treatmentColumns: ColumnDef<Treatment>[] = [
         cell: ({ row }) => <div>{row.getValue("title")}</div>,
     },
     {
-        accessorKey: "cost",
-        header: "Стоимость",
-        cell: ({ row }) => <div>{row.getValue("cost")}</div>,
-    },
-    {
         accessorKey: "start_date",
         header: "Дата начала",
         cell: ({ row }) => (
