@@ -2,10 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import { TreatmentsTable } from "./tables/treatments";
 import { Treatment } from "@/lib/types";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
+import { DataTable } from "@/components/dataTable";
+import { useRouter } from "next/navigation";
+import { treatmentColumns } from "@/components/columns/treatmentColumns";
 
 type Props = {
     treatments: Treatment[];
@@ -13,6 +15,7 @@ type Props = {
 
 export default function TreatmentsPanel(props: Props) {
     const [showDeleteButton, setShowDeleteButton] = useState(false);
+    const router = useRouter();
 
     function onRowSelectionChange(state: RowSelectionState) {
         for (const key in state) {
@@ -41,8 +44,10 @@ export default function TreatmentsPanel(props: Props) {
                     </Button>
                 </div>
             </div>
-            <TreatmentsTable
+            <DataTable
                 data={props.treatments}
+                columns={treatmentColumns}
+                pageSize={5}
                 onRowSelectionChange={onRowSelectionChange}
             />
         </div>

@@ -1,9 +1,9 @@
-import DiseasesEditModal from "@/app/_components/modals/diseasesEditModal";
-import TreatmentsPanel from "@/app/_components/treatmentsPanel";
 import { Button } from "@/components/ui/button";
 import { runFunction } from "@/lib/db";
 import { Disease, Patient, Treatment } from "@/lib/types";
 import { notFound } from "next/navigation";
+import DiseasesEditModal from "./_components/diseasesEditModal";
+import TreatmentsPanel from "./_components/treatmentsPanel";
 
 export default async function PatientPage({
     params,

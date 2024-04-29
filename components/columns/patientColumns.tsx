@@ -30,7 +30,7 @@ function showStatusBadge(value: string) {
     );
 }
 
-export const columns: ColumnDef<Patient>[] = [
+export const patientColumns: ColumnDef<Patient>[] = [
     {
         accessorKey: "full_name",
         header: ({ column }) => {

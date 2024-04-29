@@ -27,7 +27,7 @@ function toDateString(date: Date): string {
     });
 }
 
-export const columns: ColumnDef<Treatment>[] = [
+export const treatmentColumns: ColumnDef<Treatment>[] = [
     {
         id: "select",
         header: ({ table }) => (

@@ -1,7 +1,9 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+    ColumnDef,
+    RowSelectionState,
     SortingState,
     flexRender,
     getCoreRowModel,
@@ -9,8 +11,6 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-
-import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -19,29 +19,61 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Patient } from "@/lib/types";
-import { columns } from "../columnDefs/patient";
 import { useRouter } from "next/navigation";
-import TableFooter from "./tableFooter";
+import { Button } from "@/components/ui/button";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
-export function PatientsTable({ data }: { data: Patient[] }) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
+type Props = {
+    data: any[];
+    columns: ColumnDef<any, any>[];
+    pageSize: number;
+    onRowSelectionChange?: (state: RowSelectionState) => void;
+    rowUrl?: string;
+};
+
+export function DataTable(props: Props) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
     const router = useRouter();
 
     const table = useReactTable({
-        data,
-        columns,
+        data: props.data,
+        columns: props.columns,
+        onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         state: {
             sorting,
+            rowSelection,
+        },
+        initialState: {
+            pagination: {
+                pageSize: props.pageSize,
+            },
         },
     });
 
+    const { pageIndex, pageSize } = table.getState().pagination;
+    const rowsCount = table.getFilteredRowModel().rows.length;
+
+    const rowsShownString = useMemo(() => {
+        const startRow = rowsCount != 0 ? pageIndex * pageSize + 1 : 0;
+        const endRow = Math.min((pageIndex + 1) * pageSize, rowsCount);
+
+        return `${startRow} - ${endRow} из ${rowsCount}`;
+    }, [pageIndex, pageSize, rowsCount]);
+
+    const onRowSelectionChange = props.onRowSelectionChange;
+
+    useEffect(() => {
+        onRowSelectionChange?.(rowSelection);
+    }, [rowSelection, onRowSelectionChange]);
+
     return (
-        <div className="flex h-full w-full flex-col justify-between">
+        <div className="flex w-full flex-1 flex-col justify-between">
             <div className="rounded-md border">
                 <Table>
                     <TableHeader className="bg-gray-200 text-gray-700">
@@ -52,6 +84,12 @@ export function PatientsTable({ data }: { data: Patient[] }) {
                                         <TableHead
                                             key={header.id}
                                             className="font-bold"
+                                            style={{
+                                                width:
+                                                    header.getSize() !== 150
+                                                        ? header.getSize()
+                                                        : undefined,
+                                            }}
                                         >
                                             {header.isPlaceholder
                                                 ? null
@@ -72,11 +110,13 @@ export function PatientsTable({ data }: { data: Patient[] }) {
                                 <TableRow
                                     key={i}
                                     className="h-12 cursor-pointer"
-                                    onClick={() =>
-                                        router.push(
-                                            `/patient/${row.original.id}`
-                                        )
-                                    }
+                                    onClick={() => {
+                                        if (props.rowUrl) {
+                                            router.push(
+                                                `${props.rowUrl}/${row.original.id}`
+                                            );
+                                        }
+                                    }}
                                     data-state={
                                         row.getIsSelected() && "selected"
                                     }
@@ -94,7 +134,7 @@ export function PatientsTable({ data }: { data: Patient[] }) {
                         ) : (
                             <TableRow>
                                 <TableCell
-                                    colSpan={columns.length}
+                                    colSpan={props.columns.length}
                                     className="h-24 text-center"
                                 >
                                     Записи не найдены.
@@ -104,7 +144,29 @@ export function PatientsTable({ data }: { data: Patient[] }) {
                     </TableBody>
                 </Table>
             </div>
-            <TableFooter table={table} />
+            <div className="flex items-center justify-between space-x-2 py-4">
+                <div className="text-sm text-muted-foreground">
+                    {rowsShownString}
+                </div>
+                <div className="space-x-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <ChevronLeftIcon />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <ChevronRightIcon />
+                    </Button>
+                </div>
+            </div>
         </div>
     );
 }
