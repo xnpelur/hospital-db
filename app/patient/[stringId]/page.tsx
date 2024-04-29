@@ -1,9 +1,8 @@
 import DiseasesEditModal from "@/app/_components/modals/diseasesEditModal";
-import { TreatmentsTable } from "@/app/_components/tables/treatments";
+import TreatmentsPanel from "@/app/_components/treatmentsPanel";
 import { Button } from "@/components/ui/button";
 import { runFunction } from "@/lib/db";
 import { Disease, Patient, Treatment } from "@/lib/types";
-import { Pencil2Icon } from "@radix-ui/react-icons";
 import { notFound } from "next/navigation";
 
 export default async function PatientPage({
@@ -87,17 +86,7 @@ export default async function PatientPage({
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col space-y-5">
-                    <div className="flex gap-2">
-                        <h2 className="mx-1 text-2xl font-semibold">
-                            Процедуры
-                        </h2>
-                        <Button variant="outline" className="px-2">
-                            <Pencil2Icon />
-                        </Button>
-                    </div>
-                    <TreatmentsTable data={treatments} />
-                </div>
+                <TreatmentsPanel treatments={treatments} />
             </div>
         </div>
     );

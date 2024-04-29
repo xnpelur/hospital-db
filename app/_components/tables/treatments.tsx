@@ -1,7 +1,8 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import {
+    RowSelectionState,
     SortingState,
     flexRender,
     getCoreRowModel,
@@ -20,22 +21,29 @@ import {
 } from "@/components/ui/table";
 import { Treatment } from "@/lib/types";
 import { columns } from "../columnDefs/treatment";
-import { useRouter } from "next/navigation";
 import TableFooter from "./tableFooter";
 
-export function TreatmentsTable({ data }: { data: Treatment[] }) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const router = useRouter();
+export function TreatmentsTable({
+    data,
+    onRowSelectionChange,
+}: {
+    data: Treatment[];
+    onRowSelectionChange: (state: RowSelectionState) => void;
+}) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
     const table = useReactTable({
         data,
         columns,
+        onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         state: {
             sorting,
+            rowSelection,
         },
         initialState: {
             pagination: {
@@ -43,6 +51,10 @@ export function TreatmentsTable({ data }: { data: Treatment[] }) {
             },
         },
     });
+
+    useEffect(() => {
+        onRowSelectionChange(rowSelection);
+    }, [rowSelection, onRowSelectionChange]);
 
     return (
         <div className="flex w-full flex-1 flex-col justify-between">
@@ -56,6 +68,12 @@ export function TreatmentsTable({ data }: { data: Treatment[] }) {
                                         <TableHead
                                             key={header.id}
                                             className="font-bold"
+                                            style={{
+                                                width:
+                                                    header.getSize() !== 150
+                                                        ? header.getSize()
+                                                        : undefined,
+                                            }}
                                         >
                                             {header.isPlaceholder
                                                 ? null
@@ -76,11 +94,6 @@ export function TreatmentsTable({ data }: { data: Treatment[] }) {
                                 <TableRow
                                     key={i}
                                     className="h-12 cursor-pointer"
-                                    onClick={() =>
-                                        router.push(
-                                            `/patient/${row.original.id}`
-                                        )
-                                    }
                                     data-state={
                                         row.getIsSelected() && "selected"
                                     }
