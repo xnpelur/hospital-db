@@ -86,7 +86,7 @@ export default async function PatientPage({
                         </div>
                     </div>
                 </div>
-                <TreatmentsPanel treatments={treatments} />
+                <TreatmentsPanel treatments={treatments} diseases={diseases} />
             </div>
         </div>
     );

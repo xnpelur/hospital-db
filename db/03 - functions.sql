@@ -77,11 +77,11 @@ BEGIN
         d.id,
         d.title
     FROM
-        public.clinical_record cr
+        clinical_record cr
     LEFT JOIN
-        public.patient_record pr ON cr.patient_record_id = pr.id
+        patient_record pr ON cr.patient_record_id = pr.id
     LEFT JOIN
-        public.disease d ON cr.disease_id = d.id
+        disease d ON cr.disease_id = d.id
     WHERE
         pr.id = id_param;
 END;
@@ -151,15 +151,15 @@ BEGIN
         get_human_readable_interval(tr.repeat_interval) as repeat_interval,
         d.title as disease
     FROM
-        public.treatment_record tr
+        treatment_record tr
     LEFT JOIN
-        public.clinical_record cr ON tr.clinical_record_id = cr.id
+        clinical_record cr ON tr.clinical_record_id = cr.id
     LEFT JOIN
-        public.patient_record pr ON cr.patient_record_id = pr.id
+        patient_record pr ON cr.patient_record_id = pr.id
     LEFT JOIN
-        public.disease d ON cr.disease_id = d.id
+        disease d ON cr.disease_id = d.id
     LEFT JOIN
-        public.treatment t ON tr.treatment_id = t.id
+        treatment t ON tr.treatment_id = t.id
     WHERE
         pr.id = id_param;
 END;
@@ -207,3 +207,18 @@ BEGIN
     END LOOP;
 END;
 $$;
+
+CREATE FUNCTION get_treatments()
+RETURNS TABLE (
+    id INT,
+    title VARCHAR(255),
+    cost INTEGER
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        t.id, t.title, t.cost
+    FROM
+        treatment t;
+END;
+$$ LANGUAGE plpgsql;

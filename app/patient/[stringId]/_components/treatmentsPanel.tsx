@@ -1,16 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import { Treatment } from "@/lib/types";
+import { TrashIcon } from "@radix-ui/react-icons";
+import { Disease, Treatment } from "@/lib/types";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
 import { useRouter } from "next/navigation";
 import { treatmentColumns } from "@/components/columns/treatmentColumns";
+import TreatmentsAddModal from "./treatmentsAddModal";
 
 type Props = {
     treatments: Treatment[];
+    diseases: Disease[];
 };
 
 export default function TreatmentsPanel(props: Props) {
@@ -38,10 +40,7 @@ export default function TreatmentsPanel(props: Props) {
                             Удалить выбранные записи
                         </Button>
                     ) : null}
-                    <Button variant="outline" className="px-3">
-                        <PlusIcon className="mr-2 h-4 w-4" />
-                        Добавить
-                    </Button>
+                    <TreatmentsAddModal diseases={props.diseases} />
                 </div>
             </div>
             <DataTable
