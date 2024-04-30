@@ -10,7 +10,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { Treatment } from "@/lib/types";
+import { TreatmentRecord } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     DropdownMenu,
@@ -27,7 +27,7 @@ function toDateString(date: Date): string {
     });
 }
 
-export const treatmentColumns: ColumnDef<Treatment>[] = [
+export const treatmentColumns: ColumnDef<TreatmentRecord>[] = [
     {
         id: "select",
         header: ({ table }) => (

@@ -3,6 +3,10 @@ export type Patient = {
     full_name: string;
     birth_date: Date;
     social_status: string;
+    username?: string;
+};
+
+export type PatientRecord = Patient & {
     admission_date: Date;
     discharge_date: Date;
 };
@@ -16,6 +20,9 @@ export type Treatment = {
     id: number;
     title: string;
     cost: number;
+};
+
+export type TreatmentRecord = Treatment & {
     start_date: Date;
     end_date: Date;
     repeat_interval: string;

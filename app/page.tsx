@@ -1,10 +1,13 @@
 import { runFunction } from "@/lib/db";
-import { Patient } from "@/lib/types";
+import { PatientRecord } from "@/lib/types";
 import { DataTable } from "@/components/dataTable";
 import { patientColumns } from "@/components/columns/patientColumns";
 
 export default async function Home() {
-    const data = await runFunction<Patient>("get_current_patients", []);
+    const data = await runFunction<PatientRecord>(
+        "get_current_patient_records",
+        []
+    );
 
     return (
         <div className="flex h-full items-center justify-center">
@@ -15,7 +18,7 @@ export default async function Home() {
                         data={data}
                         columns={patientColumns}
                         pageSize={10}
-                        rowUrl="/patient"
+                        rowUrl="/patient-record"
                     />
                 </div>
             </div>

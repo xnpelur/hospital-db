@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { runFunction } from "@/lib/db";
-import { Disease, Patient, Treatment } from "@/lib/types";
+import { Disease, PatientRecord, TreatmentRecord } from "@/lib/types";
 import { notFound } from "next/navigation";
 import DiseasesEditModal from "./_components/diseasesEditModal";
 import TreatmentsPanel from "./_components/treatmentsPanel";
@@ -12,11 +12,13 @@ export default async function PatientPage({
 }) {
     const patientId = parseInt(params.stringId);
 
-    const patient = (
-        await runFunction<Patient>("get_patient_by_id", [patientId])
+    const patientRecord = (
+        await runFunction<PatientRecord>("get_patient_record_by_id", [
+            patientId,
+        ])
     )[0];
 
-    if (!patient) {
+    if (!patientRecord) {
         notFound();
     }
 
@@ -24,8 +26,8 @@ export default async function PatientPage({
         "get_diseases_by_patient_record_id",
         [patientId]
     );
-    const treatments = await runFunction<Treatment>(
-        "get_treatments_by_patient_record_id",
+    const treatmentRecords = await runFunction<TreatmentRecord>(
+        "get_treatment_records_by_patient_record_id",
         [patientId]
     );
 
@@ -34,7 +36,7 @@ export default async function PatientPage({
             <div className="flex h-4/5 w-4/5 flex-col space-y-6 rounded-lg bg-white px-6 py-4">
                 <div className="flex justify-between">
                     <h1 className="mx-1 text-4xl font-semibold">
-                        {patient.full_name}
+                        {patientRecord.full_name}
                     </h1>
                     <Button variant="destructive">Выписать досрочно</Button>
                 </div>
@@ -44,23 +46,23 @@ export default async function PatientPage({
                             <span className="font-semibold">
                                 Дата рождения:
                             </span>{" "}
-                            {patient.birth_date.toLocaleDateString()}
+                            {patientRecord.birth_date.toLocaleDateString()}
                         </p>
                         <p className="text-gray-600">
                             <span className="font-semibold">
                                 Социальный статус:
                             </span>{" "}
-                            {patient.social_status}
+                            {patientRecord.social_status}
                         </p>
                         <p className="text-gray-600">
                             <span className="font-semibold">
                                 Дата поступления:
                             </span>{" "}
-                            {patient.admission_date.toLocaleDateString()}
+                            {patientRecord.admission_date.toLocaleDateString()}
                         </p>
                         <p className="text-gray-600">
                             <span className="font-semibold">Дата выписки:</span>{" "}
-                            {patient.discharge_date.toLocaleDateString()}
+                            {patientRecord.discharge_date.toLocaleDateString()}
                         </p>
                     </div>
                     <div>
@@ -86,7 +88,10 @@ export default async function PatientPage({
                         </div>
                     </div>
                 </div>
-                <TreatmentsPanel treatments={treatments} diseases={diseases} />
+                <TreatmentsPanel
+                    treatmentRecords={treatmentRecords}
+                    diseases={diseases}
+                />
             </div>
         </div>
     );

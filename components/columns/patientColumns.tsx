@@ -5,7 +5,7 @@ import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { Patient } from "@/lib/types";
+import { PatientRecord } from "@/lib/types";
 
 function toDateString(date: Date): string {
     return date.toLocaleDateString("ru-RU", {
@@ -30,7 +30,7 @@ function showStatusBadge(value: string) {
     );
 }
 
-export const patientColumns: ColumnDef<Patient>[] = [
+export const patientColumns: ColumnDef<PatientRecord>[] = [
     {
         accessorKey: "full_name",
         header: ({ column }) => {

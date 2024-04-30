@@ -1,6 +1,6 @@
 SET client_encoding TO 'utf8';
 
-CREATE FUNCTION get_patients()
+CREATE FUNCTION get_patient_records()
 RETURNS TABLE (
     id INT,
     full_name VARCHAR(255),
@@ -19,7 +19,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION get_current_patients()
+CREATE FUNCTION get_current_patient_records()
 RETURNS TABLE (
     id INT,
     full_name VARCHAR(255),
@@ -41,7 +41,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION get_patient_by_id(
+CREATE FUNCTION get_patient_record_by_id(
     id_param INT
 )
 RETURNS TABLE (
@@ -130,7 +130,7 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION get_treatments_by_patient_record_id(
+CREATE FUNCTION get_treatment_records_by_patient_record_id(
     id_param INT
 )
 RETURNS TABLE (
