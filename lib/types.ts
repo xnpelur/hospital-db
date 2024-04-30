@@ -28,3 +28,8 @@ export type TreatmentRecord = Treatment & {
     repeat_interval: string;
     disease: string;
 };
+
+export type ClinicalRecord = {
+    id: number;
+    disease_title: string;
+};

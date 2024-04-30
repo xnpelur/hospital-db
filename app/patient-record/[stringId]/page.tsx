@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { runFunction } from "@/lib/db";
-import { Disease, PatientRecord, TreatmentRecord } from "@/lib/types";
+import { ClinicalRecord, PatientRecord, TreatmentRecord } from "@/lib/types";
 import { notFound } from "next/navigation";
-import DiseasesEditModal from "./_components/diseasesEditModal";
+import ClincicalRecordsEditModal from "./_components/clinicalRecordsEditModal";
 import TreatmentsPanel from "./_components/treatmentsPanel";
 
 export default async function PatientPage({
@@ -22,8 +22,8 @@ export default async function PatientPage({
         notFound();
     }
 
-    const diseases = await runFunction<Disease>(
-        "get_diseases_by_patient_record_id",
+    const clinicalRecords = await runFunction<ClinicalRecord>(
+        "get_clinical_records_by_patient_record_id",
         [patientId]
     );
     const treatmentRecords = await runFunction<TreatmentRecord>(
@@ -70,19 +70,19 @@ export default async function PatientPage({
                             Заболевания:
                         </p>
                         <div className="flex items-end space-x-4">
-                            {diseases.length > 0 ? (
+                            {clinicalRecords.length > 0 ? (
                                 <p className="text-gray-600">
-                                    {diseases
-                                        .map((disease, index) =>
+                                    {clinicalRecords
+                                        .map((record, index) =>
                                             index == 0
-                                                ? disease.title
-                                                : disease.title.toLowerCase()
+                                                ? record.disease_title
+                                                : record.disease_title.toLowerCase()
                                         )
                                         .join(", ")}
                                 </p>
                             ) : null}
-                            <DiseasesEditModal
-                                diseases={diseases}
+                            <ClincicalRecordsEditModal
+                                clinicalRecords={clinicalRecords}
                                 patientRecordId={patientId}
                             />
                         </div>
@@ -90,7 +90,7 @@ export default async function PatientPage({
                 </div>
                 <TreatmentsPanel
                     treatmentRecords={treatmentRecords}
-                    diseases={diseases}
+                    clinicalRecords={clinicalRecords}
                 />
             </div>
         </div>

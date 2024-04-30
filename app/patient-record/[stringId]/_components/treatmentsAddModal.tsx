@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { PlusIcon } from "@radix-ui/react-icons";
 import CustomCombobox from "./customCombobox";
 import CustomDatePicker from "./customDatePicker";
-import { Disease, Treatment } from "@/lib/types";
+import { ClinicalRecord, Treatment } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { runFunction } from "@/lib/db";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,9 +25,10 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
 
 type Props = {
-    diseases: Disease[];
+    clinicalRecords: ClinicalRecord[];
 };
 
 const formSchema = z
@@ -48,6 +49,9 @@ const formSchema = z
 
 export default function TreatmentsAddModal(props: Props) {
     const [treatments, setTreatments] = useState<Treatment[]>([]);
+    const [open, setOpen] = useState(false);
+
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -59,8 +63,28 @@ export default function TreatmentsAddModal(props: Props) {
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const repeatIntervalUnit =
+            values.repeatInterval.unit == "час"
+                ? "hour"
+                : values.repeatInterval.unit == "день"
+                  ? "day"
+                  : "month";
+        const repeatInterval = `${values.repeatInterval.amount} ${repeatIntervalUnit}`;
+        const clinicalRecord = props.clinicalRecords.find(
+            (record) => record.disease_title === values.disease
+        );
+
+        await runFunction<null>("insert_treatment_record", [
+            values.treatment,
+            values.startDate,
+            values.endDate,
+            repeatInterval,
+            clinicalRecord?.id,
+        ]);
+
+        setOpen(false);
+        router.refresh();
     }
 
     useEffect(() => {
@@ -72,7 +96,7 @@ export default function TreatmentsAddModal(props: Props) {
     }, []);
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" className="px-3">
                     <PlusIcon className="mr-2 h-4 w-4" />
@@ -199,8 +223,9 @@ export default function TreatmentsAddModal(props: Props) {
                                     <div className="col-span-2 flex items-center gap-2">
                                         <FormControl>
                                             <CustomCombobox
-                                                items={props.diseases.map(
-                                                    (disease) => disease.title
+                                                items={props.clinicalRecords.map(
+                                                    (record) =>
+                                                        record.disease_title
                                                 )}
                                                 value={field.value}
                                                 setValue={(value) =>

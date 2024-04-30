@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "@radix-ui/react-icons";
-import { Disease, TreatmentRecord } from "@/lib/types";
+import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
@@ -11,7 +11,7 @@ import TreatmentsAddModal from "./treatmentsAddModal";
 
 type Props = {
     treatmentRecords: TreatmentRecord[];
-    diseases: Disease[];
+    clinicalRecords: ClinicalRecord[];
 };
 
 export default function TreatmentsPanel(props: Props) {
@@ -38,7 +38,9 @@ export default function TreatmentsPanel(props: Props) {
                             Удалить выбранные записи
                         </Button>
                     ) : null}
-                    <TreatmentsAddModal diseases={props.diseases} />
+                    <TreatmentsAddModal
+                        clinicalRecords={props.clinicalRecords}
+                    />
                 </div>
             </div>
             <DataTable

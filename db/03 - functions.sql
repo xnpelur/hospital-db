@@ -64,18 +64,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION get_diseases_by_patient_record_id(
+CREATE FUNCTION get_clinical_records_by_patient_record_id(
     id_param INT
 )
 RETURNS TABLE (
     id INT,
-    title VARCHAR(255)
+    disease_title VARCHAR(255)
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        d.id,
-        d.title
+        cr.id,
+        d.title as disease_title
     FROM
         clinical_record cr
     LEFT JOIN
@@ -220,5 +220,23 @@ BEGIN
         t.id, t.title, t.cost
     FROM
         treatment t;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION insert_treatment_record(
+    treatment_title VARCHAR(255),
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    repeat_interval INTERVAL,
+    clinical_record_id INT
+)
+RETURNS VOID AS $$
+DECLARE
+    treatment_id INTEGER;
+BEGIN
+    SELECT id INTO treatment_id FROM treatment WHERE title = treatment_title;
+
+    INSERT INTO treatment_record (treatment_id, clinical_record_id, start_date, end_date, repeat_interval)
+    VALUES (treatment_id, clinical_record_id, start_date, end_date, repeat_interval);
 END;
 $$ LANGUAGE plpgsql;
