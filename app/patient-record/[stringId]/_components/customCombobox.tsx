@@ -21,21 +21,20 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
 type Props = {
     items: string[];
-    name?: string;
-    defaultValue?: string;
+    value: string;
+    setValue: (value: string) => void;
     allowEmpty?: boolean;
     hideSearch?: boolean;
 };
 
 export default function CustomCombobox({
     items,
-    name,
-    defaultValue = "",
+    value,
+    setValue,
     allowEmpty = true,
     hideSearch = false,
 }: Props) {
     const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState(defaultValue);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -89,13 +88,6 @@ export default function CustomCombobox({
                     </CommandList>
                 </Command>
             </PopoverContent>
-            <input
-                type="text"
-                style={{ display: "none" }}
-                name={name}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
         </Popover>
     );
 }

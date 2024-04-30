@@ -8,29 +8,27 @@ import {
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import { useState } from "react";
 import { ru } from "date-fns/locale";
 
 type Props = {
-    name?: string;
+    value: Date;
+    onSelect: (value?: Date) => void;
 };
 
 export default function CustomDatePicker(props: Props) {
-    const [date, setDate] = useState<Date>();
-
     return (
         <Popover>
             <PopoverTrigger asChild>
                 <Button
                     variant={"outline"}
                     className={cn(
-                        "col-span-2 justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
+                        "w-full justify-start text-left font-normal",
+                        !props.value && "text-muted-foreground"
                     )}
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? (
-                        format(date, "PPP", { locale: ru })
+                    {props.value ? (
+                        format(props.value, "PPP", { locale: ru })
                     ) : (
                         <span>Не выбрано</span>
                     )}
@@ -40,18 +38,11 @@ export default function CustomDatePicker(props: Props) {
                 <Calendar
                     initialFocus
                     mode="single"
-                    selected={date}
-                    onSelect={setDate}
+                    selected={props.value}
+                    onSelect={props.onSelect}
                     locale={ru}
                 />
             </PopoverContent>
-            <input
-                type="text"
-                style={{ display: "none" }}
-                value={date?.toISOString()}
-                onChange={(e) => setDate(new Date(e.target.value))}
-                name={props.name}
-            />
         </Popover>
     );
 }
