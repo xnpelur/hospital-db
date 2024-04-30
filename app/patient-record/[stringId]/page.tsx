@@ -5,16 +5,16 @@ import { notFound } from "next/navigation";
 import ClincicalRecordsEditModal from "./_components/clinicalRecordsEditModal";
 import TreatmentsPanel from "./_components/treatmentsPanel";
 
-export default async function PatientPage({
+export default async function PatientRecordPage({
     params,
 }: {
     params: { stringId: string };
 }) {
-    const patientId = parseInt(params.stringId);
+    const patientRecordId = parseInt(params.stringId);
 
     const patientRecord = (
         await runFunction<PatientRecord>("get_patient_record_by_id", [
-            patientId,
+            patientRecordId,
         ])
     )[0];
 
@@ -24,11 +24,11 @@ export default async function PatientPage({
 
     const clinicalRecords = await runFunction<ClinicalRecord>(
         "get_clinical_records_by_patient_record_id",
-        [patientId]
+        [patientRecordId]
     );
     const treatmentRecords = await runFunction<TreatmentRecord>(
         "get_treatment_records_by_patient_record_id",
-        [patientId]
+        [patientRecordId]
     );
 
     return (
@@ -83,7 +83,7 @@ export default async function PatientPage({
                             ) : null}
                             <ClincicalRecordsEditModal
                                 clinicalRecords={clinicalRecords}
-                                patientRecordId={patientId}
+                                patientRecordId={patientRecordId}
                             />
                         </div>
                     </div>
