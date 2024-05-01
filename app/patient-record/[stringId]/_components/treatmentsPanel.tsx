@@ -6,7 +6,7 @@ import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
-import { treatmentColumns } from "@/components/columns/treatmentColumns";
+import { getTreatmentColumns } from "@/components/columns/treatmentColumns";
 import TreatmentsAddModal from "./treatmentsAddModal";
 
 type Props = {
@@ -45,7 +45,7 @@ export default function TreatmentsPanel(props: Props) {
             </div>
             <DataTable
                 data={props.treatmentRecords}
-                columns={treatmentColumns}
+                columns={getTreatmentColumns(props.clinicalRecords)}
                 pageSize={5}
                 onRowSelectionChange={onRowSelectionChange}
             />

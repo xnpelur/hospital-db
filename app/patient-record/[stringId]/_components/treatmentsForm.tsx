@@ -9,9 +9,8 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { runFunction } from "@/lib/db";
-import { ClinicalRecord, Treatment } from "@/lib/types";
+import { ClinicalRecord, Treatment, TreatmentRecord } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,7 +21,48 @@ import CustomDatePicker from "./customDatePicker";
 type Props = {
     clinicalRecords: ClinicalRecord[];
     onFormSubmit?: () => void;
+    treatmentRecord?: TreatmentRecord;
 };
+
+function parseRepeatInterval(s: string): {
+    amount: number;
+    unit: string;
+} {
+    const tokens = s.split(" ");
+    const lastToken = tokens[tokens.length - 1];
+
+    let amount = 1;
+    let unit = "";
+
+    if (lastToken === "час" || lastToken === "часа" || lastToken === "часов") {
+        unit = "час";
+    } else if (
+        lastToken === "день" ||
+        lastToken === "дня" ||
+        lastToken === "дней"
+    ) {
+        unit = "день";
+    } else if (
+        lastToken === "месяц" ||
+        lastToken === "месяца" ||
+        lastToken === "месяцев"
+    ) {
+        unit = "месяц";
+    } else {
+        throw new Error("Invalid repeat interval string");
+    }
+
+    // If amount value is missing, amount = 1, else:
+    if (tokens.length > 2) {
+        const valueToken = tokens[tokens.length - 2];
+        amount = parseInt(valueToken, 10);
+        if (isNaN(amount)) {
+            throw new Error("Invalid repeat interval string");
+        }
+    }
+
+    return { amount, unit };
+}
 
 const formSchema = z
     .object({
@@ -41,9 +81,17 @@ const formSchema = z
     });
 
 export default function TreatmentsForm(props: Props) {
-    const [treatments, setTreatments] = useState<Treatment[]>([]);
-
-    const router = useRouter();
+    const defaultTreatments = props.treatmentRecord
+        ? [
+              {
+                  id: 0,
+                  title: props.treatmentRecord.title,
+                  cost: 0,
+              },
+          ]
+        : [];
+    const [treatments, setTreatments] =
+        useState<Treatment[]>(defaultTreatments);
 
     useEffect(() => {
         async function fetchTreatments() {
@@ -55,12 +103,22 @@ export default function TreatmentsForm(props: Props) {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            repeatInterval: {
-                amount: 1,
-                unit: "час",
-            },
-        },
+        defaultValues: props.treatmentRecord
+            ? {
+                  treatment: props.treatmentRecord.title,
+                  startDate: props.treatmentRecord.start_date,
+                  endDate: props.treatmentRecord.end_date,
+                  repeatInterval: parseRepeatInterval(
+                      props.treatmentRecord.repeat_interval
+                  ),
+                  disease: props.treatmentRecord.disease,
+              }
+            : {
+                  repeatInterval: {
+                      amount: 1,
+                      unit: "час",
+                  },
+              },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -75,13 +133,24 @@ export default function TreatmentsForm(props: Props) {
             (record) => record.disease_title === values.disease
         );
 
-        await runFunction<null>("insert_treatment_record", [
-            values.treatment,
-            values.startDate,
-            values.endDate,
-            repeatInterval,
-            clinicalRecord?.id,
-        ]);
+        if (props.treatmentRecord) {
+            await runFunction<null>("update_treatment_record", [
+                props.treatmentRecord.id,
+                values.treatment,
+                values.startDate,
+                values.endDate,
+                repeatInterval,
+                clinicalRecord?.id,
+            ]);
+        } else {
+            await runFunction<null>("insert_treatment_record", [
+                values.treatment,
+                values.startDate,
+                values.endDate,
+                repeatInterval,
+                clinicalRecord?.id,
+            ]);
+        }
 
         props.onFormSubmit?.();
     }

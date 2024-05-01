@@ -232,11 +232,35 @@ CREATE FUNCTION insert_treatment_record(
 )
 RETURNS VOID AS $$
 DECLARE
-    treatment_id INTEGER;
+    treatment_id INT;
 BEGIN
     SELECT id INTO treatment_id FROM treatment WHERE title = treatment_title;
 
     INSERT INTO treatment_record (treatment_id, clinical_record_id, start_date, end_date, repeat_interval)
     VALUES (treatment_id, clinical_record_id, start_date, end_date, repeat_interval);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION update_treatment_record(
+    treatment_record_id INT,
+    treatment_title VARCHAR(255),
+    start_date_value TIMESTAMP,
+    end_date_value TIMESTAMP,
+    repeat_interval_value INTERVAL,
+    clinical_record_id_value INT
+)
+RETURNS VOID AS $$
+DECLARE
+    treatment_id_value INT;
+BEGIN
+    SELECT id INTO treatment_id_value FROM treatment WHERE title = treatment_title;
+
+    UPDATE treatment_record
+    SET treatment_id = treatment_id_value,
+        start_date = start_date_value,
+        end_date = end_date_value,
+        repeat_interval = repeat_interval_value,
+        clinical_record_id = clinical_record_id_value
+    WHERE id = treatment_record_id;
 END;
 $$ LANGUAGE plpgsql;
