@@ -8,7 +8,8 @@ RETURNS TABLE (
     social_status VARCHAR(255),
     admission_date DATE,
     discharge_date DATE,
-    status TEXT
+    status TEXT,
+    username NAME
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -27,7 +28,8 @@ RETURNS TABLE (
     social_status VARCHAR(255),
     admission_date DATE,
     discharge_date DATE,
-    status TEXT
+    status TEXT,
+    username NAME
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -51,7 +53,8 @@ RETURNS TABLE (
     social_status VARCHAR(255),
     admission_date DATE,
     discharge_date DATE,
-    status TEXT
+    status TEXT,
+    username NAME
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -262,5 +265,91 @@ BEGIN
         repeat_interval = repeat_interval_value,
         clinical_record_id = clinical_record_id_value
     WHERE id = treatment_record_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_current_patient_record_by_username (
+    patient_username NAME
+)
+RETURNS TABLE (
+    id INT,
+    full_name VARCHAR(255),
+    birth_date DATE,
+    social_status VARCHAR(255),
+    admission_date DATE,
+    discharge_date DATE,
+    status TEXT,
+	username NAME
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        *
+    FROM
+        patient_records_view pr
+    WHERE
+        pr.username = patient_username AND pr.admission_date <= current_date AND pr.discharge_date >= current_date;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_current_clinical_records_by_username(
+    patient_username NAME
+)
+RETURNS TABLE (
+    id INT,
+    disease_title VARCHAR(255)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        cr.id,
+        d.title as disease_title
+    FROM
+        clinical_record cr
+    LEFT JOIN
+        patient_record pr ON cr.patient_record_id = pr.id
+    LEFT JOIN
+        patient p ON pr.patient_id = p.id
+    LEFT JOIN
+        disease d ON cr.disease_id = d.id
+    WHERE
+        p.username = patient_username AND pr.admission_date <= current_date AND pr.discharge_date >= current_date;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_current_treatment_records_by_username(
+    patient_username NAME
+)
+RETURNS TABLE (
+    id INT,
+    title VARCHAR(255),
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    repeat_interval TEXT,
+    disease VARCHAR(255)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+		tr.id,
+        t.title,
+        tr.start_date,
+        tr.end_date,
+        get_human_readable_interval(tr.repeat_interval) as repeat_interval,
+        d.title as disease
+    FROM
+        treatment_record tr
+    LEFT JOIN
+        clinical_record cr ON tr.clinical_record_id = cr.id
+    LEFT JOIN
+        patient_record pr ON cr.patient_record_id = pr.id
+    LEFT JOIN
+        patient p ON pr.patient_id = p.id
+    LEFT JOIN
+        disease d ON cr.disease_id = d.id
+	LEFT JOIN
+        treatment t ON tr.treatment_id = t.id
+    WHERE
+        p.username = patient_username AND pr.admission_date <= current_date AND pr.discharge_date >= current_date;
 END;
 $$ LANGUAGE plpgsql;

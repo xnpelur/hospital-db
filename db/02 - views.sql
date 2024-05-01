@@ -10,7 +10,8 @@ SELECT
         WHEN pr.discharge_date < CURRENT_DATE THEN 'Выписан'
         WHEN NOT EXISTS (SELECT 1 FROM public.clinical_record cr WHERE cr.patient_record_id = pr.id) THEN 'К оформлению'
         ELSE 'На лечении'
-    END AS status
+    END AS status,
+    p.username
 FROM
     public.patient_record pr
 LEFT JOIN

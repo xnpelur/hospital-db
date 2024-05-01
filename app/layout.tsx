@@ -31,9 +31,6 @@ export default async function RootLayout({
                             <div className="flex items-center gap-4">
                                 <nav className="flex items-center space-x-4">
                                     <Link className="hover:underline" href="/">
-                                        Пациенты
-                                    </Link>
-                                    <Link className="hover:underline" href="/">
                                         Справочник
                                     </Link>
                                 </nav>

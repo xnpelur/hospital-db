@@ -9,9 +9,10 @@ import ActionsDropdown from "../actionsDropdown";
 import { toLocalizedString } from "@/lib/dates";
 
 export function getTreatmentColumns(
-    clinicalRecords: ClinicalRecord[]
+    clinicalRecords: ClinicalRecord[],
+    editable: boolean
 ): ColumnDef<TreatmentRecord>[] {
-    return [
+    const columns: ColumnDef<TreatmentRecord>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -95,4 +96,6 @@ export function getTreatmentColumns(
             },
         },
     ];
+
+    return editable ? columns : columns.slice(1, -1);
 }

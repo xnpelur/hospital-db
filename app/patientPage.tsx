@@ -1,21 +1,20 @@
-import { Button } from "@/components/ui/button";
+import { getSession } from "@/lib/auth";
 import { runFunction } from "@/lib/db";
 import { ClinicalRecord, PatientRecord, TreatmentRecord } from "@/lib/types";
 import { notFound } from "next/navigation";
-import ClincicalRecordsEditModal from "./_components/clinicalRecordsEditModal";
-import TreatmentsPanel from "./_components/treatmentsPanel";
+import TreatmentsPanel from "./patient-record/[stringId]/_components/treatmentsPanel";
 
-export default async function PatientRecordPage({
-    params,
-}: {
-    params: { stringId: string };
-}) {
-    const patientRecordId = parseInt(params.stringId);
+export default async function PatientPage() {
+    const session = await getSession();
+    if (session === null) {
+        return null;
+    }
 
     const patientRecord = (
-        await runFunction<PatientRecord>("get_patient_record_by_id", [
-            patientRecordId,
-        ])
+        await runFunction<PatientRecord>(
+            "get_current_patient_record_by_username",
+            [session.user.username]
+        )
     )[0];
 
     if (!patientRecord) {
@@ -23,34 +22,19 @@ export default async function PatientRecordPage({
     }
 
     const clinicalRecords = await runFunction<ClinicalRecord>(
-        "get_clinical_records_by_patient_record_id",
-        [patientRecordId]
+        "get_current_clinical_records_by_username",
+        [session.user.username]
     );
     const treatmentRecords = await runFunction<TreatmentRecord>(
-        "get_treatment_records_by_patient_record_id",
-        [patientRecordId]
+        "get_current_treatment_records_by_username",
+        [session.user.username]
     );
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between">
-                <h1 className="mx-1 text-4xl font-semibold">
-                    {patientRecord.full_name}
-                </h1>
-                <Button variant="destructive">Выписать досрочно</Button>
-            </div>
+        <div className="flex h-full flex-col space-y-8">
+            <h1 className="text-3xl font-bold">Информация о лечении</h1>
             <div className="grid flex-1 grid-cols-2 text-lg">
                 <div className="space-y-2">
-                    <p className="text-gray-600">
-                        <span className="font-semibold">Дата рождения:</span>{" "}
-                        {patientRecord.birth_date.toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-600">
-                        <span className="font-semibold">
-                            Социальный статус:
-                        </span>{" "}
-                        {patientRecord.social_status}
-                    </p>
                     <p className="text-gray-600">
                         <span className="font-semibold">Дата поступления:</span>{" "}
                         {patientRecord.admission_date.toLocaleDateString()}
@@ -74,17 +58,13 @@ export default async function PatientRecordPage({
                                     .join(", ")}
                             </p>
                         ) : null}
-                        <ClincicalRecordsEditModal
-                            clinicalRecords={clinicalRecords}
-                            patientRecordId={patientRecordId}
-                        />
                     </div>
                 </div>
             </div>
             <TreatmentsPanel
                 treatmentRecords={treatmentRecords}
                 clinicalRecords={clinicalRecords}
-                editable={true}
+                editable={false}
             />
         </div>
     );
