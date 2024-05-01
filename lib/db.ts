@@ -64,7 +64,7 @@ export async function getUserRole(
         if (result.rowCount == 0) {
             return null;
         }
-        return result.rows[0] as string;
+        return result.rows[0].rolname as string;
     } catch (error) {
         return null;
     } finally {
