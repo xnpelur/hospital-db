@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import TreatmentsEditModal from "@/app/patient-record/[stringId]/_components/treatmentsEditModal";
+import TreatmentsEditModal from "@/app/(app)/patient-record/[stringId]/_components/treatmentsEditModal";
 import { useState } from "react";
 import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
 

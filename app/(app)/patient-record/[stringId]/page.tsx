@@ -32,7 +32,7 @@ export default async function PatientRecordPage({
     );
 
     return (
-        <div className="space-y-6">
+        <div className="flex h-full flex-col space-y-6">
             <div className="flex justify-between">
                 <h1 className="mx-1 text-4xl font-semibold">
                     {patientRecord.full_name}
