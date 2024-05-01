@@ -6,14 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import ActionsDropdown from "../actionsDropdown";
-
-function toDateString(date: Date): string {
-    return date.toLocaleDateString("ru-RU", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-}
+import { toLocalizedString } from "@/lib/dates";
 
 export function getTreatmentColumns(
     clinicalRecords: ClinicalRecord[]
@@ -68,14 +61,14 @@ export function getTreatmentColumns(
             accessorKey: "start_date",
             header: "Дата начала",
             cell: ({ row }) => (
-                <div>{toDateString(row.getValue("start_date"))}</div>
+                <div>{toLocalizedString(row.getValue("start_date"))}</div>
             ),
         },
         {
             accessorKey: "end_date",
             header: "Дата окончания",
             cell: ({ row }) => (
-                <div>{toDateString(row.getValue("end_date"))}</div>
+                <div>{toLocalizedString(row.getValue("end_date"))}</div>
             ),
         },
         {

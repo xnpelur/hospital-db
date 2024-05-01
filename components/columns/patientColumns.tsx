@@ -1,19 +1,10 @@
 "use client";
 
-import * as React from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import { PatientRecord } from "@/lib/types";
-
-function toDateString(date: Date): string {
-    return date.toLocaleDateString("ru-RU", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-}
+import { toLocalizedString } from "@/lib/dates";
 
 function showStatusBadge(value: string) {
     return (
@@ -53,7 +44,7 @@ export const patientColumns: ColumnDef<PatientRecord>[] = [
         accessorKey: "birth_date",
         header: "Дата рождения",
         cell: ({ row }) => (
-            <div>{toDateString(row.getValue("birth_date") as Date)}</div>
+            <div>{toLocalizedString(row.getValue("birth_date") as Date)}</div>
         ),
     },
     {
@@ -65,14 +56,18 @@ export const patientColumns: ColumnDef<PatientRecord>[] = [
         accessorKey: "admission_date",
         header: "Дата поступления",
         cell: ({ row }) => (
-            <div>{toDateString(row.getValue("admission_date") as Date)}</div>
+            <div>
+                {toLocalizedString(row.getValue("admission_date") as Date)}
+            </div>
         ),
     },
     {
         accessorKey: "discharge_date",
         header: "Дата выписки",
         cell: ({ row }) => (
-            <div>{toDateString(row.getValue("discharge_date") as Date)}</div>
+            <div>
+                {toLocalizedString(row.getValue("discharge_date") as Date)}
+            </div>
         ),
     },
     {
