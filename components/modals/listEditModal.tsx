@@ -18,7 +18,7 @@ import {
     TrashIcon,
 } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import ConfirmationButton from "./confirmationButton";
+import ConfirmationDialog from "./confirmationDialog";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -191,7 +191,7 @@ export default function ListEditModal(props: Props) {
                     <Button variant="ghost" onClick={cancel}>
                         Отмена
                     </Button>
-                    <ConfirmationButton
+                    <ConfirmationDialog
                         text="Сохранить"
                         variant="destructive"
                         modalTitle="Подтвердите удаление"

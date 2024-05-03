@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 
 type Props = {
-    text: string;
+    text?: string;
     variant?:
         | "default"
         | "destructive"
@@ -23,9 +23,13 @@ type Props = {
     modalDescription: string;
     onConfirm: () => void;
     skipConfirmation?: boolean;
+    customControls?: {
+        open: boolean;
+        setOpen: (value: boolean) => void;
+    };
 };
 
-export default function ConfirmationButton(props: Props) {
+export default function ConfirmationDialog(props: Props) {
     const [open, setOpen] = useState(false);
 
     function changeOpen(value: boolean) {
@@ -33,14 +37,22 @@ export default function ConfirmationButton(props: Props) {
             props.onConfirm();
             return;
         }
-        setOpen(value);
+        const setOpenFn = props.customControls
+            ? props.customControls.setOpen
+            : setOpen;
+        setOpenFn(value);
     }
 
     return (
-        <Dialog open={open} onOpenChange={changeOpen}>
-            <DialogTrigger asChild>
-                <Button>{props.text}</Button>
-            </DialogTrigger>
+        <Dialog
+            open={props.customControls ? props.customControls.open : open}
+            onOpenChange={changeOpen}
+        >
+            {!props.customControls && (
+                <DialogTrigger asChild>
+                    <Button>{props.text}</Button>
+                </DialogTrigger>
+            )}
             <DialogContent
                 className="sm:max-w-[425px]"
                 onCloseAutoFocus={(e) => e.preventDefault()}

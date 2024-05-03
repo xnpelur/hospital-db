@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 import TreatmentsEditModal from "@/app/(app)/patient-record/[stringId]/_components/treatmentsEditModal";
 import { useState } from "react";
 import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
+import ConfirmationDialog from "./modals/confirmationDialog";
+import { useRouter } from "next/navigation";
+import { runFunction } from "@/lib/db";
 
 type Props = {
     treatmentRecord: TreatmentRecord;
@@ -21,6 +24,17 @@ type Props = {
 
 export default function ActionsDropdown(props: Props) {
     const [editOpen, setEditOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
+
+    const router = useRouter();
+
+    async function deleteRecord() {
+        await runFunction<null>("delete_treatment_record", [
+            props.treatmentRecord.id,
+        ]);
+        setDeleteOpen(false);
+        router.refresh();
+    }
 
     return (
         <DropdownMenu>
@@ -35,7 +49,10 @@ export default function ActionsDropdown(props: Props) {
                     <Pencil1Icon className="mr-2 h-4 w-4" />
                     Изменить
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-600">
+                <DropdownMenuItem
+                    className="text-red-600"
+                    onClick={() => setDeleteOpen(true)}
+                >
                     <TrashIcon className="mr-2 h-4 w-4" />
                     Удалить
                 </DropdownMenuItem>
@@ -45,6 +62,13 @@ export default function ActionsDropdown(props: Props) {
                 setOpen={setEditOpen}
                 treatmentRecord={props.treatmentRecord}
                 clinicalRecords={props.clinicalRecords}
+            />
+            <ConfirmationDialog
+                variant="destructive"
+                modalTitle="Подтвердите удаление"
+                modalDescription="Вы уверены, что хотите безвозвратно удалить эту запись из таблицы?"
+                onConfirm={deleteRecord}
+                customControls={{ open: deleteOpen, setOpen: setDeleteOpen }}
             />
         </DropdownMenu>
     );
