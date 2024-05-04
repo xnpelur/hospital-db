@@ -13,6 +13,7 @@ import { ru } from "date-fns/locale";
 type Props = {
     value: Date;
     onSelect: (value?: Date) => void;
+    disabled?: boolean;
 };
 
 export default function CustomDatePicker(props: Props) {
@@ -25,6 +26,7 @@ export default function CustomDatePicker(props: Props) {
                         "w-full justify-start text-left font-normal",
                         !props.value && "text-muted-foreground"
                     )}
+                    disabled={props.disabled}
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {props.value ? (

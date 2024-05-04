@@ -114,6 +114,7 @@ export default function TreatmentsForm(props: Props) {
                   disease: props.treatmentRecord.disease,
               }
             : {
+                  startDate: new Date(),
                   repeatInterval: {
                       amount: 1,
                       unit: "час",
@@ -195,6 +196,7 @@ export default function TreatmentsForm(props: Props) {
                                     <CustomDatePicker
                                         value={field.value}
                                         onSelect={field.onChange}
+                                        disabled={true}
                                     />
                                 </FormControl>
                             </div>
