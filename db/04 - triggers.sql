@@ -4,7 +4,17 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     max_end_date DATE;
+    record_type TEXT;
+    cr_id INT;
 BEGIN
+    record_type = TG_OP;
+
+    IF record_type = 'INSERT' OR record_type = 'UPDATE' THEN
+        cr_id = NEW.clinical_record_id;
+    ELSIF record_type = 'DELETE' THEN
+        cr_id = OLD.clinical_record_id;
+    END IF;
+    
     SELECT MAX(end_date)
     INTO max_end_date
     FROM treatment_record
@@ -14,22 +24,25 @@ BEGIN
         WHERE patient_record_id = (
             SELECT patient_record_id
             FROM clinical_record
-            WHERE id = NEW.clinical_record_id
+            WHERE id = cr_id
         )
     );
 
     UPDATE patient_record
-    SET discharge_date = CASE
-        WHEN max_end_date > discharge_date THEN max_end_date
-        ELSE discharge_date
-    END
+    SET discharge_date = (
+        SELECT MAX(val)
+        FROM (VALUES
+            (max_end_date),
+            (admission_date + INTERVAL '7 days')
+        ) AS t(val)
+    )
     WHERE id = (
         SELECT patient_record_id
         FROM clinical_record
         WHERE id = (
             SELECT id
             FROM clinical_record
-            WHERE id = NEW.clinical_record_id
+            WHERE id = cr_id
         )
     );
 
@@ -38,7 +51,7 @@ END;
 $$;
 
 CREATE TRIGGER update_patient_record_discharge_date_trigger
-AFTER INSERT OR UPDATE ON treatment_record
+AFTER INSERT OR UPDATE OR DELETE ON treatment_record
 FOR EACH ROW
 EXECUTE FUNCTION update_patient_record_discharge_date();
 
