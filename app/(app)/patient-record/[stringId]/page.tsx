@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { runFunction } from "@/lib/db";
-import { ClinicalRecord, PatientRecord, TreatmentRecord } from "@/lib/types";
+import {
+    ClinicalRecord,
+    PatientRecord,
+    RecordDependencies,
+    TreatmentRecord,
+} from "@/lib/types";
 import { notFound } from "next/navigation";
 import ClincicalRecordsEditModal from "./_components/clinicalRecordsEditModal";
 import TreatmentsPanel from "./_components/treatmentsPanel";
@@ -28,6 +33,10 @@ export default async function PatientRecordPage({
     );
     const treatmentRecords = await runFunction<TreatmentRecord>(
         "get_treatment_records_by_patient_record_id",
+        [patientRecordId]
+    );
+    const clinicalRecordsDependencies = await runFunction<RecordDependencies>(
+        "get_clinical_records_with_dependencies",
         [patientRecordId]
     );
 
@@ -75,7 +84,9 @@ export default async function PatientRecordPage({
                             </p>
                         ) : null}
                         <ClincicalRecordsEditModal
-                            clinicalRecords={clinicalRecords}
+                            clinicalRecordsDependencies={
+                                clinicalRecordsDependencies
+                            }
                             patientRecordId={patientRecordId}
                         />
                     </div>

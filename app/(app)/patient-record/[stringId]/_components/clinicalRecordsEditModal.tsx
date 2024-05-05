@@ -2,25 +2,25 @@
 
 import ListEditModal from "@/components/modals/listEditModal";
 import { runFunction } from "@/lib/db";
-import { ClinicalRecord } from "@/lib/types";
+import { RecordDependencies } from "@/lib/types";
 
 type Props = {
-    clinicalRecords: ClinicalRecord[];
+    clinicalRecordsDependencies: RecordDependencies[];
     patientRecordId: number;
 };
 
 export default function ClincicalRecordsEditModal(props: Props) {
     return (
         <ListEditModal
-            items={props.clinicalRecords.map((record) => record.disease_title)}
+            items={props.clinicalRecordsDependencies}
             onSave={async (
-                itemsToInsert: string[],
-                itemsToRemove: string[]
+                itemsToInsert: RecordDependencies[],
+                itemsToRemove: RecordDependencies[]
             ) => {
                 await runFunction<null>("update_clinical_records", [
                     props.patientRecordId,
-                    itemsToInsert,
-                    itemsToRemove,
+                    itemsToInsert.map((value) => value.title),
+                    itemsToRemove.map((value) => value.title),
                 ]);
             }}
         />

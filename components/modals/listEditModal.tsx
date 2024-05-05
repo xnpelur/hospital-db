@@ -20,10 +20,14 @@ import {
 import { useEffect, useRef, useState } from "react";
 import ConfirmationDialog from "./confirmationDialog";
 import { useRouter } from "next/navigation";
+import { RecordDependencies } from "@/lib/types";
 
 type Props = {
-    items: string[];
-    onSave: (itemsToInsert: string[], itemsToRemove: string[]) => void;
+    items: RecordDependencies[];
+    onSave: (
+        itemsToInsert: RecordDependencies[],
+        itemsToRemove: RecordDependencies[]
+    ) => void;
 };
 
 export default function ListEditModal(props: Props) {
@@ -36,15 +40,23 @@ export default function ListEditModal(props: Props) {
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const [itemsToInsert, setItemsToInsert] = useState<string[]>([]);
-    const [itemsToRemove, setItemsToRemove] = useState<string[]>([]);
+    const [itemsToInsert, setItemsToInsert] = useState<RecordDependencies[]>(
+        []
+    );
+    const [itemsToRemove, setItemsToRemove] = useState<RecordDependencies[]>(
+        []
+    );
 
     const router = useRouter();
 
     useEffect(() => {
         const oldItems = props.items.slice();
-        const uniqueOldItems = oldItems.filter((item) => !items.includes(item));
-        const uniqueNewItems = items.filter((item) => !oldItems.includes(item));
+        const uniqueOldItems = oldItems.filter(
+            (oldItem) => !items.some((item) => item.title === oldItem.title)
+        );
+        const uniqueNewItems = items.filter(
+            (item) => !oldItems.some((oldItem) => oldItem.title === item.title)
+        );
 
         setItemsToInsert(uniqueNewItems);
         setItemsToRemove(uniqueOldItems);
@@ -88,7 +100,13 @@ export default function ListEditModal(props: Props) {
     }
 
     function confirmAdd() {
-        setItems([...items, newItem]);
+        setItems([
+            ...items,
+            {
+                title: newItem,
+                dependencies_count: 0,
+            },
+        ]);
         setEditing(false);
         setNewItem("");
     }
@@ -130,17 +148,21 @@ export default function ListEditModal(props: Props) {
                                 key={index}
                             >
                                 <div className="flex items-center gap-3">
-                                    <span className="font-medium">{item}</span>
+                                    <span className="font-medium">
+                                        {item.title}
+                                    </span>
                                 </div>
-                                <Button
-                                    className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() => removeItem(index)}
-                                >
-                                    <TrashIcon className="h-6 w-6" />
-                                    <span className="sr-only">Удалить</span>
-                                </Button>
+                                {item.dependencies_count === 0 ? (
+                                    <Button
+                                        className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => removeItem(index)}
+                                    >
+                                        <TrashIcon className="h-6 w-6" />
+                                        <span className="sr-only">Удалить</span>
+                                    </Button>
+                                ) : null}
                             </div>
                         ))}
                     </div>
@@ -191,14 +213,7 @@ export default function ListEditModal(props: Props) {
                     <Button variant="ghost" onClick={cancel}>
                         Отмена
                     </Button>
-                    <ConfirmationDialog
-                        text="Сохранить"
-                        variant="destructive"
-                        modalTitle="Подтвердите удаление"
-                        modalDescription="В результате изменения списка были удалены элементы, которые ранее были в нём. Это значит, что все элементы и связанные с ними данные будут удалены. Продолжить?"
-                        onConfirm={save}
-                        skipConfirmation={itemsToRemove.length == 0}
-                    />
+                    <Button onClick={save}>Сохранить</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

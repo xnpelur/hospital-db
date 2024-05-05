@@ -33,3 +33,8 @@ export type ClinicalRecord = {
     id: number;
     disease_title: string;
 };
+
+export type RecordDependencies = {
+    title: string;
+    dependencies_count: number;
+};

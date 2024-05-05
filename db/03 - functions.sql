@@ -362,3 +362,23 @@ BEGIN
         p.username = patient_username AND pr.admission_date <= current_date AND pr.discharge_date >= current_date;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_clinical_records_with_dependencies(
+	pr_id INT
+)
+RETURNS TABLE (
+    title VARCHAR(255),
+    dependencies_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+		d.title,
+		CAST(COUNT(*) as INT) as dependencies_count
+	FROM clinical_record cr
+	LEFT JOIN treatment_record tr ON tr.clinical_record_id = cr.id
+	JOIN disease d ON cr.disease_id = d.id
+	WHERE cr.patient_record_id = pr_id
+	GROUP BY d.title;
+END;
+$$ LANGUAGE plpgsql;
