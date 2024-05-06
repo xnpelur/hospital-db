@@ -3,7 +3,7 @@ import { PatientRecord } from "@/lib/types";
 import { DataTable } from "@/components/dataTable";
 import { patientColumns } from "@/components/columns/patientColumns";
 
-export default async function DoctorsPage() {
+export default async function DoctorPage() {
     const data = await runFunction<PatientRecord>(
         "get_current_patient_records",
         []
