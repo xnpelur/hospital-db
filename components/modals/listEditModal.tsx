@@ -146,7 +146,7 @@ export default function ListEditModal(props: Props) {
                     <div className="grid gap-4">
                         {items.map((item, index) => (
                             <div
-                                className="flex items-center justify-between rounded-md bg-gray-100 px-4 py-3 dark:bg-gray-800"
+                                className="flex h-16 items-center justify-between rounded-md bg-gray-100 px-4 py-3 dark:bg-gray-800"
                                 key={index}
                             >
                                 <div className="flex items-center gap-3">
