@@ -100,13 +100,15 @@ export default function ListEditModal(props: Props) {
     }
 
     function confirmAdd() {
-        setItems([
-            ...items,
-            {
-                title: newItem,
-                dependencies_count: 0,
-            },
-        ]);
+        if (!items.some((item) => item.title === newItem)) {
+            setItems([
+                ...items,
+                {
+                    title: newItem,
+                    dependencies_count: 0,
+                },
+            ]);
+        }
         setEditing(false);
         setNewItem("");
     }
