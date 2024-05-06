@@ -29,13 +29,8 @@ export default async function RootLayout({
                                 <h1 className="text-xl font-bold">Стационар</h1>
                             </a>
                             <div className="flex items-center gap-4">
-                                <nav className="flex items-center space-x-4">
-                                    <Link className="hover:underline" href="/">
-                                        Справочник
-                                    </Link>
-                                </nav>
                                 {session !== null ? (
-                                    <div className="flex items-center space-x-4 border-l pl-4">
+                                    <div className="flex items-center space-x-4 pl-4">
                                         <Link
                                             className="font-semibold hover:underline"
                                             href="/"
