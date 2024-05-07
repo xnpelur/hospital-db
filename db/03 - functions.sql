@@ -374,7 +374,7 @@ BEGIN
     RETURN QUERY
     SELECT 
 		d.title,
-		CAST(COUNT(*) as INT) as dependencies_count
+        SUM(CASE WHEN tr.id IS NOT NULL THEN 1 ELSE 0 END)::INT as dependencies_count
 	FROM clinical_record cr
 	LEFT JOIN treatment_record tr ON tr.clinical_record_id = cr.id
 	JOIN disease d ON cr.disease_id = d.id

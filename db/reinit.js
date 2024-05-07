@@ -28,7 +28,7 @@ async function down() {
         await client.query(`CREATE DATABASE hospital;`);
 
         const oldUsers = await client.query(
-            `SELECT a.rolname FROM pg_roles a INNER JOIN pg_auth_members b ON a.oid = b.member INNER JOIN pg_roles c ON b.roleid = c.oid WHERE c.rolname = 'patient' OR c.rolname = 'doctor' OR c.rolname = 'admin';`
+            `SELECT a.rolname FROM pg_roles a INNER JOIN pg_auth_members b ON a.oid = b.member INNER JOIN pg_roles c ON b.roleid = c.oid WHERE c.rolname = 'patient' OR c.rolname = 'doctor' OR c.rolname = 'admin' OR c.rolname = 'head_doctor';`
         );
 
         let query = "";
@@ -39,6 +39,7 @@ async function down() {
         query += `DROP ROLE IF EXISTS "admin";`;
         query += `DROP ROLE IF EXISTS "patient";`;
         query += `DROP ROLE IF EXISTS "doctor";`;
+        query += `DROP ROLE IF EXISTS "head_doctor";`;
 
         await client.query(query);
     } catch (err) {
