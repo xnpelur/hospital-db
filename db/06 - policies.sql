@@ -72,3 +72,13 @@ CREATE POLICY admin_all ON department TO admin USING (true);
 CREATE POLICY admin_all ON doctor TO admin USING (true);
 CREATE POLICY admin_all ON disease TO admin USING (true);
 CREATE POLICY admin_all ON treatment TO admin USING (true);
+
+CREATE POLICY head_doctor_select ON social_status FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON patient FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON department FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON doctor FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON patient_record FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON disease FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON treatment FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON clinical_record FOR SELECT TO head_doctor USING (true);
+CREATE POLICY head_doctor_select ON treatment_record FOR SELECT TO head_doctor USING (true);
