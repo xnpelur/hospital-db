@@ -66,12 +66,9 @@ CREATE POLICY patient_select ON treatment_record FOR SELECT TO patient USING (EX
     )
 ));
 
-CREATE POLICY admin_select ON social_status FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON patient FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON department FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON doctor FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON patient_record FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON disease FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON treatment FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON clinical_record FOR SELECT TO admin USING (true);
-CREATE POLICY admin_select ON treatment_record FOR SELECT TO admin USING (true);
+CREATE POLICY admin_all ON social_status TO admin USING (true);
+CREATE POLICY admin_all ON patient TO admin USING (true);
+CREATE POLICY admin_all ON department TO admin USING (true);
+CREATE POLICY admin_all ON doctor TO admin USING (true);
+CREATE POLICY admin_all ON disease TO admin USING (true);
+CREATE POLICY admin_all ON treatment TO admin USING (true);
