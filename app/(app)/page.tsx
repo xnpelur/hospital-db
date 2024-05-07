@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import DoctorPage from "./doctorPage";
 import PatientPage from "./patientPage";
 import AdminPage from "./adminPage";
+import HeadDoctorPage from "./headDoctorPage";
 
 export default async function Home() {
     const session = await getSession();
@@ -13,6 +14,8 @@ export default async function Home() {
             return <PatientPage />;
         case "admin":
             return <AdminPage />;
+        case "head_doctor":
+            return <HeadDoctorPage />;
         default:
             notFound();
     }
