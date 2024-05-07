@@ -29,6 +29,12 @@ export default async function PatientPage() {
         "get_current_treatment_records_by_username",
         [session.user.username]
     );
+    const doctorAndDepartmentInfo = (
+        await runFunction<{
+            doctor: string;
+            department: string;
+        }>("get_doctor_and_department_info", [patientRecord.id])
+    )[0];
 
     return (
         <div className="flex h-full flex-col space-y-8">
@@ -42,6 +48,10 @@ export default async function PatientPage() {
                     <p className="text-gray-600">
                         <span className="font-semibold">Дата выписки:</span>{" "}
                         {patientRecord.discharge_date.toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-600">
+                        <span className="font-semibold">Лечащий врач:</span>{" "}
+                        {`${doctorAndDepartmentInfo.doctor} (${doctorAndDepartmentInfo.department})`}
                     </p>
                 </div>
                 <div>

@@ -382,3 +382,22 @@ BEGIN
 	GROUP BY d.title;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_doctor_and_department_info(
+    pr_id INT
+)
+RETURNS TABLE (
+    doctor VARCHAR(255),
+    department VARCHAR(255)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        doc.full_name as doctor,
+        d.title as department
+    FROM patient_record pr
+    JOIN doctor doc ON pr.doctor_id = doc.id
+    JOIN department d ON doc.department_id = d.id
+    WHERE pr.id = pr_id;
+END;
+$$ LANGUAGE plpgsql;
