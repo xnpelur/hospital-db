@@ -1,11 +1,4 @@
-import {
-    CardTitle,
-    CardDescription,
-    CardHeader,
-    CardContent,
-    Card,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import AdminPageCard from "./_components/admin/card";
 
 export default function AdminPage() {
     return (
@@ -44,37 +37,5 @@ export default function AdminPage() {
                 />
             </div>
         </div>
-    );
-}
-
-function AdminPageCard({
-    title,
-    description,
-    buttonText,
-}: {
-    title: string;
-    description: string;
-    buttonText: string;
-}) {
-    return (
-        <Card className="transition-shadow hover:shadow-lg">
-            <CardHeader>
-                <CardTitle className="text-slate-900 dark:text-slate-50">
-                    {title}
-                </CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                    {description}
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Button
-                    className="w-full border-slate-900 text-slate-900 hover:bg-slate-100 dark:border-slate-50 dark:text-slate-50 dark:hover:bg-slate-800"
-                    size="sm"
-                    variant="outline"
-                >
-                    {buttonText}
-                </Button>
-            </CardContent>
-        </Card>
     );
 }
