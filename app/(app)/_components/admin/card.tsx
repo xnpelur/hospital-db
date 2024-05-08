@@ -6,6 +6,9 @@ import {
     Card,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import TreatmentsEditModal from "./treatmentsEditModal";
+import { runFunction } from "@/lib/db";
+import { RecordDependencies } from "@/lib/types";
 
 type Props = {
     title: string;
@@ -13,7 +16,12 @@ type Props = {
     buttonText: string;
 };
 
-export default function AdminPageCard(props: Props) {
+export default async function AdminPageCard(props: Props) {
+    const treatmentsDependencies = await runFunction<RecordDependencies>(
+        "get_treatments_with_dependencies",
+        []
+    );
+
     return (
         <Card className="transition-shadow hover:shadow-lg">
             <CardHeader>
@@ -25,13 +33,10 @@ export default function AdminPageCard(props: Props) {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Button
-                    className="w-full border-slate-900 text-slate-900 hover:bg-slate-100 dark:border-slate-50 dark:text-slate-50 dark:hover:bg-slate-800"
-                    size="sm"
-                    variant="outline"
-                >
-                    {props.buttonText}
-                </Button>
+                <TreatmentsEditModal
+                    buttonText={props.buttonText}
+                    treatmentsDependencies={treatmentsDependencies}
+                />
             </CardContent>
         </Card>
     );

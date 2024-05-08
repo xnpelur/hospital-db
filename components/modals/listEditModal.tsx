@@ -137,7 +137,7 @@ export default function ListEditModal(props: Props) {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
-                    <div className="grid gap-4">
+                    <div className="grid max-h-96 gap-4 overflow-scroll">
                         {items.map((item, index) => (
                             <div
                                 className="flex h-16 items-center justify-between rounded-md bg-gray-100 px-4 py-3 dark:bg-gray-800"

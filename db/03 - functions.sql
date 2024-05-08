@@ -401,3 +401,19 @@ BEGIN
     WHERE pr.id = pr_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_treatments_with_dependencies()
+RETURNS TABLE (
+    title VARCHAR(255),
+    dependencies_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        t.title,
+        SUM(CASE WHEN tr.id IS NOT NULL THEN 1 ELSE 0 END)::INT as dependencies_count
+    FROM treatment t
+    LEFT JOIN treatment_record tr ON tr.treatment_id = t.id
+    GROUP BY t.title;
+END;
+$$ LANGUAGE plpgsql;
