@@ -8,11 +8,24 @@ import { useState } from "react";
 
 type Props = {
     buttonText: string;
-    treatmentsDependencies: RecordDependencies[];
+    getFunction: string;
+    updateFunction: string;
 };
 
 export default function TreatmentsEditModal(props: Props) {
     const [open, setOpen] = useState(false);
+    const [values, setValues] = useState<RecordDependencies[]>([]);
+
+    async function openModal() {
+        if (values.length == 0) {
+            const data = await runFunction<RecordDependencies>(
+                props.getFunction,
+                []
+            );
+            setValues(data);
+        }
+        setOpen(true);
+    }
 
     return (
         <div>
@@ -20,19 +33,19 @@ export default function TreatmentsEditModal(props: Props) {
                 className="w-full border-slate-900 text-slate-900 hover:bg-slate-100 dark:border-slate-50 dark:text-slate-50 dark:hover:bg-slate-800"
                 size="sm"
                 variant="outline"
-                onClick={() => setOpen(true)}
+                onClick={openModal}
             >
                 {props.buttonText}
             </Button>
             <ListEditModal
                 open={open}
                 setOpen={(value) => setOpen(value)}
-                items={props.treatmentsDependencies}
+                items={values}
                 onSave={async (
                     itemsToInsert: RecordDependencies[],
                     itemsToRemove: RecordDependencies[]
                 ) => {
-                    await runFunction<null>("update_treatments", [
+                    await runFunction<null>(props.updateFunction, [
                         itemsToInsert.map((value) => value.title),
                         itemsToRemove.map((value) => value.title),
                     ]);

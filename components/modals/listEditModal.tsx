@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    DialogTrigger,
     DialogTitle,
     DialogDescription,
     DialogHeader,
@@ -13,7 +12,6 @@ import {
 import {
     CheckIcon,
     Cross2Icon,
-    Pencil2Icon,
     PlusIcon,
     TrashIcon,
 } from "@radix-ui/react-icons";
@@ -33,6 +31,7 @@ type Props = {
 
 export default function ListEditModal(props: Props) {
     const [items, setItems] = useState(props.items);
+    useEffect(() => setItems(props.items), [props.items]);
 
     const [editing, setEditing] = useState(false);
     const [newItem, setNewItem] = useState("");

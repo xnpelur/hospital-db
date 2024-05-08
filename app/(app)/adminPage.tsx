@@ -9,31 +9,43 @@ export default function AdminPage() {
                     title="Заболевания"
                     description="Управление списком заболеваний в системе"
                     buttonText="Редактировать список"
+                    getItemsFunction="get_treatments_with_dependencies"
+                    updateItemsFunction="update_treatments"
                 />
                 <AdminPageCard
                     title="Процедуры"
                     description="Управление списком процедур в системе"
                     buttonText="Редактировать список"
+                    getItemsFunction="get_treatments_with_dependencies"
+                    updateItemsFunction="update_treatments"
                 />
                 <AdminPageCard
                     title="Отделения"
                     description="Управление списком отделений в системе"
                     buttonText="Редактировать список"
+                    getItemsFunction="get_treatments_with_dependencies"
+                    updateItemsFunction="update_treatments"
                 />
                 <AdminPageCard
                     title="Социальные статусы"
                     description="Управление списком социальных статусов в системе"
                     buttonText="Редактировать список"
+                    getItemsFunction="get_treatments_with_dependencies"
+                    updateItemsFunction="update_treatments"
                 />
                 <AdminPageCard
                     title="Врачи"
                     description="Управление данными врачей в системе"
                     buttonText="Редактировать данные"
+                    getItemsFunction="get_treatments_with_dependencies"
+                    updateItemsFunction="update_treatments"
                 />
                 <AdminPageCard
                     title="Пациенты"
                     description="Управление данными пользователей в системе"
                     buttonText="Редактировать данные"
+                    getItemsFunction="get_treatments_with_dependencies"
+                    updateItemsFunction="update_treatments"
                 />
             </div>
         </div>
