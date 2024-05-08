@@ -18,11 +18,12 @@ import {
     TrashIcon,
 } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import ConfirmationDialog from "./confirmationDialog";
 import { useRouter } from "next/navigation";
 import { RecordDependencies } from "@/lib/types";
 
 type Props = {
+    open: boolean;
+    setOpen: (value: boolean) => void;
     items: RecordDependencies[];
     onSave: (
         itemsToInsert: RecordDependencies[],
@@ -32,8 +33,6 @@ type Props = {
 
 export default function ListEditModal(props: Props) {
     const [items, setItems] = useState(props.items);
-
-    const [open, setOpen] = useState(false);
 
     const [editing, setEditing] = useState(false);
     const [newItem, setNewItem] = useState("");
@@ -68,15 +67,15 @@ export default function ListEditModal(props: Props) {
 
     async function save() {
         props.onSave(itemsToInsert, itemsToRemove);
-        setOpen(false);
+        props.setOpen(false);
         router.refresh();
     }
 
     function changeOpen(value: boolean) {
         if (value) {
-            setOpen(true);
+            props.setOpen(true);
         } else {
-            setOpen(false);
+            props.setOpen(false);
             resetAll();
         }
     }
@@ -129,12 +128,7 @@ export default function ListEditModal(props: Props) {
     }
 
     return (
-        <Dialog open={open} onOpenChange={changeOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" className="px-2">
-                    <Pencil2Icon />
-                </Button>
-            </DialogTrigger>
+        <Dialog open={props.open} onOpenChange={changeOpen}>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>Список болезней</DialogTitle>
