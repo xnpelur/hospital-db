@@ -2,7 +2,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { Treatment } from "./types";
 import { Button } from "@/components/ui/button";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+    CaretDownIcon,
+    CaretSortIcon,
+    CaretUpIcon,
+    DotsHorizontalIcon,
+} from "@radix-ui/react-icons";
 import { toLocalizedString } from "./dates";
 
 export type SimplifiedColumnDef = {
@@ -33,8 +38,14 @@ export function getColumnDefs(
                               }
                               className="px-0 font-inherit hover:bg-inherit"
                           >
-                              {col.title}
-                              <CaretSortIcon className="ml-2 h-4 w-4" />
+                              <span>{col.title}</span>
+                              {column.getIsSorted() === "desc" ? (
+                                  <CaretDownIcon className="ml-2 h-4 w-4" />
+                              ) : column.getIsSorted() === "asc" ? (
+                                  <CaretUpIcon className="ml-2 h-4 w-4" />
+                              ) : (
+                                  <CaretSortIcon className="ml-2 h-4 w-4" />
+                              )}
                           </Button>
                       );
                   }
