@@ -15,7 +15,7 @@ export default async function DoctorPage() {
             <div className="flex-1 pt-6">
                 <DataTable
                     data={data}
-                    columns={patientColumns}
+                    columnDefs={patientColumns}
                     pageSize={10}
                     rowUrl="/patient-record"
                 />

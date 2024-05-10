@@ -48,7 +48,7 @@ export default function TreatmentsPanel(props: Props) {
             </div>
             <DataTable
                 data={props.treatmentRecords}
-                columns={getTreatmentRecordColumns(
+                columnDefs={getTreatmentRecordColumns(
                     props.clinicalRecords,
                     props.editable
                 )}

@@ -2,14 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import { ColumnDef, RowSelectionState } from "@tanstack/react-table";
+import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
+import { SimplifiedColumnDef, getColumnDefs } from "@/lib/columnDefs";
 
 type Props = {
     title: string;
     data: any[];
-    columnsFunction: (editable: boolean) => ColumnDef<any, any>[];
+    columns: SimplifiedColumnDef[];
     editable: boolean;
     pageSize: number;
 };
@@ -48,7 +49,7 @@ export default function TablePanel(props: Props) {
             </div>
             <DataTable
                 data={props.data}
-                columns={props.columnsFunction(props.editable)}
+                columnDefs={getColumnDefs(props.columns, props.editable)}
                 pageSize={props.pageSize}
                 onRowSelectionChange={onRowSelectionChange}
             />

@@ -25,7 +25,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 type Props = {
     data: any[];
-    columns: ColumnDef<any, any>[];
+    columnDefs: ColumnDef<any, any>[];
     pageSize: number;
     onRowSelectionChange?: (state: RowSelectionState) => void;
     rowUrl?: string;
@@ -39,7 +39,7 @@ export function DataTable(props: Props) {
 
     const table = useReactTable({
         data: props.data,
-        columns: props.columns,
+        columns: props.columnDefs,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
@@ -134,7 +134,7 @@ export function DataTable(props: Props) {
                         ) : (
                             <TableRow>
                                 <TableCell
-                                    colSpan={props.columns.length}
+                                    colSpan={props.columnDefs.length}
                                     className="h-24 text-center"
                                 >
                                     Записи не найдены.
