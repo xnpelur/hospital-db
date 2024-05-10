@@ -7,10 +7,19 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
     const session = await getSession();
+
     if (session === null) {
         const url = request.nextUrl.clone();
         url.pathname = "/login";
         return NextResponse.redirect(url);
     }
+
+    if (
+        request.nextUrl.pathname.startsWith("/admin") &&
+        session.user.role !== "admin"
+    ) {
+        return NextResponse.error();
+    }
+
     return await updateSession(request);
 }
