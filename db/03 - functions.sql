@@ -211,21 +211,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION get_treatments()
-RETURNS TABLE (
-    id INT,
-    title VARCHAR(255),
-    cost INTEGER
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        t.id, t.title, t.cost
-    FROM
-        treatment t;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE FUNCTION insert_treatment_record(
     treatment_title VARCHAR(255),
     start_date TIMESTAMP,
@@ -399,21 +384,5 @@ BEGIN
     JOIN doctor doc ON pr.doctor_id = doc.id
     JOIN department d ON doc.department_id = d.id
     WHERE pr.id = pr_id;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION get_treatments_with_dependencies()
-RETURNS TABLE (
-    title VARCHAR(255),
-    dependencies_count INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT 
-        t.title,
-        SUM(CASE WHEN tr.id IS NOT NULL THEN 1 ELSE 0 END)::INT as dependencies_count
-    FROM treatment t
-    LEFT JOIN treatment_record tr ON tr.treatment_id = t.id
-    GROUP BY t.title;
 END;
 $$ LANGUAGE plpgsql;

@@ -8,7 +8,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { runFunction } from "@/lib/db";
+import { getTableValues, runFunction } from "@/lib/db";
 import { ClinicalRecord, Treatment, TreatmentRecord } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -87,6 +87,7 @@ export default function TreatmentsForm(props: Props) {
                   id: 0,
                   title: props.treatmentRecord.title,
                   cost: 0,
+                  dependencies: 0,
               },
           ]
         : [];
@@ -95,7 +96,9 @@ export default function TreatmentsForm(props: Props) {
 
     useEffect(() => {
         async function fetchTreatments() {
-            const data = await runFunction<Treatment>("get_treatments", []);
+            const data = await getTableValues<Treatment>(
+                "treatments_with_dependencies"
+            );
             setTreatments(data);
         }
         fetchTreatments();

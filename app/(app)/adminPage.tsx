@@ -9,7 +9,7 @@ export default function AdminPage() {
                     title="Заболевания"
                     description="Управление списком заболеваний в системе"
                     buttonText="Редактировать список"
-                    url="/admin/treatments"
+                    url="/admin/diseases"
                 />
                 <AdminPageCard
                     title="Процедуры"
@@ -21,25 +21,25 @@ export default function AdminPage() {
                     title="Отделения"
                     description="Управление списком отделений в системе"
                     buttonText="Редактировать список"
-                    url="/admin/treatments"
+                    url="/admin/departments"
                 />
                 <AdminPageCard
                     title="Социальные статусы"
                     description="Управление списком социальных статусов в системе"
                     buttonText="Редактировать список"
-                    url="/admin/treatments"
+                    url="/admin/social-statuses"
                 />
                 <AdminPageCard
                     title="Врачи"
                     description="Управление данными врачей в системе"
                     buttonText="Редактировать данные"
-                    url="/admin/treatments"
+                    url="/admin/doctors"
                 />
                 <AdminPageCard
                     title="Пациенты"
                     description="Управление данными пользователей в системе"
                     buttonText="Редактировать данные"
-                    url="/admin/treatments"
+                    url="/admin/patients"
                 />
             </div>
         </div>

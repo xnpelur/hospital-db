@@ -1,9 +1,11 @@
 import TablePanel from "@/components/tablePanel";
-import { runFunction } from "@/lib/db";
+import { getTableValues } from "@/lib/db";
 import { Treatment } from "@/lib/types";
 
 export default async function TreatmentsPage() {
-    const treatments = await runFunction<Treatment>("get_treatments", []);
+    const treatments = await getTableValues<Treatment>(
+        "treatments_with_dependencies"
+    );
 
     return (
         <TablePanel

@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Treatment } from "./types";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { toLocalizedString } from "./dates";
 
 export type SimplifiedColumnDef = {
     key: string;
@@ -30,7 +31,7 @@ export function getColumnDefs(
                                       column.getIsSorted() === "asc"
                                   )
                               }
-                              className="font-inherit"
+                              className="px-0 font-inherit hover:bg-inherit"
                           >
                               {col.title}
                               <CaretSortIcon className="ml-2 h-4 w-4" />
@@ -38,7 +39,13 @@ export function getColumnDefs(
                       );
                   }
                 : col.title,
-            cell: ({ row }) => <div>{row.getValue(col.key)}</div>,
+            cell: ({ row }) => (
+                <div>
+                    {col.type == "date"
+                        ? toLocalizedString(row.getValue(col.key))
+                        : row.getValue(col.key)}
+                </div>
+            ),
         });
     });
 

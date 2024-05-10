@@ -45,6 +45,36 @@ export async function runFunction<T>(
     }
 }
 
+export async function getTableValues<T>(tableName: string): Promise<T[]> {
+    const session = await getSession();
+    if (session === null) {
+        return [];
+    }
+
+    const client = new Client({
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT!),
+        database: process.env.DB_NAME,
+        user: session.user.username,
+        password: session.user.password,
+    });
+
+    try {
+        await client.connect();
+        const result = await client.query(`SELECT * FROM ${tableName}`);
+
+        return result.rows as T[];
+    } catch (error) {
+        if (error instanceof DatabaseError && error.code == "28P01") {
+            redirect("/api/logout");
+        }
+        console.error("Error executing function:", error);
+        throw error;
+    } finally {
+        await client.end();
+    }
+}
+
 export async function getUserRole(
     username: string,
     password: string
