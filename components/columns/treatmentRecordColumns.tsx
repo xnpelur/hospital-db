@@ -1,13 +1,18 @@
 "use client";
 
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Treatment } from "@/lib/types";
-import { Checkbox } from "../ui/checkbox";
+import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
+import { Checkbox } from "@/components/ui/checkbox";
+import ActionsDropdown from "../actionsDropdown";
+import { toLocalizedString } from "@/lib/dates";
 
-export function getTreatmentColumns(editable: boolean): ColumnDef<Treatment>[] {
-    const columns: ColumnDef<Treatment>[] = [
+export function getTreatmentRecordColumns(
+    clinicalRecords: ClinicalRecord[],
+    editable: boolean
+): ColumnDef<TreatmentRecord>[] {
+    const columns: ColumnDef<TreatmentRecord>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -46,7 +51,7 @@ export function getTreatmentColumns(editable: boolean): ColumnDef<Treatment>[] {
                         }
                         className="font-inherit"
                     >
-                        Название процедуры
+                        Процедура
                         <CaretSortIcon className="ml-2 h-4 w-4" />
                     </Button>
                 );
@@ -54,9 +59,28 @@ export function getTreatmentColumns(editable: boolean): ColumnDef<Treatment>[] {
             cell: ({ row }) => <div>{row.getValue("title")}</div>,
         },
         {
-            accessorKey: "cost",
-            header: "Стоимость процедуры",
-            cell: ({ row }) => <div>{row.getValue("cost")}</div>,
+            accessorKey: "start_date",
+            header: "Дата начала",
+            cell: ({ row }) => (
+                <div>{toLocalizedString(row.getValue("start_date"))}</div>
+            ),
+        },
+        {
+            accessorKey: "end_date",
+            header: "Дата окончания",
+            cell: ({ row }) => (
+                <div>{toLocalizedString(row.getValue("end_date"))}</div>
+            ),
+        },
+        {
+            accessorKey: "repeat_interval",
+            header: "Интервал повторения",
+            cell: ({ row }) => <div>{row.getValue("repeat_interval")}</div>,
+        },
+        {
+            accessorKey: "disease",
+            header: "Болезнь",
+            cell: ({ row }) => <div>{row.getValue("disease")}</div>,
         },
         {
             id: "actions",
@@ -64,10 +88,10 @@ export function getTreatmentColumns(editable: boolean): ColumnDef<Treatment>[] {
             size: 60,
             cell: ({ row }) => {
                 return (
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Открыть меню</span>
-                        <DotsHorizontalIcon className="h-4 w-4" />
-                    </Button>
+                    <ActionsDropdown
+                        clinicalRecords={clinicalRecords}
+                        treatmentRecord={row.original}
+                    />
                 );
             },
         },

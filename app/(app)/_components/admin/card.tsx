@@ -1,3 +1,6 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import {
     CardTitle,
     CardDescription,
@@ -5,17 +8,18 @@ import {
     CardContent,
     Card,
 } from "@/components/ui/card";
-import TreatmentsEditModal from "./treatmentsEditModal";
+import { useRouter } from "next/navigation";
 
 type Props = {
     title: string;
     description: string;
     buttonText: string;
-    getItemsFunction: string;
-    updateItemsFunction: string;
+    url: string;
 };
 
-export default async function AdminPageCard(props: Props) {
+export default function AdminPageCard(props: Props) {
+    const router = useRouter();
+
     return (
         <Card className="transition-shadow hover:shadow-lg">
             <CardHeader>
@@ -27,11 +31,16 @@ export default async function AdminPageCard(props: Props) {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <TreatmentsEditModal
-                    buttonText={props.buttonText}
-                    getFunction={props.getItemsFunction}
-                    updateFunction={props.updateItemsFunction}
-                />
+                <Button
+                    className="w-full border-slate-900 text-slate-900 hover:bg-slate-100 dark:border-slate-50 dark:text-slate-50 dark:hover:bg-slate-800"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                        router.push(props.url);
+                    }}
+                >
+                    {props.buttonText}
+                </Button>
             </CardContent>
         </Card>
     );

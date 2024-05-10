@@ -1,21 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { TrashIcon } from "@radix-ui/react-icons";
-import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
-import { RowSelectionState } from "@tanstack/react-table";
+import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { ColumnDef, RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
-import { getTreatmentRecordColumns } from "@/components/columns/treatmentRecordColumns";
-import TreatmentsAddModal from "./treatmentsAddModal";
 
 type Props = {
-    treatmentRecords: TreatmentRecord[];
-    clinicalRecords: ClinicalRecord[];
+    title: string;
+    data: any[];
+    columnsFunction: (editable: boolean) => ColumnDef<any, any>[];
     editable: boolean;
+    pageSize: number;
 };
 
-export default function TreatmentsPanel(props: Props) {
+export default function TablePanel(props: Props) {
     const [showDeleteButton, setShowDeleteButton] = useState(false);
 
     function onRowSelectionChange(state: RowSelectionState) {
@@ -29,9 +28,9 @@ export default function TreatmentsPanel(props: Props) {
     }
 
     return (
-        <div className="flex flex-col space-y-5">
+        <div className="flex h-full flex-col space-y-5">
             <div className="flex justify-between gap-2">
-                <h2 className="mx-1 text-2xl font-semibold">Процедуры</h2>
+                <h2 className="mx-1 text-2xl font-semibold">{props.title}</h2>
                 {props.editable ? (
                     <div className="space-x-4">
                         {showDeleteButton ? (
@@ -40,19 +39,17 @@ export default function TreatmentsPanel(props: Props) {
                                 Удалить выбранные записи
                             </Button>
                         ) : null}
-                        <TreatmentsAddModal
-                            clinicalRecords={props.clinicalRecords}
-                        />
+                        <Button variant="outline" className="px-3">
+                            <PlusIcon className="mr-2 h-4 w-4" />
+                            Добавить
+                        </Button>
                     </div>
                 ) : null}
             </div>
             <DataTable
-                data={props.treatmentRecords}
-                columns={getTreatmentRecordColumns(
-                    props.clinicalRecords,
-                    props.editable
-                )}
-                pageSize={5}
+                data={props.data}
+                columns={props.columnsFunction(props.editable)}
+                pageSize={props.pageSize}
                 onRowSelectionChange={onRowSelectionChange}
             />
         </div>
