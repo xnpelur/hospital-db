@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "@radix-ui/react-icons";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
 import { SimplifiedColumnDef, getColumnDefs } from "@/lib/columnDefs";
+import AddRowModal from "./modals/addRowModal";
 
 type Props = {
     title: string;
@@ -40,10 +41,10 @@ export default function TablePanel(props: Props) {
                                 Удалить выбранные записи
                             </Button>
                         ) : null}
-                        <Button variant="outline" className="px-3">
-                            <PlusIcon className="mr-2 h-4 w-4" />
-                            Добавить
-                        </Button>
+                        <AddRowModal
+                            title="Добавить заболевание"
+                            columns={props.columns}
+                        />
                     </div>
                 ) : null}
             </div>

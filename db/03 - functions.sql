@@ -386,3 +386,12 @@ BEGIN
     WHERE pr.id = pr_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION add_disease(
+    disease_title VARCHAR(255)
+)
+RETURNS VOID AS $$
+BEGIN
+    INSERT INTO disease (title) VALUES (disease_title);
+END;
+$$ LANGUAGE plpgsql;
