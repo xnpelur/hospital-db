@@ -33,6 +33,7 @@ export default async function PatientsPage() {
             ]}
             editable={true}
             pageSize={10}
+            tableName="patient"
         />
     );
 }

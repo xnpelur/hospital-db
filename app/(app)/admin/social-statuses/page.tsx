@@ -20,6 +20,7 @@ export default async function SocialStatusesPage() {
             ]}
             editable={true}
             pageSize={10}
+            tableName="social_status"
         />
     );
 }

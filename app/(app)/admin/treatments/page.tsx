@@ -25,6 +25,7 @@ export default async function TreatmentsPage() {
             ]}
             editable={true}
             pageSize={10}
+            tableName="treatment"
         />
     );
 }

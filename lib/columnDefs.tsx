@@ -13,8 +13,10 @@ import { toLocalizedString } from "./dates";
 export type SimplifiedColumnDef = {
     key: string;
     title: string;
-    type?: "date";
+    type?: "date" | "number";
     sortable?: boolean;
+    default?: any;
+    disabled?: boolean;
 };
 
 export function getColumnDefs(

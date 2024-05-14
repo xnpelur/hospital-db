@@ -15,8 +15,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import CustomCombobox from "./customCombobox";
-import CustomDatePicker from "./customDatePicker";
+import CustomCombobox from "@/components/forms/customCombobox";
+import CustomDatePicker from "@/components/forms/customDatePicker";
 
 type Props = {
     clinicalRecords: ClinicalRecord[];

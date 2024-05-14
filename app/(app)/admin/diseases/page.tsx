@@ -20,6 +20,7 @@ export default async function DiseasesPage() {
             ]}
             editable={true}
             pageSize={10}
+            tableName="disease"
         />
     );
 }

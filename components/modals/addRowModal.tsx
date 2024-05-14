@@ -8,11 +8,12 @@ import {
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import DiseasesForm from "../forms/diseases";
+import CustomForm from "../forms/customForm";
 import { useRouter } from "next/navigation";
 import { SimplifiedColumnDef } from "@/lib/columnDefs";
 
 type Props = {
+    tableName: string;
     title: string;
     columns: SimplifiedColumnDef[];
 };
@@ -32,7 +33,8 @@ export default function AddRowModal(props: Props) {
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>{props.title}</DialogTitle>
-                    <DiseasesForm
+                    <CustomForm
+                        tableName={props.tableName}
                         columns={props.columns}
                         onFormSubmit={() => {
                             setOpen(false);

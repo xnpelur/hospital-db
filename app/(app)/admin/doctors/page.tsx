@@ -24,7 +24,9 @@ export default async function DoctorsPage() {
                     key: "enrollment_date",
                     title: "Дата поступления на работу",
                     type: "date",
+                    default: new Date(),
                     sortable: true,
+                    disabled: true,
                 },
                 {
                     key: "category",
@@ -34,6 +36,7 @@ export default async function DoctorsPage() {
                 {
                     key: "salary",
                     title: "Зарплата",
+                    type: "number",
                     sortable: true,
                 },
                 {
@@ -43,6 +46,7 @@ export default async function DoctorsPage() {
             ]}
             editable={true}
             pageSize={10}
+            tableName="doctor"
         />
     );
 }

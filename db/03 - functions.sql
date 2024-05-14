@@ -211,24 +211,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION insert_treatment_record(
-    treatment_title VARCHAR(255),
-    start_date TIMESTAMP,
-    end_date TIMESTAMP,
-    repeat_interval INTERVAL,
-    clinical_record_id INT
-)
-RETURNS VOID AS $$
-DECLARE
-    treatment_id INT;
-BEGIN
-    SELECT id INTO treatment_id FROM treatment WHERE title = treatment_title;
-
-    INSERT INTO treatment_record (treatment_id, clinical_record_id, start_date, end_date, repeat_interval)
-    VALUES (treatment_id, clinical_record_id, start_date, end_date, repeat_interval);
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE FUNCTION update_treatment_record(
     treatment_record_id INT,
     treatment_title VARCHAR(255),
@@ -384,14 +366,5 @@ BEGIN
     JOIN doctor doc ON pr.doctor_id = doc.id
     JOIN department d ON doc.department_id = d.id
     WHERE pr.id = pr_id;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION add_disease(
-    disease_title VARCHAR(255)
-)
-RETURNS VOID AS $$
-BEGIN
-    INSERT INTO disease (title) VALUES (disease_title);
 END;
 $$ LANGUAGE plpgsql;

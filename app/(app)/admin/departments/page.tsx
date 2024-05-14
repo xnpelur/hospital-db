@@ -20,6 +20,7 @@ export default async function DepartmentsPage() {
                 {
                     key: "beds_number",
                     title: "Число коек",
+                    type: "number",
                     sortable: true,
                 },
                 {
@@ -29,6 +30,7 @@ export default async function DepartmentsPage() {
             ]}
             editable={true}
             pageSize={10}
+            tableName="department"
         />
     );
 }

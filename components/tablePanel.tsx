@@ -14,6 +14,7 @@ type Props = {
     columns: SimplifiedColumnDef[];
     editable: boolean;
     pageSize: number;
+    tableName: string;
 };
 
 export default function TablePanel(props: Props) {
@@ -42,7 +43,8 @@ export default function TablePanel(props: Props) {
                             </Button>
                         ) : null}
                         <AddRowModal
-                            title="Добавить заболевание"
+                            tableName={props.tableName}
+                            title="Новая запись"
                             columns={props.columns}
                         />
                     </div>
