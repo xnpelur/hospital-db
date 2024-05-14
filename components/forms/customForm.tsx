@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import CustomDatePicker from "./customDatePicker";
 import { SimplifiedColumnDef } from "@/lib/types";
 import CustomCombobox from "./customCombobox";
+import { Credentials, generateCredentials } from "@/lib/credentials";
+import { useMemo, useState } from "react";
 
 type Props = {
     tableName: string;
@@ -24,6 +26,7 @@ type Props = {
 };
 
 export default function CustomForm(props: Props) {
+    const [credentials, setCredentials] = useState<Credentials | undefined>();
     const formSchema = z.object(
         Object.fromEntries(
             props.columns.map((column) => [
@@ -37,16 +40,33 @@ export default function CustomForm(props: Props) {
         )
     );
 
+    const defaultValueEntries: [string, any][] = useMemo(() => {
+        const entries: [string, any][] = [];
+        props.columns.forEach((column) => {
+            if (column.key === "username") {
+                const creds = generateCredentials();
+                entries.push([column.key, creds.username]);
+                setCredentials(creds);
+            } else if (column.default) {
+                entries.push([column.key, column.default]);
+            }
+        });
+        return entries;
+    }, [props.columns]);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: Object.fromEntries(
-            props.columns
-                .filter((column) => column.default)
-                .map((column) => [column.key, column.default])
-        ),
+        defaultValues: Object.fromEntries(defaultValueEntries),
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        if (credentials) {
+            await runFunction<null>("add_user", [
+                credentials.username,
+                credentials.password,
+                props.tableName,
+            ]);
+        }
         const args: any[] = [];
         props.columns.forEach((column) => {
             args.push(values[column.key]);
