@@ -256,7 +256,6 @@ export default function TreatmentsForm(props: Props) {
                                             unit: value,
                                         })
                                     }
-                                    allowEmpty={false}
                                     hideSearch={true}
                                 />
                             </div>

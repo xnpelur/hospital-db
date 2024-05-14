@@ -23,7 +23,6 @@ type Props = {
     items: string[];
     value: string;
     setValue: (value: string) => void;
-    allowEmpty?: boolean;
     hideSearch?: boolean;
 };
 
@@ -31,7 +30,6 @@ export default function CustomCombobox({
     items,
     value,
     setValue,
-    allowEmpty = true,
     hideSearch = false,
 }: Props) {
     const [open, setOpen] = React.useState(false);
@@ -65,11 +63,7 @@ export default function CustomCombobox({
                                     key={index}
                                     value={item}
                                     onSelect={(currentItem) => {
-                                        setValue(
-                                            currentItem === value && allowEmpty
-                                                ? ""
-                                                : currentItem
-                                        );
+                                        setValue(currentItem);
                                         setOpen(false);
                                     }}
                                 >

@@ -15,6 +15,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import CustomDatePicker from "./customDatePicker";
 import { SimplifiedColumnDef } from "@/lib/types";
+import CustomCombobox from "./customCombobox";
 
 type Props = {
     tableName: string;
@@ -30,7 +31,7 @@ export default function CustomForm(props: Props) {
                 column.type == "date"
                     ? z.date()
                     : column.type == "number"
-                      ? z.coerce.number().min(1)
+                      ? z.coerce.number().min(0)
                       : z.string().min(1),
             ])
         )
@@ -76,6 +77,14 @@ export default function CustomForm(props: Props) {
                                                     value={field.value as Date}
                                                     onSelect={field.onChange}
                                                     disabled={column.disabled}
+                                                />
+                                            ) : column.values ? (
+                                                <CustomCombobox
+                                                    items={column.values}
+                                                    value={
+                                                        field.value as string
+                                                    }
+                                                    setValue={field.onChange}
                                                 />
                                             ) : (
                                                 <Input

@@ -20,6 +20,7 @@ export default async function TreatmentsPage() {
                 {
                     key: "cost",
                     title: "Стоимость процедуры",
+                    type: "number",
                     sortable: true,
                 },
             ]}

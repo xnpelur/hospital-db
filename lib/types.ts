@@ -71,4 +71,5 @@ export type SimplifiedColumnDef = {
     sortable?: boolean;
     default?: any;
     disabled?: boolean;
+    values?: string[];
 };

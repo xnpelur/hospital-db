@@ -1,9 +1,12 @@
 import TablePanel from "@/components/tablePanel";
 import { getTableValues } from "@/lib/db";
-import { Patient } from "@/lib/types";
+import { Patient, SocialStatus } from "@/lib/types";
 
 export default async function PatientsPage() {
     const doctors = await getTableValues<Patient>("patients_with_dependencies");
+    const socialStatuses = await getTableValues<SocialStatus>("social_status");
+
+    const socialStatusValues = socialStatuses.map((status) => status.title);
 
     return (
         <TablePanel
@@ -25,6 +28,7 @@ export default async function PatientsPage() {
                     key: "social_status",
                     title: "Социальный статус",
                     sortable: true,
+                    values: socialStatusValues,
                 },
                 {
                     key: "username",

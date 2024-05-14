@@ -1,9 +1,12 @@
 import TablePanel from "@/components/tablePanel";
 import { getTableValues } from "@/lib/db";
-import { Doctor } from "@/lib/types";
+import { Department, Doctor } from "@/lib/types";
 
 export default async function DoctorsPage() {
     const doctors = await getTableValues<Doctor>("doctors_with_dependencies");
+    const departments = await getTableValues<Department>("department");
+
+    const departmentValues = departments.map((department) => department.title);
 
     return (
         <TablePanel
@@ -19,6 +22,7 @@ export default async function DoctorsPage() {
                     key: "department",
                     title: "Отделение",
                     sortable: true,
+                    values: departmentValues,
                 },
                 {
                     key: "enrollment_date",
@@ -32,6 +36,7 @@ export default async function DoctorsPage() {
                     key: "category",
                     title: "Категория",
                     sortable: true,
+                    values: ["Первая", "Вторая", "Высшая"],
                 },
                 {
                     key: "salary",
