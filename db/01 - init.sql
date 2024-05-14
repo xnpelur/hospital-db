@@ -1,6 +1,6 @@
 CREATE TABLE social_status (
   id SERIAL UNIQUE,
-  title VARCHAR(255) NOT NULL
+  title VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE patient (
@@ -13,7 +13,7 @@ CREATE TABLE patient (
 
 CREATE TABLE department (
   id SERIAL UNIQUE,
-  title VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL UNIQUE,
   beds_number INTEGER NOT NULL,
   phone VARCHAR(255) NOT NULL
 );
@@ -38,12 +38,12 @@ CREATE TABLE patient_record (
 
 CREATE TABLE disease (
   id SERIAL UNIQUE,
-  title VARCHAR(255) NOT NULL
+  title VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE treatment (
   id SERIAL UNIQUE,
-  title VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL UNIQUE,
   cost INTEGER NOT NULL
 );
 
