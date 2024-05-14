@@ -42,6 +42,7 @@ export default async function DoctorsPage() {
                 {
                     key: "username",
                     title: "Имя пользователя",
+                    disabled: true,
                 },
             ]}
             editable={true}

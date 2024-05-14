@@ -85,6 +85,7 @@ export default function CustomForm(props: Props) {
                                                             | number) ?? ""
                                                     }
                                                     onChange={field.onChange}
+                                                    disabled={column.disabled}
                                                     type={
                                                         column.type == "number"
                                                             ? "number"
