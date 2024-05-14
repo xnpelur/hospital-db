@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { Treatment } from "./types";
+import { SimplifiedColumnDef, Treatment } from "./types";
 import { Button } from "@/components/ui/button";
 import {
     CaretDownIcon,
@@ -9,15 +9,6 @@ import {
     DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { toLocalizedString } from "./dates";
-
-export type SimplifiedColumnDef = {
-    key: string;
-    title: string;
-    type?: "date" | "number";
-    sortable?: boolean;
-    default?: any;
-    disabled?: boolean;
-};
 
 export function getColumnDefs(
     columns: SimplifiedColumnDef[],

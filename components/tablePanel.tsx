@@ -5,8 +5,9 @@ import { TrashIcon } from "@radix-ui/react-icons";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
-import { SimplifiedColumnDef, getColumnDefs } from "@/lib/columnDefs";
+import { getColumnDefs } from "@/lib/columnDefs";
 import AddRowModal from "./modals/addRowModal";
+import { SimplifiedColumnDef } from "@/lib/types";
 
 type Props = {
     title: string;

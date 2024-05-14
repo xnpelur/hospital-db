@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import CustomForm from "../forms/customForm";
 import { useRouter } from "next/navigation";
-import { SimplifiedColumnDef } from "@/lib/columnDefs";
+import { SimplifiedColumnDef } from "@/lib/types";
 
 type Props = {
     tableName: string;

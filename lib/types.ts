@@ -63,3 +63,12 @@ export type Doctor = WithDependencies & {
     category: string;
     salary: number;
 };
+
+export type SimplifiedColumnDef = {
+    key: string;
+    title: string;
+    type?: "date" | "number";
+    sortable?: boolean;
+    default?: any;
+    disabled?: boolean;
+};
