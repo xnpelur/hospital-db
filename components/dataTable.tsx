@@ -3,10 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import {
     ColumnDef,
+    ColumnFiltersState,
     RowSelectionState,
     SortingState,
     flexRender,
     getCoreRowModel,
+    getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
@@ -29,11 +31,16 @@ type Props = {
     pageSize: number;
     onRowSelectionChange?: (state: RowSelectionState) => void;
     rowUrl?: string;
+    filter?: {
+        key: string;
+        value: string;
+    };
 };
 
 export function DataTable(props: Props) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
     const router = useRouter();
 
@@ -45,9 +52,12 @@ export function DataTable(props: Props) {
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        getFilteredRowModel: getFilteredRowModel(),
         state: {
             sorting,
             rowSelection,
+            columnFilters,
         },
         initialState: {
             pagination: {
@@ -71,6 +81,15 @@ export function DataTable(props: Props) {
     useEffect(() => {
         onRowSelectionChange?.(rowSelection);
     }, [rowSelection, onRowSelectionChange]);
+
+    useEffect(() => {
+        if (props.filter) {
+            table
+                .getColumn(props.filter.key)
+                ?.setFilterValue(props.filter.value);
+        }
+        console.log("filter or table changed");
+    }, [props.filter, table]);
 
     return (
         <div className="flex w-full flex-1 flex-col justify-between">
