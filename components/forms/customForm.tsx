@@ -23,6 +23,7 @@ type Props = {
     tableName: string;
     columns: SimplifiedColumnDef[];
     onFormSubmit: () => void;
+    row?: any;
 };
 
 export default function CustomForm(props: Props) {
@@ -42,17 +43,23 @@ export default function CustomForm(props: Props) {
 
     const defaultValueEntries: [string, any][] = useMemo(() => {
         const entries: [string, any][] = [];
-        props.columns.forEach((column) => {
-            if (column.key === "username") {
-                const creds = generateCredentials();
-                entries.push([column.key, creds.username]);
-                setCredentials(creds);
-            } else if (column.default) {
-                entries.push([column.key, column.default]);
-            }
-        });
+        if (props.row) {
+            props.columns.forEach((column) => {
+                entries.push([column.key, props.row[column.key]]);
+            });
+        } else {
+            props.columns.forEach((column) => {
+                if (column.key === "username") {
+                    const creds = generateCredentials();
+                    entries.push([column.key, creds.username]);
+                    setCredentials(creds);
+                } else if (column.default) {
+                    entries.push([column.key, column.default]);
+                }
+            });
+        }
         return entries;
-    }, [props.columns]);
+    }, [props.columns, props.row]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -71,7 +78,12 @@ export default function CustomForm(props: Props) {
         props.columns.forEach((column) => {
             args.push(values[column.key]);
         });
-        await runFunction<null>(`insert_${props.tableName}`, args);
+        if (props.row) {
+            args.push(props.row.id);
+            await runFunction<null>(`update_${props.tableName}`, args);
+        } else {
+            await runFunction<null>(`insert_${props.tableName}`, args);
+        }
         props.onFormSubmit?.();
     }
 

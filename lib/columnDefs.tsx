@@ -91,8 +91,9 @@ export function getColumnDefs(
                 return (
                     <ActionsDropdown
                         tableName={tableName}
-                        id={row.original.id}
+                        row={row.original}
                         dependencies={row.original.dependencies}
+                        columns={columns}
                     />
                 );
             },

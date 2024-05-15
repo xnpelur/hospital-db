@@ -14,7 +14,6 @@ import { SimplifiedColumnDef } from "@/lib/types";
 
 type Props = {
     tableName: string;
-    title: string;
     columns: SimplifiedColumnDef[];
 };
 
@@ -32,7 +31,7 @@ export default function AddRowModal(props: Props) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>{props.title}</DialogTitle>
+                    <DialogTitle>Новая запись</DialogTitle>
                     <CustomForm
                         tableName={props.tableName}
                         columns={props.columns}

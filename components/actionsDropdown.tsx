@@ -14,11 +14,14 @@ import { useState } from "react";
 import ConfirmationDialog from "./modals/confirmationDialog";
 import { useRouter } from "next/navigation";
 import { runFunction } from "@/lib/db";
+import EditRowModal from "./modals/editRowModal";
+import { SimplifiedColumnDef } from "@/lib/types";
 
 type Props = {
     tableName: string;
-    id: number;
+    row: any;
     dependencies: number;
+    columns: SimplifiedColumnDef[];
 };
 
 export default function ActionsDropdown(props: Props) {
@@ -28,7 +31,7 @@ export default function ActionsDropdown(props: Props) {
     const router = useRouter();
 
     async function deleteRecord() {
-        await runFunction<null>(`delete_${props.tableName}`, [props.id]);
+        await runFunction<null>(`delete_${props.tableName}`, [props.row.id]);
         setDeleteOpen(false);
         router.refresh();
     }
@@ -56,12 +59,13 @@ export default function ActionsDropdown(props: Props) {
                     </DropdownMenuItem>
                 ) : null}
             </DropdownMenuContent>
-            {/* <TreatmentsEditModal
+            <EditRowModal
                 open={editOpen}
                 setOpen={setEditOpen}
-                treatmentRecord={props.treatmentRecord}
-                clinicalRecords={props.clinicalRecords}
-            /> */}
+                tableName={props.tableName}
+                columns={props.columns}
+                row={props.row}
+            />
             <ConfirmationDialog
                 variant="destructive"
                 modalTitle="Подтвердите удаление"

@@ -45,7 +45,6 @@ export default function TablePanel(props: Props) {
                         ) : null}
                         <AddRowModal
                             tableName={props.tableName}
-                            title="Новая запись"
                             columns={props.columns}
                         />
                     </div>

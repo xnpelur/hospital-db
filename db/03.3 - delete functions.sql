@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION delete_doctor(
+CREATE FUNCTION delete_doctor(
     doctor_id INT
 ) RETURNS VOID AS
 $$
@@ -8,7 +8,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION delete_patient(
+CREATE FUNCTION delete_patient(
     patient_id INT
 ) RETURNS VOID AS
 $$
@@ -18,7 +18,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION delete_social_status(
+CREATE FUNCTION delete_social_status(
     status_id INT
 ) RETURNS VOID AS
 $$
@@ -28,7 +28,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION delete_department(
+CREATE FUNCTION delete_department(
     department_id INT
 ) RETURNS VOID AS
 $$
@@ -38,7 +38,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION delete_treatment(
+CREATE FUNCTION delete_treatment(
     treatment_id INT
 ) RETURNS VOID AS
 $$
@@ -48,7 +48,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION delete_disease(
+CREATE FUNCTION delete_disease(
     disease_id INT
 ) RETURNS VOID AS
 $$
