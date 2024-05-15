@@ -5,8 +5,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
-import ActionsDropdown from "../actionsDropdown";
 import { toLocalizedString } from "@/lib/dates";
+import ActionsDropdown from "@/app/(app)/patient-record/[stringId]/_components/actionsDropdown";
 
 export function getTreatmentRecordColumns(
     clinicalRecords: ClinicalRecord[],

@@ -1,9 +1,9 @@
-type WithDependencies = {
+export type WithDependencies = {
+    id: number;
     dependencies: number;
 };
 
 export type Patient = WithDependencies & {
-    id: number;
     full_name: string;
     birth_date: Date;
     social_status: string;
@@ -16,12 +16,10 @@ export type PatientRecord = Patient & {
 };
 
 export type Disease = WithDependencies & {
-    id: number;
     title: string;
 };
 
 export type Treatment = WithDependencies & {
-    id: number;
     title: string;
     cost: number;
 };
@@ -44,19 +42,16 @@ export type RecordDependencies = {
 };
 
 export type Department = WithDependencies & {
-    id: number;
     title: string;
     beds_number: number;
     phone: string;
 };
 
 export type SocialStatus = WithDependencies & {
-    id: number;
     title: string;
 };
 
 export type Doctor = WithDependencies & {
-    id: number;
     full_name: string;
     department: string;
     enrollment_date: Date;

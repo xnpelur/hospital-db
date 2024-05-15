@@ -53,7 +53,11 @@ export default function TablePanel(props: Props) {
             </div>
             <DataTable
                 data={props.data}
-                columnDefs={getColumnDefs(props.columns, props.editable)}
+                columnDefs={getColumnDefs(
+                    props.tableName,
+                    props.columns,
+                    props.editable
+                )}
                 pageSize={props.pageSize}
                 onRowSelectionChange={onRowSelectionChange}
             />

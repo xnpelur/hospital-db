@@ -1,20 +1,21 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { SimplifiedColumnDef, Treatment } from "./types";
+import { SimplifiedColumnDef, WithDependencies } from "./types";
 import { Button } from "@/components/ui/button";
 import {
     CaretDownIcon,
     CaretSortIcon,
     CaretUpIcon,
-    DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { toLocalizedString } from "./dates";
+import ActionsDropdown from "@/components/actionsDropdown";
 
 export function getColumnDefs(
+    tableName: string,
     columns: SimplifiedColumnDef[],
     editable: boolean
 ) {
-    const columnDefs: ColumnDef<Treatment>[] = [];
+    const columnDefs: ColumnDef<WithDependencies>[] = [];
 
     columns.forEach((col) => {
         columnDefs.push({
@@ -88,10 +89,11 @@ export function getColumnDefs(
             size: 60,
             cell: ({ row }) => {
                 return (
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Открыть меню</span>
-                        <DotsHorizontalIcon className="h-4 w-4" />
-                    </Button>
+                    <ActionsDropdown
+                        tableName={tableName}
+                        id={row.original.id}
+                        dependencies={row.original.dependencies}
+                    />
                 );
             },
         });
