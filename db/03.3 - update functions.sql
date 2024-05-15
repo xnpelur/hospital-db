@@ -99,3 +99,70 @@ BEGIN
     WHERE id = patient_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION update_treatment_record(
+    treatment_record_id INT,
+    treatment_title VARCHAR(255),
+    start_date_value TIMESTAMP,
+    end_date_value TIMESTAMP,
+    repeat_interval_value INTERVAL,
+    clinical_record_id_value INT
+)
+RETURNS VOID AS $$
+DECLARE
+    treatment_id_value INT;
+BEGIN
+    SELECT id INTO treatment_id_value FROM treatment WHERE title = treatment_title;
+
+    UPDATE treatment_record
+    SET treatment_id = treatment_id_value,
+        start_date = start_date_value,
+        end_date = end_date_value,
+        repeat_interval = repeat_interval_value,
+        clinical_record_id = clinical_record_id_value
+    WHERE id = treatment_record_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION update_clinical_records(
+    patientRecordId INTEGER,
+    diseasesToInsert TEXT[],
+    diseasesToRemove TEXT[]
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    diseaseId INTEGER;
+    diseaseTitle TEXT;
+BEGIN
+    FOREACH diseaseTitle IN ARRAY diseasesToInsert
+    LOOP
+        SELECT id INTO diseaseId
+        FROM disease
+        WHERE title = diseaseTitle;
+
+        IF diseaseId IS NULL THEN
+            RAISE EXCEPTION 'Disease title "%" not found in the disease table', diseaseTitle;
+        END IF;
+
+        INSERT INTO clinical_record (patient_record_id, disease_id)
+        VALUES (patientRecordId, diseaseId);
+    END LOOP;
+
+    FOREACH diseaseTitle IN ARRAY diseasesToRemove
+    LOOP
+        SELECT id INTO diseaseId
+        FROM disease
+        WHERE title = diseaseTitle;
+
+        IF diseaseId IS NULL THEN
+            RAISE EXCEPTION 'Disease title "%" not found in the disease table', diseaseTitle;
+        END IF;
+
+        DELETE FROM clinical_record
+        WHERE patient_record_id = patientRecordId
+            AND disease_id = diseaseId;
+    END LOOP;
+END;
+$$;

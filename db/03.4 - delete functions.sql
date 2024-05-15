@@ -57,3 +57,12 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
+CREATE FUNCTION delete_treatment_record(record_id INTEGER)
+RETURNS VOID AS
+$$
+BEGIN
+    DELETE FROM treatment_record WHERE id = record_id;
+END;
+$$
+LANGUAGE plpgsql;

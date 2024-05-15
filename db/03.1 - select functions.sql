@@ -90,30 +90,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION format_interval(num INT, unit_words TEXT[])
-RETURNS TEXT
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    result TEXT;
-    last_digit INT;
-BEGIN
-    last_digit := num % 10;
-    
-    IF num = 1 THEN
-        result := 'каждый ' || unit_words[1];
-    ELSIF last_digit = 1 AND num <> 11 THEN
-        result := 'каждый ' || num || ' ' || unit_words[1];
-    ELSIF last_digit >= 2 AND last_digit <= 4 AND (num < 12 OR num > 14) THEN
-        result := 'каждые ' || num || ' ' || unit_words[2];
-    ELSE
-        result := 'каждые ' || num || ' ' || unit_words[3];
-    END IF;
-    
-    RETURN result;
-END;
-$$;
-
 CREATE FUNCTION get_human_readable_interval(interval_value INTERVAL)
 RETURNS TEXT
 LANGUAGE plpgsql
@@ -167,82 +143,6 @@ BEGIN
         pr.id = id_param;
 END;
 $$ LANGUAGE plpgsql;
-
-CREATE FUNCTION update_clinical_records(
-    patientRecordId INTEGER,
-    diseasesToInsert TEXT[],
-    diseasesToRemove TEXT[]
-)
-RETURNS VOID
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    diseaseId INTEGER;
-    diseaseTitle TEXT;
-BEGIN
-    FOREACH diseaseTitle IN ARRAY diseasesToInsert
-    LOOP
-        SELECT id INTO diseaseId
-        FROM disease
-        WHERE title = diseaseTitle;
-
-        IF diseaseId IS NULL THEN
-            RAISE EXCEPTION 'Disease title "%" not found in the disease table', diseaseTitle;
-        END IF;
-
-        INSERT INTO clinical_record (patient_record_id, disease_id)
-        VALUES (patientRecordId, diseaseId);
-    END LOOP;
-
-    FOREACH diseaseTitle IN ARRAY diseasesToRemove
-    LOOP
-        SELECT id INTO diseaseId
-        FROM disease
-        WHERE title = diseaseTitle;
-
-        IF diseaseId IS NULL THEN
-            RAISE EXCEPTION 'Disease title "%" not found in the disease table', diseaseTitle;
-        END IF;
-
-        DELETE FROM clinical_record
-        WHERE patient_record_id = patientRecordId
-            AND disease_id = diseaseId;
-    END LOOP;
-END;
-$$;
-
-CREATE FUNCTION update_treatment_record(
-    treatment_record_id INT,
-    treatment_title VARCHAR(255),
-    start_date_value TIMESTAMP,
-    end_date_value TIMESTAMP,
-    repeat_interval_value INTERVAL,
-    clinical_record_id_value INT
-)
-RETURNS VOID AS $$
-DECLARE
-    treatment_id_value INT;
-BEGIN
-    SELECT id INTO treatment_id_value FROM treatment WHERE title = treatment_title;
-
-    UPDATE treatment_record
-    SET treatment_id = treatment_id_value,
-        start_date = start_date_value,
-        end_date = end_date_value,
-        repeat_interval = repeat_interval_value,
-        clinical_record_id = clinical_record_id_value
-    WHERE id = treatment_record_id;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION delete_treatment_record(record_id INTEGER)
-RETURNS VOID AS
-$$
-BEGIN
-    DELETE FROM treatment_record WHERE id = record_id;
-END;
-$$
-LANGUAGE plpgsql;
 
 CREATE FUNCTION get_current_patient_record_by_username (
     patient_username NAME
@@ -368,16 +268,3 @@ BEGIN
     WHERE pr.id = pr_id;
 END;
 $$ LANGUAGE plpgsql;
-
-CREATE FUNCTION add_user(username TEXT, password TEXT, user_role TEXT) RETURNS VOID AS
-$$
-BEGIN
-    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = username) THEN
-        RAISE EXCEPTION 'User % already exists.', username;
-    END IF;
-
-    EXECUTE format('CREATE USER %I WITH PASSWORD %L', username, password);
-    EXECUTE format('GRANT %I TO %I', user_role, username);
-END;
-$$
-LANGUAGE plpgsql;
