@@ -5,3 +5,9 @@ export function toLocalizedString(date: Date): string {
         year: "numeric",
     });
 }
+
+export function getToday() {
+    let date = new Date();
+    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return date;
+}

@@ -17,6 +17,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import CustomCombobox from "@/components/forms/customCombobox";
 import CustomDatePicker from "@/components/forms/customDatePicker";
+import { getToday } from "@/lib/dates";
 
 type Props = {
     clinicalRecords: ClinicalRecord[];
@@ -67,8 +68,13 @@ function parseRepeatInterval(s: string): {
 const formSchema = z
     .object({
         treatment: z.string().min(1),
-        startDate: z.date(),
-        endDate: z.date(),
+        startDate: z.date().min(getToday(), {
+            message: "Дата начала процедуры не может быть ранее, чем сегодня",
+        }),
+        endDate: z.date().min(getToday(), {
+            message:
+                "Дата окончания процедуры не может быть ранее, чем сегодня",
+        }),
         repeatInterval: z.object({
             amount: z.coerce.number().min(1),
             unit: z.string().min(1),
@@ -199,7 +205,9 @@ export default function TreatmentsForm(props: Props) {
                                     <CustomDatePicker
                                         value={field.value}
                                         onSelect={field.onChange}
-                                        disabled={true}
+                                        disabled={
+                                            props.treatmentRecord !== undefined
+                                        }
                                     />
                                 </FormControl>
                             </div>
