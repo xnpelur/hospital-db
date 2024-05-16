@@ -497,7 +497,7 @@ function getPhoneNumber() {
     const third = getRandomInt(100).toString().padStart(2, "0");
     const fourth = getRandomInt(100).toString().padStart(2, "0");
 
-    return `+7 ${first} ${second} ${third} ${fourth}`;
+    return `+7 (${first}) ${second}-${third}-${fourth}`;
 }
 
 module.exports = {

@@ -18,6 +18,7 @@ import { SimplifiedColumnDef } from "@/lib/types";
 import CustomCombobox from "./customCombobox";
 import { Credentials, generateCredentials } from "@/lib/credentials";
 import { useMemo, useState } from "react";
+import { PhoneInput } from "./phoneInput";
 
 type Props = {
     tableName: string;
@@ -109,6 +110,14 @@ export default function CustomForm(props: Props) {
                                                     value={field.value as Date}
                                                     onSelect={field.onChange}
                                                     disabled={column.disabled}
+                                                />
+                                            ) : column.type === "phone" ? (
+                                                <PhoneInput
+                                                    value={
+                                                        (field.value as string) ??
+                                                        ""
+                                                    }
+                                                    onChange={field.onChange}
                                                 />
                                             ) : column.values ? (
                                                 <CustomCombobox

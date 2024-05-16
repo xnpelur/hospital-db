@@ -62,7 +62,7 @@ export type Doctor = WithDependencies & {
 export type SimplifiedColumnDef = {
     key: string;
     title: string;
-    type?: "date" | "number";
+    type?: "date" | "number" | "phone";
     sortable?: boolean;
     default?: any;
     disabled?: boolean;

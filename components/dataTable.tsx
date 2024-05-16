@@ -88,7 +88,6 @@ export function DataTable(props: Props) {
                 .getColumn(props.filter.key)
                 ?.setFilterValue(props.filter.value);
         }
-        console.log("filter or table changed");
     }, [props.filter, table]);
 
     return (

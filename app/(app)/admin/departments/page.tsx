@@ -26,6 +26,7 @@ export default async function DepartmentsPage() {
                 {
                     key: "phone",
                     title: "Телефон",
+                    type: "phone",
                 },
             ]}
             editable={true}
