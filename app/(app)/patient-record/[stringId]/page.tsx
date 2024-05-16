@@ -46,7 +46,6 @@ export default async function PatientRecordPage({
                 <h1 className="mx-1 text-4xl font-semibold">
                     {patientRecord.full_name}
                 </h1>
-                <Button variant="destructive">Выписать досрочно</Button>
             </div>
             <div className="grid flex-1 grid-cols-2 text-lg">
                 <div className="space-y-2">

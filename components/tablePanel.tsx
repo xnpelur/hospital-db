@@ -20,18 +20,7 @@ type Props = {
 };
 
 export default function TablePanel(props: Props) {
-    const [showDeleteButton, setShowDeleteButton] = useState(false);
     const [filterString, setFilterString] = useState("");
-
-    function onRowSelectionChange(state: RowSelectionState) {
-        for (const key in state) {
-            if (state[key]) {
-                setShowDeleteButton(true);
-                return;
-            }
-        }
-        setShowDeleteButton(false);
-    }
 
     return (
         <div className="flex h-full flex-col space-y-5">
@@ -50,12 +39,6 @@ export default function TablePanel(props: Props) {
                 <div>
                     {props.editable ? (
                         <div className="space-x-4">
-                            {showDeleteButton ? (
-                                <Button variant="destructive">
-                                    <TrashIcon className="mr-2 h-4 w-4" />
-                                    Удалить выбранные записи
-                                </Button>
-                            ) : null}
                             <AddRowModal
                                 tableName={props.tableName}
                                 columns={props.columns}
@@ -72,7 +55,6 @@ export default function TablePanel(props: Props) {
                     props.editable
                 )}
                 pageSize={props.pageSize}
-                onRowSelectionChange={onRowSelectionChange}
                 filter={
                     props.columns?.length
                         ? { key: props.columns[0].key, value: filterString }
