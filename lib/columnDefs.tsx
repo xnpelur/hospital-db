@@ -15,6 +15,21 @@ import { toLocalizedString } from "./dates";
 import ActionsDropdown from "@/components/actionsDropdown";
 import TreatmentRecordActionsDropdown from "@/app/(app)/patient-record/[stringId]/_components/actionsDropdown";
 
+function patientStatusBadge(value: string) {
+    return (
+        <span
+            className={
+                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
+                (value == "На лечении"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-yellow-100 text-yellow-800")
+            }
+        >
+            {value}
+        </span>
+    );
+}
+
 export function getColumnDefs(
     tableName: string,
     columns: SimplifiedColumnDef[],
@@ -51,9 +66,11 @@ export function getColumnDefs(
                 : col.title,
             cell: ({ row }) => (
                 <div>
-                    {col.type == "date"
+                    {col.type === "date"
                         ? toLocalizedString(row.getValue(col.key))
-                        : row.getValue(col.key)}
+                        : col.type === "patient_badge"
+                          ? patientStatusBadge(row.getValue(col.key))
+                          : row.getValue(col.key)}
                 </div>
             ),
         });
@@ -116,9 +133,11 @@ export function getTreatmentRecordsColumnDefs(
                 : col.title,
             cell: ({ row }) => (
                 <div>
-                    {col.type == "date"
+                    {col.type === "date"
                         ? toLocalizedString(row.getValue(col.key))
-                        : row.getValue(col.key)}
+                        : col.type === "patient_badge"
+                          ? patientStatusBadge(row.getValue(col.key))
+                          : row.getValue(col.key)}
                 </div>
             ),
         });

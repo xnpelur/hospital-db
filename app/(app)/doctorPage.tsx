@@ -1,7 +1,6 @@
 import { runFunction } from "@/lib/db";
 import { PatientRecord } from "@/lib/types";
-import { DataTable } from "@/components/dataTable";
-import { patientColumns } from "@/components/columns/patientColumns";
+import PatientsPanel from "./_components/doctor/patientsPanel";
 
 export default async function DoctorPage() {
     const data = await runFunction<PatientRecord>(
@@ -22,14 +21,36 @@ export default async function DoctorPage() {
                 <h1 className="text-3xl font-bold">Пациенты</h1>
                 <p className="text-xl">{`${doctorAndDepartmentInfo.doctor} (${doctorAndDepartmentInfo.department})`}</p>
             </div>
-            <div className="flex flex-1 pt-6">
-                <DataTable
-                    data={data}
-                    columnDefs={patientColumns}
-                    pageSize={10}
-                    rowUrl="/patient-record"
-                />
-            </div>
+            <PatientsPanel
+                data={data}
+                columns={[
+                    {
+                        key: "full_name",
+                        title: "ФИО",
+                        sortable: true,
+                    },
+                    {
+                        key: "birth_date",
+                        title: "Дата рождения",
+                        type: "date",
+                    },
+                    {
+                        key: "social_status",
+                        title: "Социальный статус",
+                        sortable: true,
+                    },
+                    {
+                        key: "discharge_date",
+                        title: "Дата выписки",
+                        type: "date",
+                    },
+                    {
+                        key: "status",
+                        title: "Статус",
+                        type: "patient_badge",
+                    },
+                ]}
+            />
         </div>
     );
 }
