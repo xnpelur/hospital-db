@@ -115,6 +115,7 @@ CREATE FUNCTION get_treatment_records_by_patient_record_id(
 RETURNS TABLE (
     id INT,
     title VARCHAR(255),
+    cost INT,
     start_date TIMESTAMP,
     end_date TIMESTAMP,
     repeat_interval TEXT,
@@ -125,6 +126,7 @@ BEGIN
     SELECT
         tr.id,
         t.title,
+        t.cost,
         tr.start_date,
         tr.end_date,
         get_human_readable_interval(tr.repeat_interval) as repeat_interval,
@@ -199,6 +201,7 @@ CREATE FUNCTION get_current_treatment_records_by_username(
 RETURNS TABLE (
     id INT,
     title VARCHAR(255),
+    cost INT,
     start_date TIMESTAMP,
     end_date TIMESTAMP,
     repeat_interval TEXT,
@@ -209,6 +212,7 @@ BEGIN
     SELECT
 		tr.id,
         t.title,
+        t.cost,
         tr.start_date,
         tr.end_date,
         get_human_readable_interval(tr.repeat_interval) as repeat_interval,

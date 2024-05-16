@@ -139,27 +139,24 @@ export default function TreatmentsForm(props: Props) {
                   ? "day"
                   : "month";
         const repeatInterval = `${values.repeatInterval.amount} ${repeatIntervalUnit}`;
-        const clinicalRecord = props.clinicalRecords.find(
+
+        const clinicalRecordId = props.clinicalRecords.find(
             (record) => record.disease_title === values.disease
-        );
+        )?.id;
+
+        const args: any[] = [
+            values.treatment,
+            values.startDate,
+            values.endDate,
+            repeatInterval,
+            clinicalRecordId,
+        ];
 
         if (props.treatmentRecord) {
-            await runFunction<null>("update_treatment_record", [
-                props.treatmentRecord.id,
-                values.treatment,
-                values.startDate,
-                values.endDate,
-                repeatInterval,
-                clinicalRecord?.id,
-            ]);
+            args.unshift(props.treatmentRecord.id);
+            await runFunction<null>("update_treatment_record", args);
         } else {
-            await runFunction<null>("insert_treatment_record", [
-                values.treatment,
-                values.startDate,
-                values.endDate,
-                repeatInterval,
-                clinicalRecord?.id,
-            ]);
+            await runFunction<null>("insert_treatment_record", args);
         }
 
         props.onFormSubmit?.();

@@ -23,7 +23,7 @@ type Props = {
     clinicalRecords: ClinicalRecord[];
 };
 
-export default function ActionsDropdown(props: Props) {
+export default function TreatmentRecordActionsDropdown(props: Props) {
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
 

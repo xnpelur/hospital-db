@@ -7,10 +7,10 @@ import {
     Dialog,
 } from "@/components/ui/dialog";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { ClinicalRecord } from "@/lib/types";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import TreatmentsForm from "./treatmentsForm";
+import { ClinicalRecord } from "@/lib/types";
 
 type Props = {
     clinicalRecords: ClinicalRecord[];

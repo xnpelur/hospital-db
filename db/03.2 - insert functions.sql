@@ -83,11 +83,11 @@ CREATE FUNCTION insert_treatment_record(
 )
 RETURNS VOID AS $$
 DECLARE
-    treatment_id INT;
+    treatment_id_value INT;
 BEGIN
-    SELECT id INTO treatment_id FROM treatment WHERE title = treatment_title;
+    SELECT id INTO treatment_id_value FROM treatment WHERE title = treatment_title;
 
     INSERT INTO treatment_record (treatment_id, clinical_record_id, start_date, end_date, repeat_interval)
-    VALUES (treatment_id, clinical_record_id, start_date, end_date, repeat_interval);
+    VALUES (treatment_id_value, clinical_record_id, start_date, end_date, repeat_interval);
 END;
 $$ LANGUAGE plpgsql;

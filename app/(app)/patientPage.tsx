@@ -73,6 +73,38 @@ export default async function PatientPage() {
             </div>
             <TreatmentsPanel
                 treatmentRecords={treatmentRecords}
+                columns={[
+                    {
+                        key: "title",
+                        title: "Название процедуры",
+                        sortable: true,
+                    },
+                    {
+                        key: "cost",
+                        title: "Стоимость",
+                        sortable: true,
+                    },
+                    {
+                        key: "start_date",
+                        title: "Дата начала",
+                        type: "date",
+                    },
+                    {
+                        key: "end_date",
+                        title: "Дата окончания",
+                        type: "date",
+                    },
+                    {
+                        key: "repeat_interval",
+                        title: "Интервал повторения",
+                    },
+                    {
+                        key: "disease",
+                        title: "Заболевание",
+                        sortable: true,
+                        values: clinicalRecords.map((cr) => cr.disease_title),
+                    },
+                ]}
                 clinicalRecords={clinicalRecords}
                 editable={false}
             />

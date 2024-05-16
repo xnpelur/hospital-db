@@ -1,14 +1,19 @@
 "use client";
 
-import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
+import {
+    ClinicalRecord,
+    SimplifiedColumnDef,
+    TreatmentRecord,
+} from "@/lib/types";
 import { DataTable } from "@/components/dataTable";
-import { getTreatmentRecordColumns } from "@/components/columns/treatmentRecordColumns";
 import TreatmentsAddModal from "./treatmentsAddModal";
+import { getTreatmentRecordsColumnDefs } from "@/lib/columnDefs";
 
 type Props = {
     treatmentRecords: TreatmentRecord[];
     clinicalRecords: ClinicalRecord[];
     editable: boolean;
+    columns: SimplifiedColumnDef[];
 };
 
 export default function TreatmentsPanel(props: Props) {
@@ -26,7 +31,8 @@ export default function TreatmentsPanel(props: Props) {
             </div>
             <DataTable
                 data={props.treatmentRecords}
-                columnDefs={getTreatmentRecordColumns(
+                columnDefs={getTreatmentRecordsColumnDefs(
+                    props.columns,
                     props.clinicalRecords,
                     props.editable
                 )}
