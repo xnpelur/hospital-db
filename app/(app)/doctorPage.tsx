@@ -9,10 +9,20 @@ export default async function DoctorPage() {
         []
     );
 
+    const doctorAndDepartmentInfo = (
+        await runFunction<{
+            doctor: string;
+            department: string;
+        }>("get_doctor_and_department_info_by_current_username", [])
+    )[0];
+
     return (
-        <div>
-            <h1 className="text-3xl font-bold">Пациенты</h1>
-            <div className="flex-1 pt-6">
+        <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold">Пациенты</h1>
+                <p className="text-xl">{`${doctorAndDepartmentInfo.doctor} (${doctorAndDepartmentInfo.department})`}</p>
+            </div>
+            <div className="flex flex-1 pt-6">
                 <DataTable
                     data={data}
                     columnDefs={patientColumns}

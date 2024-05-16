@@ -268,3 +268,19 @@ BEGIN
     WHERE pr.id = pr_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION get_doctor_and_department_info_by_current_username()
+RETURNS TABLE (
+    doctor VARCHAR(255),
+    department VARCHAR(255)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        doc.full_name as doctor,
+        d.title as department
+    FROM doctor doc
+    JOIN department d ON doc.department_id = d.id
+    WHERE doc.username = current_user;
+END;
+$$ LANGUAGE plpgsql;
