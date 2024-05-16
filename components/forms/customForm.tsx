@@ -19,6 +19,7 @@ import CustomCombobox from "./customCombobox";
 import { Credentials, generateCredentials } from "@/lib/credentials";
 import { useMemo, useState } from "react";
 import { PhoneInput } from "./phoneInput";
+import ConfirmationDialog from "../modals/confirmationDialog";
 
 type Props = {
     tableName: string;
@@ -29,6 +30,9 @@ type Props = {
 
 export default function CustomForm(props: Props) {
     const [credentials, setCredentials] = useState<Credentials | undefined>();
+    const [confirmationOpen, setConfirmationOpen] = useState(false);
+    const [credentialsText, setCredentialsText] = useState("");
+
     const formSchema = z.object(
         Object.fromEntries(
             props.columns.map((column) => [
@@ -68,13 +72,6 @@ export default function CustomForm(props: Props) {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        if (credentials) {
-            await runFunction<null>("add_user", [
-                credentials.username,
-                credentials.password,
-                props.tableName,
-            ]);
-        }
         const args: any[] = [];
         props.columns.forEach((column) => {
             args.push(values[column.key]);
@@ -85,76 +82,120 @@ export default function CustomForm(props: Props) {
         } else {
             await runFunction<null>(`insert_${props.tableName}`, args);
         }
-        props.onFormSubmit?.();
+
+        if (credentials) {
+            await runFunction<null>("add_user", [
+                credentials.username,
+                credentials.password,
+                props.tableName,
+            ]);
+
+            setCredentialsText(
+                `Имя пользователя: ${credentials.username}\nПароль: ${credentials.password}`
+            );
+            setConfirmationOpen(true);
+        } else {
+            props.onFormSubmit?.();
+        }
     }
 
     return (
-        <Form {...form}>
-            <form
-                className="grid gap-4 py-4"
-                onSubmit={form.handleSubmit(onSubmit)}
-            >
-                {props.columns.map((column, index) => {
-                    return (
-                        <FormField
-                            key={index}
-                            control={form.control}
-                            name={column.key}
-                            render={({ field }) => (
-                                <FormItem className="grid grid-cols-3 items-center gap-x-4">
-                                    <FormLabel>{column.title}</FormLabel>
-                                    <div className="col-span-2 flex items-center gap-2">
-                                        <FormControl>
-                                            {column.type === "date" ? (
-                                                <CustomDatePicker
-                                                    value={field.value as Date}
-                                                    onSelect={field.onChange}
-                                                    disabled={column.disabled}
-                                                />
-                                            ) : column.type === "phone" ? (
-                                                <PhoneInput
-                                                    value={
-                                                        (field.value as string) ??
-                                                        ""
-                                                    }
-                                                    onChange={field.onChange}
-                                                />
-                                            ) : column.values ? (
-                                                <CustomCombobox
-                                                    items={column.values}
-                                                    value={
-                                                        field.value as string
-                                                    }
-                                                    setValue={field.onChange}
-                                                />
-                                            ) : (
-                                                <Input
-                                                    value={
-                                                        (field.value as
-                                                            | string
-                                                            | number) ?? ""
-                                                    }
-                                                    onChange={field.onChange}
-                                                    disabled={column.disabled}
-                                                    type={
-                                                        column.type == "number"
-                                                            ? "number"
-                                                            : undefined
-                                                    }
-                                                />
-                                            )}
-                                        </FormControl>
-                                    </div>
-                                    <FormMessage className="col-span-2 col-start-2" />
-                                </FormItem>
-                            )}
-                        />
-                    );
-                })}
-                <DialogFooter>
-                    <Button type="submit">Подтвердить</Button>
-                </DialogFooter>
-            </form>
-        </Form>
+        <div>
+            <Form {...form}>
+                <form
+                    className="grid gap-4 py-4"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                >
+                    {props.columns.map((column, index) => {
+                        return (
+                            <FormField
+                                key={index}
+                                control={form.control}
+                                name={column.key}
+                                render={({ field }) => (
+                                    <FormItem className="grid grid-cols-3 items-center gap-x-4">
+                                        <FormLabel>{column.title}</FormLabel>
+                                        <div className="col-span-2 flex items-center gap-2">
+                                            <FormControl>
+                                                {column.type === "date" ? (
+                                                    <CustomDatePicker
+                                                        value={
+                                                            field.value as Date
+                                                        }
+                                                        onSelect={
+                                                            field.onChange
+                                                        }
+                                                        disabled={
+                                                            column.disabled
+                                                        }
+                                                    />
+                                                ) : column.type === "phone" ? (
+                                                    <PhoneInput
+                                                        value={
+                                                            (field.value as string) ??
+                                                            ""
+                                                        }
+                                                        onChange={
+                                                            field.onChange
+                                                        }
+                                                    />
+                                                ) : column.values ? (
+                                                    <CustomCombobox
+                                                        items={column.values}
+                                                        value={
+                                                            field.value as string
+                                                        }
+                                                        setValue={
+                                                            field.onChange
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <Input
+                                                        value={
+                                                            (field.value as
+                                                                | string
+                                                                | number) ?? ""
+                                                        }
+                                                        onChange={
+                                                            field.onChange
+                                                        }
+                                                        disabled={
+                                                            column.disabled
+                                                        }
+                                                        type={
+                                                            column.type ==
+                                                            "number"
+                                                                ? "number"
+                                                                : undefined
+                                                        }
+                                                    />
+                                                )}
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage className="col-span-2 col-start-2" />
+                                    </FormItem>
+                                )}
+                            />
+                        );
+                    })}
+                    <DialogFooter>
+                        <Button type="submit">Подтвердить</Button>
+                    </DialogFooter>
+                </form>
+            </Form>
+            <ConfirmationDialog
+                modalTitle="Данные для входа"
+                modalDescription={credentialsText}
+                onConfirm={() => {
+                    setConfirmationOpen(false);
+                    props.onFormSubmit?.();
+                }}
+                customControls={{
+                    open: confirmationOpen,
+                    setOpen: setConfirmationOpen,
+                }}
+                hideCancel={true}
+            />
+        </div>
     );
 }

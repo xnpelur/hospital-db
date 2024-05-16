@@ -27,6 +27,7 @@ type Props = {
         open: boolean;
         setOpen: (value: boolean) => void;
     };
+    hideCancel?: boolean;
 };
 
 export default function ConfirmationDialog(props: Props) {
@@ -56,17 +57,29 @@ export default function ConfirmationDialog(props: Props) {
             <DialogContent
                 className="sm:max-w-[425px]"
                 onCloseAutoFocus={(e) => e.preventDefault()}
+                hideCloseButton={props.hideCancel}
             >
                 <DialogHeader>
                     <DialogTitle>{props.modalTitle}</DialogTitle>
-                    <DialogDescription>
-                        {props.modalDescription}
+                    <DialogDescription className="py-2">
+                        {props.modalDescription
+                            .split("\n")
+                            .map((paragraph, index) => (
+                                <span key={index} className="block">
+                                    {paragraph}
+                                </span>
+                            ))}
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="ghost" onClick={() => changeOpen(false)}>
-                        Отмена
-                    </Button>
+                    {!props.hideCancel && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => changeOpen(false)}
+                        >
+                            Отмена
+                        </Button>
+                    )}
                     <Button
                         type="submit"
                         variant={props.variant}
