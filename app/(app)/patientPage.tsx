@@ -18,7 +18,24 @@ export default async function PatientPage() {
     )[0];
 
     if (!patientRecord) {
-        notFound();
+        return (
+            <div className="flex h-full flex-col">
+                <h1 className="text-3xl font-bold">Информация о лечении</h1>
+                <div className="flex flex-1 flex-col items-center justify-center text-center text-2xl">
+                    <div className="w-4/5">
+                        <p className="pb-4">
+                            На данный момент информация о Вашем лечении
+                            отсутствует.
+                        </p>
+                        <p>
+                            Пожалуйста, проверьте эту страницу позже или
+                            свяжитесь с медицинским персоналом для получения
+                            дополнительной информации.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     const clinicalRecords = await runFunction<ClinicalRecord>(
