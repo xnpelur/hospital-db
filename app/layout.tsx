@@ -33,7 +33,7 @@ export default async function RootLayout({
                                     <div className="flex items-center space-x-4 pl-4">
                                         <Link
                                             className="font-semibold hover:underline"
-                                            href="/"
+                                            href="/change-password"
                                         >
                                             {session.user.username}
                                         </Link>
