@@ -1,5 +1,6 @@
 import {
     DotsHorizontalIcon,
+    LockClosedIcon,
     Pencil1Icon,
     TrashIcon,
 } from "@radix-ui/react-icons";
@@ -10,12 +11,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmationDialog from "./modals/confirmationDialog";
 import { useRouter } from "next/navigation";
 import { runFunction } from "@/lib/db";
 import EditRowModal from "./modals/editRowModal";
 import { SimplifiedColumnDef } from "@/lib/types";
+import ChangePasswordDialog from "./modals/changePasswordDialog";
 
 type Props = {
     tableName: string;
@@ -26,7 +28,14 @@ type Props = {
 
 export default function ActionsDropdown(props: Props) {
     const [editOpen, setEditOpen] = useState(false);
+    const [changePasswordOpen, setChangePasswordOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
+
+    const [usernameInRow, setUsernameInRow] = useState<string | undefined>();
+
+    useEffect(() => {
+        setUsernameInRow(props.row["username"]);
+    }, [props.row]);
 
     const router = useRouter();
 
@@ -44,11 +53,19 @@ export default function ActionsDropdown(props: Props) {
                     <DotsHorizontalIcon className="h-4 w-4" />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-36">
+            <DropdownMenuContent align="end" className="w-44">
                 <DropdownMenuItem onClick={() => setEditOpen(true)}>
                     <Pencil1Icon className="mr-2 h-4 w-4" />
                     Изменить
                 </DropdownMenuItem>
+                {usernameInRow ? (
+                    <DropdownMenuItem
+                        onClick={() => setChangePasswordOpen(true)}
+                    >
+                        <LockClosedIcon className="mr-2 h-4 w-4" />
+                        Изменить пароль
+                    </DropdownMenuItem>
+                ) : null}
                 {props.dependencies == 0 ? (
                     <DropdownMenuItem
                         className="text-red-600"
@@ -65,6 +82,11 @@ export default function ActionsDropdown(props: Props) {
                 tableName={props.tableName}
                 columns={props.columns}
                 row={props.row}
+            />
+            <ChangePasswordDialog
+                open={changePasswordOpen}
+                setOpen={setChangePasswordOpen}
+                username={usernameInRow ?? ""}
             />
             <ConfirmationDialog
                 variant="destructive"
