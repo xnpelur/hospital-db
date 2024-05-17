@@ -52,7 +52,10 @@ export default function ChangePasswordForm(props: Props) {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        await runFunction<null>("change_password", [values.newPassword]);
+        await runFunction<null>("change_password", [
+            props.currentUsername,
+            values.newPassword,
+        ]);
         await changeSessionPassword(values.newPassword);
 
         setCredentialsText(
