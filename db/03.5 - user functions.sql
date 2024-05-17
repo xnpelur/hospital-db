@@ -10,3 +10,10 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION change_password(new_password TEXT) 
+RETURNS VOID AS $$
+BEGIN
+    EXECUTE 'ALTER USER ' || current_user || ' WITH PASSWORD ' || quote_literal(new_password);
+END;
+$$ LANGUAGE plpgsql;

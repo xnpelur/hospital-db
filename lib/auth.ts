@@ -62,3 +62,24 @@ export async function decrypt(input: string): Promise<any> {
     });
     return payload;
 }
+
+export async function changeSessionPassword(newPassword: string) {
+    const session = cookies().get("session")?.value;
+    if (!session) return;
+
+    const parsedSession = await decrypt(session);
+
+    parsedSession.user.password = newPassword;
+
+    const expirationTime = parseInt(process.env.EXPIRATION_TIME!);
+    parsedSession.expires = new Date(Date.now() + expirationTime * 1000);
+
+    const updatedSession = await encrypt(parsedSession);
+
+    cookies().set({
+        name: "session",
+        value: updatedSession,
+        httpOnly: true,
+        expires: parsedSession.expires,
+    });
+}
