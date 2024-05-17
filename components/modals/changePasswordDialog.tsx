@@ -18,7 +18,9 @@ import { Input } from "../ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { runFunction } from "@/lib/db";
+import ConfirmationDialog from "./confirmationDialog";
 
 type Props = {
     open: boolean;
@@ -27,6 +29,9 @@ type Props = {
 };
 
 export default function ChangePasswordDialog(props: Props) {
+    const [credentialsText, setCredentialsText] = useState("");
+    const [confirmationOpen, setConfirmationOpen] = useState(false);
+
     const formSchema = z
         .object({
             username: z.string().min(1),
@@ -53,7 +58,15 @@ export default function ChangePasswordDialog(props: Props) {
     );
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        await runFunction<null>("change_password", [
+            values.username,
+            values.newPassword,
+        ]);
+
+        setCredentialsText(
+            `Имя пользователя: ${values.username}\nПароль: ${values.newPassword}`
+        );
+        setConfirmationOpen(true);
     }
 
     return (
@@ -159,6 +172,24 @@ export default function ChangePasswordDialog(props: Props) {
                     </form>
                 </Form>
             </DialogContent>
+            <ConfirmationDialog
+                modalTitle="Изменение данных для входа"
+                modalDescription={credentialsText}
+                onConfirm={() => {
+                    setConfirmationOpen(false);
+                    props.setOpen(false);
+                    form.reset({
+                        username: props.username,
+                        newPassword: "",
+                        confirmPassword: "",
+                    });
+                }}
+                customControls={{
+                    open: confirmationOpen,
+                    setOpen: setConfirmationOpen,
+                }}
+                hideCancel={true}
+            />
         </Dialog>
     );
 }
