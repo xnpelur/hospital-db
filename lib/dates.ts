@@ -11,3 +11,8 @@ export function getToday() {
     date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     return date;
 }
+
+export function getDateAfterNDays(date: Date, days: number): Date {
+    date.setDate(date.getDate() + days);
+    return date;
+}

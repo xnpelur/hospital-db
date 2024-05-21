@@ -33,9 +33,14 @@ export default function CustomForm(props: Props) {
     const [confirmationOpen, setConfirmationOpen] = useState(false);
     const [credentialsText, setCredentialsText] = useState("");
 
+    const columns = useMemo(
+        () => props.columns.filter((column) => !column.hiddenInForm),
+        [props.columns]
+    );
+
     const formSchema = z.object(
         Object.fromEntries(
-            props.columns.map((column) => [
+            columns.map((column) => [
                 column.key,
                 column.type == "date"
                     ? z.date()
@@ -49,11 +54,11 @@ export default function CustomForm(props: Props) {
     const defaultValueEntries: [string, any][] = useMemo(() => {
         const entries: [string, any][] = [];
         if (props.row) {
-            props.columns.forEach((column) => {
+            columns.forEach((column) => {
                 entries.push([column.key, props.row[column.key]]);
             });
         } else {
-            props.columns.forEach((column) => {
+            columns.forEach((column) => {
                 if (column.key === "username") {
                     const creds = generateCredentials();
                     entries.push([column.key, creds.username]);
@@ -64,7 +69,7 @@ export default function CustomForm(props: Props) {
             });
         }
         return entries;
-    }, [props.columns, props.row]);
+    }, [columns, props.row]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -73,7 +78,7 @@ export default function CustomForm(props: Props) {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const args: any[] = [];
-        props.columns.forEach((column) => {
+        columns.forEach((column) => {
             args.push(values[column.key]);
         });
         if (props.row) {
@@ -106,7 +111,7 @@ export default function CustomForm(props: Props) {
                     className="grid gap-4 py-4"
                     onSubmit={form.handleSubmit(onSubmit)}
                 >
-                    {props.columns.map((column, index) => {
+                    {columns.map((column, index) => {
                         return (
                             <FormField
                                 key={index}

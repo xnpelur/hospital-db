@@ -67,4 +67,5 @@ export type SimplifiedColumnDef = {
     default?: any;
     disabled?: boolean;
     values?: string[];
+    hiddenInForm?: boolean;
 };

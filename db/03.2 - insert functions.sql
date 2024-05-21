@@ -91,3 +91,21 @@ BEGIN
     VALUES (treatment_id_value, clinical_record_id, start_date, end_date, repeat_interval);
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION insert_patient_record(
+    patient_full_name VARCHAR(255),
+    record_admission_date TIMESTAMP,
+    record_discharge_date TIMESTAMP
+)
+RETURNS VOID AS $$
+DECLARE
+    patient_id_value INT;
+    doctor_id_value INT;
+BEGIN
+    SELECT id INTO patient_id_value FROM patient WHERE full_name = patient_full_name;
+    SELECT id INTO doctor_id_value FROM doctor WHERE username = current_user;
+
+    INSERT INTO patient_record (patient_id, doctor_id, admission_date, discharge_date)
+    VALUES (patient_id_value, doctor_id_value, record_admission_date, record_discharge_date);
+END;
+$$ LANGUAGE plpgsql;
