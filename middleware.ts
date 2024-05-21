@@ -15,8 +15,10 @@ export async function middleware(request: NextRequest) {
     }
 
     if (
-        request.nextUrl.pathname.startsWith("/admin") &&
-        session.user.role !== "admin"
+        (request.nextUrl.pathname.startsWith("/admin") &&
+            session.user.role !== "admin") ||
+        (request.nextUrl.pathname.startsWith("/query") &&
+            session.user.role !== "head_doctor")
     ) {
         return NextResponse.error();
     }
