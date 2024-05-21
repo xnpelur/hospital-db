@@ -1,25 +1,5 @@
 SET client_encoding TO 'utf8';
 
-CREATE FUNCTION get_patient_records()
-RETURNS TABLE (
-    id INT,
-    full_name VARCHAR(255),
-    birth_date DATE,
-    social_status VARCHAR(255),
-    admission_date DATE,
-    discharge_date DATE,
-    status TEXT,
-    username NAME
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        *
-    FROM
-        patient_records_view;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE FUNCTION get_current_patient_records()
 RETURNS TABLE (
     id INT,
