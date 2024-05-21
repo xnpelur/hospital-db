@@ -69,3 +69,11 @@ export type SimplifiedColumnDef = {
     values?: string[];
     hiddenInForm?: boolean;
 };
+
+export type Query = {
+    id: number;
+    function_name: string;
+    title: string;
+    description: string;
+    columns: SimplifiedColumnDef[];
+};

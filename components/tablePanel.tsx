@@ -1,8 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { TrashIcon } from "@radix-ui/react-icons";
-import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { DataTable } from "@/components/dataTable";
 import { getColumnDefs } from "@/lib/columnDefs";
@@ -36,16 +33,14 @@ export default function TablePanel(props: Props) {
                         className="w-full"
                     />
                 </div>
-                <div>
-                    {props.editable ? (
-                        <div className="space-x-4">
-                            <AddRowModal
-                                tableName={props.tableName}
-                                columns={props.columns}
-                            />
-                        </div>
-                    ) : null}
-                </div>
+                {props.editable ? (
+                    <div className="space-x-4">
+                        <AddRowModal
+                            tableName={props.tableName}
+                            columns={props.columns}
+                        />
+                    </div>
+                ) : null}
             </div>
             <DataTable
                 data={props.data}
