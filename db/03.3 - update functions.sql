@@ -103,8 +103,8 @@ $$ LANGUAGE plpgsql;
 CREATE FUNCTION update_treatment_record(
     treatment_record_id INT,
     treatment_title VARCHAR(255),
-    start_date_value TIMESTAMP,
-    end_date_value TIMESTAMP,
+    start_date_value DATE,
+    end_date_value DATE,
     repeat_interval_value INTERVAL,
     clinical_record_id_value INT
 )

@@ -64,8 +64,8 @@ CREATE TABLE treatment_record (
   id SERIAL UNIQUE,
   treatment_id INTEGER NOT NULL REFERENCES treatment(id),
   clinical_record_id INTEGER NOT NULL REFERENCES clinical_record(id) ON DELETE CASCADE,
-  start_date TIMESTAMP NOT NULL,
-  end_date TIMESTAMP NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
   repeat_interval interval NOT NULL
 );
 

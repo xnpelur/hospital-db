@@ -96,8 +96,8 @@ RETURNS TABLE (
     id INT,
     title VARCHAR(255),
     cost positive_integer,
-    start_date TIMESTAMP,
-    end_date TIMESTAMP,
+    start_date DATE,
+    end_date DATE,
     repeat_interval TEXT,
     disease VARCHAR(255)
 ) AS $$
@@ -182,8 +182,8 @@ RETURNS TABLE (
     id INT,
     title VARCHAR(255),
     cost positive_integer,
-    start_date TIMESTAMP,
-    end_date TIMESTAMP,
+    start_date DATE,
+    end_date DATE,
     repeat_interval TEXT,
     disease VARCHAR(255)
 ) AS $$

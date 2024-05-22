@@ -76,8 +76,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE FUNCTION insert_treatment_record(
     treatment_title VARCHAR(255),
-    start_date TIMESTAMP,
-    end_date TIMESTAMP,
+    start_date DATE,
+    end_date DATE,
     repeat_interval INTERVAL,
     clinical_record_id INT
 )
@@ -94,8 +94,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE FUNCTION insert_patient_record(
     patient_full_name VARCHAR(255),
-    record_admission_date TIMESTAMP,
-    record_discharge_date TIMESTAMP
+    record_admission_date DATE,
+    record_discharge_date DATE
 )
 RETURNS VOID AS $$
 DECLARE
