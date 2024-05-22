@@ -1,0 +1,9 @@
+CREATE INDEX idx_social_status_id ON social_status(id);
+CREATE INDEX idx_patient_id ON patient(id);
+CREATE INDEX idx_department_id ON department(id);
+CREATE INDEX idx_doctor_id ON doctor(id);
+CREATE INDEX idx_patient_record_id ON patient_record(id);
+CREATE INDEX idx_disease_id ON disease(id);
+CREATE INDEX idx_treatment_id ON treatment(id);
+CREATE INDEX idx_clinical_record_id ON clinical_record(id);
+CREATE INDEX idx_treatment_record_id ON treatment_record(id);

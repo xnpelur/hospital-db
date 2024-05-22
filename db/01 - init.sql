@@ -1,3 +1,9 @@
+CREATE DOMAIN positive_integer AS INTEGER
+CHECK (VALUE > 0);
+
+CREATE DOMAIN phone_number AS VARCHAR(255)
+CHECK (VALUE ~ '\+\d{1,3} \(\d{2,3}\) \d{3}-\d{2}-\d{2}');
+
 CREATE TABLE social_status (
   id SERIAL UNIQUE,
   title VARCHAR(255) NOT NULL UNIQUE
@@ -14,8 +20,8 @@ CREATE TABLE patient (
 CREATE TABLE department (
   id SERIAL UNIQUE,
   title VARCHAR(255) NOT NULL UNIQUE,
-  beds_number INTEGER NOT NULL,
-  phone VARCHAR(255) NOT NULL
+  beds_number positive_integer NOT NULL,
+  phone phone_number NOT NULL
 );
 
 CREATE TABLE doctor (
@@ -24,7 +30,7 @@ CREATE TABLE doctor (
   department_id INTEGER NOT NULL REFERENCES department(id),
   enrollment_date DATE NOT NULL,
   category VARCHAR(255) NOT NULL,
-  salary INTEGER NOT NULL,
+  salary positive_integer NOT NULL,
   username NAME NOT NULL UNIQUE
 );
 
@@ -44,7 +50,7 @@ CREATE TABLE disease (
 CREATE TABLE treatment (
   id SERIAL UNIQUE,
   title VARCHAR(255) NOT NULL UNIQUE,
-  cost INTEGER NOT NULL
+  cost positive_integer NOT NULL
 );
 
 CREATE TABLE clinical_record (

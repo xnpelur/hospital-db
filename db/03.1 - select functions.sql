@@ -95,7 +95,7 @@ CREATE FUNCTION get_treatment_records_by_patient_record_id(
 RETURNS TABLE (
     id INT,
     title VARCHAR(255),
-    cost INT,
+    cost positive_integer,
     start_date TIMESTAMP,
     end_date TIMESTAMP,
     repeat_interval TEXT,
@@ -181,7 +181,7 @@ CREATE FUNCTION get_current_treatment_records_by_username(
 RETURNS TABLE (
     id INT,
     title VARCHAR(255),
-    cost INT,
+    cost positive_integer,
     start_date TIMESTAMP,
     end_date TIMESTAMP,
     repeat_interval TEXT,
