@@ -75,5 +75,6 @@ export type Query = {
     function_name: string;
     title: string;
     description: string;
+    with_parameter: boolean;
     columns: SimplifiedColumnDef[];
 };

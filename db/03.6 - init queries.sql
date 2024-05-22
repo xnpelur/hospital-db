@@ -3,5 +3,6 @@ CREATE TABLE query (
   function_name VARCHAR(255) UNIQUE,
   title VARCHAR(255) UNIQUE,
   description VARCHAR(255) UNIQUE,
+  with_parameters BOOLEAN,
   columns JSONB
 );

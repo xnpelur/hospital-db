@@ -35,6 +35,7 @@ type Props = {
         key: string;
         value: string;
     };
+    customEmptyTableText?: string;
 };
 
 export function DataTable(props: Props) {
@@ -155,7 +156,8 @@ export function DataTable(props: Props) {
                                     colSpan={props.columnDefs.length}
                                     className="h-24 text-center"
                                 >
-                                    Записи не найдены.
+                                    {props.customEmptyTableText ??
+                                        "Записи не найдены."}
                                 </TableCell>
                             </TableRow>
                         )}

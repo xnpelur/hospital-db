@@ -1,4 +1,4 @@
-import TablePanel from "@/components/tablePanel";
+import QueryTablePanel from "@/components/queryTablePanel";
 import { runFunction } from "@/lib/db";
 import { Query } from "@/lib/types";
 import { notFound } from "next/navigation";
@@ -18,17 +18,14 @@ export default async function QueryPage({
         notFound();
     }
 
-    const data = await runFunction<any>(query.function_name, []);
-
     return (
         <div className="flex h-full flex-col space-y-6">
-            <TablePanel
-                tableName=""
-                data={data}
+            <QueryTablePanel
                 columns={query.columns}
+                functionName={query.function_name}
                 title={query.title}
-                editable={false}
                 pageSize={10}
+                withParameter={query.with_parameter}
             />
         </div>
     );

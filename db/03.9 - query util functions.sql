@@ -6,6 +6,7 @@ RETURNS TABLE (
     function_name VARCHAR(255),
     title VARCHAR(255),
     description VARCHAR(255),
+    with_parameter BOOLEAN,
     columns JSONB
 ) AS $$
 BEGIN
