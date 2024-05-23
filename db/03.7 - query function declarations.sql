@@ -317,3 +317,176 @@ BEGIN
     GROUP BY t.title;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION all_and_current_patient_count_by_department()
+RETURNS TABLE (
+    department VARCHAR(255),
+    patient_count INT,
+    current_patient_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        d.title as department,
+        COUNT(CASE WHEN pr.id IS NOT NULL THEN 1 END)::INT as patient_count,
+        COUNT(CASE WHEN pr.admission_date <= current_date AND pr.discharge_date >= current_date	THEN 1 END)::INT as current_patient_count
+    FROM department d
+    LEFT JOIN doctor doc ON doc.department_id = d.id
+    LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
+    GROUP BY d.title;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION patient_count_by_russian_departments()
+RETURNS TABLE (
+    department VARCHAR(255),
+    patient_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        d.title as department,
+        COUNT(*)::INT as patient_count
+    FROM department d
+    LEFT JOIN doctor doc ON doc.department_id = d.id
+    LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
+    WHERE d.phone LIKE '+7%'
+    GROUP BY d.title;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION patient_count_by_doctors_in_department(
+    department_title VARCHAR(255)
+)
+RETURNS TABLE (
+    doctor VARCHAR(255),
+    patient_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        d.full_name as doctor,
+        COUNT(*)::INT as patient_count
+    FROM doctor d
+    LEFT JOIN patient_record pr ON pr.doctor_id = d.id
+    LEFT JOIN department dep ON d.department_id = dep.id
+    WHERE dep.title = department_title
+    GROUP BY d.full_name;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION patient_count_by_doctors_with_salary_higher_than_average()
+RETURNS TABLE (
+    doctor VARCHAR(255),
+    patient_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        d.full_name as doctor,
+        COUNT(*)::INT as patient_count
+    FROM doctor d
+    LEFT JOIN patient_record pr ON pr.doctor_id = d.id
+    WHERE d.salary > (
+        SELECT AVG(salary) FROM doctor
+    )
+    GROUP BY d.full_name;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION patient_and_doctor_usernames()
+RETURNS TABLE (
+    full_name VARCHAR(255),
+    username NAME
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.full_name,
+        p.username
+    FROM patient p
+    UNION
+    SELECT 
+        d.full_name,
+        d.username
+    FROM doctor d;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION patients_without_records()
+RETURNS TABLE (
+    full_name VARCHAR(255),
+    birth_date DATE,
+    social_status VARCHAR(255),
+    username NAME
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.full_name,
+        p.birth_date,
+        s.title as social_status,
+        p.username
+    FROM
+        patient p
+    LEFT JOIN
+        social_status s ON p.social_status_id = s.id
+    WHERE p.id NOT IN (
+        SELECT patient_id FROM patient_record
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION patient_records_full_info()
+RETURNS TABLE (
+    full_name VARCHAR(255),
+    birth_date DATE,
+    social_status VARCHAR(255),
+    admission_date DATE,
+    discharge_date DATE,
+    status TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.full_name,
+        p.birth_date,
+        s.title as social_status,
+        pr.admission_date,
+        pr.discharge_date,
+        CASE
+            WHEN pr.discharge_date < CURRENT_DATE THEN 'Выписан'
+            WHEN NOT EXISTS (SELECT 1 FROM public.clinical_record cr WHERE cr.patient_record_id = pr.id) THEN 'К оформлению'
+            ELSE 'На лечении'
+        END AS status
+    FROM
+        public.patient_record pr
+    JOIN
+        public.patient p ON pr.patient_id = p.id
+    JOIN
+        public.social_status s ON p.social_status_id = s.id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION average_doctor_patient_count_by_department()
+RETURNS TABLE (
+    department VARCHAR(255),
+    avg_patient_count NUMERIC
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        subquery.department,
+        ROUND(AVG(patient_count), 2) as avg_patient_count 
+    FROM (
+        SELECT
+            dep.title as department,
+            COUNT(*) as patient_count
+        FROM patient_record pr
+        JOIN doctor doc ON pr.doctor_id = doc.id
+        JOIN department dep ON doc.department_id = dep.id
+        GROUP BY dep.title, doc.id
+    ) as subquery
+    GROUP BY subquery.department;
+END;
+$$ LANGUAGE plpgsql;
