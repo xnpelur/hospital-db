@@ -1,3 +1,4 @@
+-- симметричное внутреннее соединение с условием
 CREATE FUNCTION patient_records_with_social_status(
     social_status_value VARCHAR(255)
 )
@@ -83,6 +84,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- симметричное внутреннее соединение без условия 
 CREATE FUNCTION average_salary()
 RETURNS TABLE (
     department VARCHAR(255),
@@ -141,6 +143,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 	левое внешнее соединение
 CREATE FUNCTION doctor_count_by_department()
 RETURNS TABLE (
     department VARCHAR(255),
@@ -157,6 +160,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 	правое внешнее соединение
 CREATE FUNCTION stay_count_by_disease()
 RETURNS TABLE (
     disease VARCHAR(255),
@@ -173,6 +177,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 	запрос на запросе по принципу левого соединения
 CREATE FUNCTION patients_with_stay_count_higher_than_average()
 RETURNS TABLE (
     full_name VARCHAR(255),
@@ -200,6 +205,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 	итоговый запрос без условия
 CREATE FUNCTION patient_count_by_department()
 RETURNS TABLE (
     department VARCHAR(255),
@@ -217,107 +223,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION current_patient_count_by_department()
-RETURNS TABLE (
-    department VARCHAR(255),
-    patient_count INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        d.title as department,
-        COUNT(*)::INT as patient_count
-    FROM department d
-    LEFT JOIN doctor doc ON doc.department_id = d.id
-    LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
-    WHERE pr.admission_date <= current_date AND pr.discharge_date >= current_date
-    GROUP BY d.title;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION doctors_with_patient_count_more_than(
-    patient_count_value INT
-)
-RETURNS TABLE (
-    doctor VARCHAR(255),
-    patient_count INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        d.full_name as doctor,
-        COUNT(*)::INT as patient_count
-    FROM doctor d
-    LEFT JOIN patient_record pr ON pr.doctor_id = d.id
-    GROUP BY d.full_name
-    HAVING COUNT(*) > patient_count_value;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION doctors_with_current_patient_count_more_than(
-    patient_count_value INT
-)
-RETURNS TABLE (
-    doctor VARCHAR(255),
-    patient_count INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        d.full_name as doctor,
-        COUNT(*)::INT as patient_count
-    FROM doctor d
-    LEFT JOIN patient_record pr ON pr.doctor_id = d.id
-    WHERE pr.admission_date <= current_date AND pr.discharge_date >= current_date
-    GROUP BY d.full_name
-    HAVING COUNT(*) > patient_count_value;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION departments_with_average_salary_higher_than_average()
-RETURNS TABLE (
-    department VARCHAR(255),
-    avg_salary INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT 
-        d.title as department, 
-        ROUND(AVG(doc.salary), 0)::INT AS avg_salary
-    FROM doctor doc
-    JOIN department d ON doc.department_id = d.id
-    GROUP BY d.title
-    HAVING AVG(doc.salary) > (
-        SELECT AVG(salary)
-        FROM doctor
-    );
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION total_cost_of_treatments_from(
-    from_date DATE
-)
-RETURNS TABLE (
-    treatment VARCHAR(255),
-    total_cost INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        t.title as treatment,
-        SUM(t.cost)::INT as total_cost
-    FROM treatment_record tr
-    JOIN treatment t ON tr.treatment_id = t.id
-    WHERE tr.id IN (
-        SELECT 
-            id 
-        FROM treatment_record 
-        WHERE tr.start_date >= from_date::DATE
-    )
-    GROUP BY t.title;
-END;
-$$ LANGUAGE plpgsql;
-
+-- 	итоговый запрос без условия c итоговыми данными вида: «всего», «в том числе»;
 CREATE FUNCTION all_and_current_patient_count_by_department()
 RETURNS TABLE (
     department VARCHAR(255),
@@ -333,6 +239,25 @@ BEGIN
     FROM department d
     LEFT JOIN doctor doc ON doc.department_id = d.id
     LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
+    GROUP BY d.title;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 	итоговые запросы с условием на данные (по значению, по маске, с использованием индекса, без использования индекса); 
+CREATE FUNCTION current_patient_count_by_department()
+RETURNS TABLE (
+    department VARCHAR(255),
+    patient_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        d.title as department,
+        COUNT(*)::INT as patient_count
+    FROM department d
+    LEFT JOIN doctor doc ON doc.department_id = d.id
+    LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
+    WHERE pr.admission_date <= current_date AND pr.discharge_date >= current_date
     GROUP BY d.title;
 END;
 $$ LANGUAGE plpgsql;
@@ -394,6 +319,69 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 	итоговый запрос с условием на группы; 
+CREATE FUNCTION doctors_with_patient_count_more_than(
+    patient_count_value INT
+)
+RETURNS TABLE (
+    doctor VARCHAR(255),
+    patient_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        d.full_name as doctor,
+        COUNT(*)::INT as patient_count
+    FROM doctor d
+    LEFT JOIN patient_record pr ON pr.doctor_id = d.id
+    GROUP BY d.full_name
+    HAVING COUNT(*) > patient_count_value;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 	итоговый запрос с условием на данные и на группы;
+CREATE FUNCTION doctors_with_current_patient_count_more_than(
+    patient_count_value INT
+)
+RETURNS TABLE (
+    doctor VARCHAR(255),
+    patient_count INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        d.full_name as doctor,
+        COUNT(*)::INT as patient_count
+    FROM doctor d
+    LEFT JOIN patient_record pr ON pr.doctor_id = d.id
+    WHERE pr.admission_date <= current_date AND pr.discharge_date >= current_date
+    GROUP BY d.full_name
+    HAVING COUNT(*) > patient_count_value;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 	запрос на запросе по принципу итогового запроса;
+CREATE FUNCTION departments_with_average_salary_higher_than_average()
+RETURNS TABLE (
+    department VARCHAR(255),
+    avg_salary INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        d.title as department, 
+        ROUND(AVG(doc.salary), 0)::INT AS avg_salary
+    FROM doctor doc
+    JOIN department d ON doc.department_id = d.id
+    GROUP BY d.title
+    HAVING AVG(doc.salary) > (
+        SELECT AVG(salary)
+        FROM doctor
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- 	запрос с использованием объединения
 CREATE FUNCTION patient_and_doctor_usernames()
 RETURNS TABLE (
     full_name VARCHAR(255),
@@ -410,6 +398,31 @@ BEGIN
         d.full_name,
         d.username
     FROM doctor d;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 	запросы с подзапросами (с использованием in, not in, case, операциями над итоговыми данными). 
+CREATE FUNCTION total_cost_of_treatments_from(
+    from_date DATE
+)
+RETURNS TABLE (
+    treatment VARCHAR(255),
+    total_cost INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        t.title as treatment,
+        SUM(t.cost)::INT as total_cost
+    FROM treatment_record tr
+    JOIN treatment t ON tr.treatment_id = t.id
+    WHERE tr.id IN (
+        SELECT 
+            id 
+        FROM treatment_record 
+        WHERE tr.start_date >= from_date::DATE
+    )
+    GROUP BY t.title;
 END;
 $$ LANGUAGE plpgsql;
 
