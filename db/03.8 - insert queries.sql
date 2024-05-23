@@ -549,6 +549,7 @@ VALUES (
         {
             "key": "status",
             "title": "Статус лечения",
+            "type": "patient_badge",
             "sortable": true
         }
     ]'::jsonb

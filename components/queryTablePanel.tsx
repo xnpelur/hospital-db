@@ -7,6 +7,7 @@ import { SimplifiedColumnDef } from "@/lib/types";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { runFunction } from "@/lib/db";
+import { writeToExcel } from "@/lib/excel";
 
 type Props = {
     title: string;
@@ -71,7 +72,13 @@ export default function QueryTablePanel(props: Props) {
                         ? 'Введите параметр в поле выше и нажмите кнопку "Подтвердить".'
                         : undefined
                 }
-            />
+            >
+                <div className="py-4">
+                    <Button onClick={() => writeToExcel(data, props.columns)}>
+                        Экспортировать в Excel
+                    </Button>
+                </div>
+            </DataTable>
         </div>
     );
 }

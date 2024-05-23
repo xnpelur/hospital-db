@@ -36,6 +36,7 @@ type Props = {
         value: string;
     };
     customEmptyTableText?: string;
+    children?: React.ReactNode;
 };
 
 export function DataTable(props: Props) {
@@ -93,76 +94,79 @@ export function DataTable(props: Props) {
 
     return (
         <div className="flex w-full flex-1 flex-col justify-between">
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader className="bg-gray-200 text-gray-700">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead
-                                            key={header.id}
-                                            className="font-bold"
-                                            style={{
-                                                width:
-                                                    header.getSize() !== 150
-                                                        ? header.getSize()
-                                                        : undefined,
-                                            }}
-                                        >
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
-                                        </TableHead>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row, i) => (
-                                <TableRow
-                                    key={i}
-                                    className="h-12 cursor-pointer"
-                                    onClick={() => {
-                                        if (props.rowUrl) {
-                                            router.push(
-                                                `${props.rowUrl}/${row.original.id}`
-                                            );
-                                        }
-                                    }}
-                                    data-state={
-                                        row.getIsSelected() && "selected"
-                                    }
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
+            <div>
+                <div className="rounded-md border">
+                    <Table>
+                        <TableHeader className="bg-gray-200 text-gray-700">
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead
+                                                key={header.id}
+                                                className="font-bold"
+                                                style={{
+                                                    width:
+                                                        header.getSize() !== 150
+                                                            ? header.getSize()
+                                                            : undefined,
+                                                }}
+                                            >
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                          header.column
+                                                              .columnDef.header,
+                                                          header.getContext()
+                                                      )}
+                                            </TableHead>
+                                        );
+                                    })}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={props.columnDefs.length}
-                                    className="h-24 text-center"
-                                >
-                                    {props.customEmptyTableText ??
-                                        "Записи не найдены."}
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row, i) => (
+                                    <TableRow
+                                        key={i}
+                                        className="h-12 cursor-pointer"
+                                        onClick={() => {
+                                            if (props.rowUrl) {
+                                                router.push(
+                                                    `${props.rowUrl}/${row.original.id}`
+                                                );
+                                            }
+                                        }}
+                                        data-state={
+                                            row.getIsSelected() && "selected"
+                                        }
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={props.columnDefs.length}
+                                        className="h-24 text-center"
+                                    >
+                                        {props.customEmptyTableText ??
+                                            "Записи не найдены."}
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+                {props.children}
             </div>
             <div className="flex items-center justify-between space-x-2 py-4">
                 <div className="text-sm text-muted-foreground">
