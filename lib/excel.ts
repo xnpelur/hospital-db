@@ -6,8 +6,6 @@ export async function writeToExcel(
     data: any[],
     columns: SimplifiedColumnDef[]
 ) {
-    console.log(data);
-    console.log(columns);
     const rows: Object[][] = [
         columns.map((column) => ({
             value: column.title,

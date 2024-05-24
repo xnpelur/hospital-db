@@ -74,7 +74,10 @@ export default function QueryTablePanel(props: Props) {
                 }
             >
                 <div className="py-4">
-                    <Button onClick={() => writeToExcel(data, props.columns)}>
+                    <Button
+                        onClick={() => writeToExcel(data, props.columns)}
+                        disabled={data.length === 0}
+                    >
                         Экспортировать в Excel
                     </Button>
                 </div>
