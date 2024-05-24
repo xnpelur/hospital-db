@@ -66,3 +66,12 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
+CREATE FUNCTION delete_patient_record(record_id INTEGER)
+RETURNS VOID AS
+$$
+BEGIN
+    DELETE FROM patient_record WHERE id = record_id;
+END;
+$$
+LANGUAGE plpgsql;

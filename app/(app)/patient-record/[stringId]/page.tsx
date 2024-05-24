@@ -9,6 +9,7 @@ import {
 import { notFound } from "next/navigation";
 import ClincicalRecordsEditModal from "./_components/clinicalRecordsEditModal";
 import TreatmentsPanel from "./_components/treatmentsPanel";
+import DeletePatientRecordButton from "./_components/deletePatientRecordButton";
 
 export default async function PatientRecordPage({
     params,
@@ -46,6 +47,11 @@ export default async function PatientRecordPage({
                 <h1 className="mx-1 text-4xl font-semibold">
                     {patientRecord.full_name}
                 </h1>
+                {clinicalRecords.length === 0 && (
+                    <DeletePatientRecordButton
+                        patientRecordId={patientRecordId}
+                    />
+                )}
             </div>
             <div className="grid flex-1 grid-cols-2 text-lg">
                 <div className="space-y-2">

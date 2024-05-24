@@ -69,7 +69,7 @@ export default function TreatmentRecordActionsDropdown(props: Props) {
             <ConfirmationDialog
                 variant="destructive"
                 modalTitle="Подтвердите удаление"
-                modalDescription="Вы уверены, что хотите безвозвратно удалить эту запись из таблицы?"
+                modalDescription="Вы уверены, что хотите безвозвратно удалить эту запись?"
                 onConfirm={deleteRecord}
                 customControls={{ open: deleteOpen, setOpen: setDeleteOpen }}
             />

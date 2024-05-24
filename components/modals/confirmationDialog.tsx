@@ -51,7 +51,7 @@ export default function ConfirmationDialog(props: Props) {
         >
             {!props.customControls && (
                 <DialogTrigger asChild>
-                    <Button>{props.text}</Button>
+                    <Button variant={props.variant}>{props.text}</Button>
                 </DialogTrigger>
             )}
             <DialogContent
