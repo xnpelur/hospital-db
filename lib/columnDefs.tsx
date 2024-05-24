@@ -13,7 +13,7 @@ import {
 } from "@radix-ui/react-icons";
 import { toLocalizedString } from "./dates";
 import ActionsDropdown from "@/components/actionsDropdown";
-import TreatmentRecordActionsDropdown from "@/app/(app)/patient-record/[stringId]/_components/actionsDropdown";
+import TreatmentRecordActionsDropdown from "@/app/(app)/patient-record/[stringId]/_components/treatmentRecordActionsDropdown";
 
 function patientStatusBadge(value: string) {
     return (

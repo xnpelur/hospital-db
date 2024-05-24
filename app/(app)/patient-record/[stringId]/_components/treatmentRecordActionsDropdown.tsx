@@ -11,13 +11,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import TreatmentsEditModal from "@/app/(app)/patient-record/[stringId]/_components/treatmentsEditModal";
 import { useState } from "react";
 import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { runFunction } from "@/lib/db";
 import { isToday } from "date-fns";
 import ConfirmationDialog from "@/components/modals/confirmationDialog";
+import TreatmentRecordEditModal from "./treatmentRecordEditModal";
 
 type Props = {
     treatmentRecord: TreatmentRecord;
@@ -91,7 +91,7 @@ export default function TreatmentRecordActionsDropdown(props: Props) {
                     setOpen: setTerminateOpen,
                 }}
             />
-            <TreatmentsEditModal
+            <TreatmentRecordEditModal
                 open={editOpen}
                 setOpen={setEditOpen}
                 treatmentRecord={props.treatmentRecord}

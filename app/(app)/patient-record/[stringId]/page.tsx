@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { runFunction } from "@/lib/db";
 import {
     ClinicalRecord,
@@ -8,7 +7,7 @@ import {
 } from "@/lib/types";
 import { notFound } from "next/navigation";
 import ClincicalRecordsEditModal from "./_components/clinicalRecordsEditModal";
-import TreatmentsPanel from "./_components/treatmentsPanel";
+import TreatmentRecordsPanel from "./_components/treatmentRecordsPanel";
 import DeletePatientRecordButton from "./_components/deletePatientRecordButton";
 
 export default async function PatientRecordPage({
@@ -97,7 +96,7 @@ export default async function PatientRecordPage({
                     </div>
                 </div>
             </div>
-            <TreatmentsPanel
+            <TreatmentRecordsPanel
                 treatmentRecords={treatmentRecords}
                 columns={[
                     {

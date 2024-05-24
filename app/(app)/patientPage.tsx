@@ -1,8 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { runFunction } from "@/lib/db";
 import { ClinicalRecord, PatientRecord, TreatmentRecord } from "@/lib/types";
-import { notFound } from "next/navigation";
-import TreatmentsPanel from "./patient-record/[stringId]/_components/treatmentsPanel";
+import TreatmentRecordsPanel from "./patient-record/[stringId]/_components/treatmentRecordsPanel";
 
 export default async function PatientPage() {
     const session = await getSession();
@@ -88,7 +87,7 @@ export default async function PatientPage() {
                     </div>
                 </div>
             </div>
-            <TreatmentsPanel
+            <TreatmentRecordsPanel
                 treatmentRecords={treatmentRecords}
                 columns={[
                     {

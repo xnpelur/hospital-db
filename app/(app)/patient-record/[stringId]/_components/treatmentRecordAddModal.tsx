@@ -9,14 +9,14 @@ import {
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import TreatmentsForm from "./treatmentsForm";
+import TreatmentRecordForm from "./treatmentRecordForm";
 import { ClinicalRecord } from "@/lib/types";
 
 type Props = {
     clinicalRecords: ClinicalRecord[];
 };
 
-export default function TreatmentsAddModal(props: Props) {
+export default function TreatmentRecordAddModal(props: Props) {
     const [open, setOpen] = useState(false);
     const router = useRouter();
 
@@ -31,7 +31,7 @@ export default function TreatmentsAddModal(props: Props) {
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>Добавить процедуру</DialogTitle>
-                    <TreatmentsForm
+                    <TreatmentRecordForm
                         clinicalRecords={props.clinicalRecords}
                         onFormSubmit={() => {
                             setOpen(false);

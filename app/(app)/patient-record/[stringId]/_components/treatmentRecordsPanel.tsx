@@ -6,7 +6,7 @@ import {
     TreatmentRecord,
 } from "@/lib/types";
 import { DataTable } from "@/components/dataTable";
-import TreatmentsAddModal from "./treatmentsAddModal";
+import TreatmentRecordAddModal from "./treatmentRecordAddModal";
 import { getTreatmentRecordsColumnDefs } from "@/lib/columnDefs";
 
 type Props = {
@@ -16,14 +16,14 @@ type Props = {
     columns: SimplifiedColumnDef[];
 };
 
-export default function TreatmentsPanel(props: Props) {
+export default function TreatmentRecordsPanel(props: Props) {
     return (
         <div className="flex flex-col space-y-5">
             <div className="flex justify-between gap-2">
                 <h2 className="mx-1 text-2xl font-semibold">Процедуры</h2>
                 {props.editable ? (
                     <div className="space-x-4">
-                        <TreatmentsAddModal
+                        <TreatmentRecordAddModal
                             clinicalRecords={props.clinicalRecords}
                         />
                     </div>

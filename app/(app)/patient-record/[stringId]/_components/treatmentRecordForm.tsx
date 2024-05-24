@@ -86,7 +86,7 @@ const formSchema = z
         path: ["endDate"],
     });
 
-export default function TreatmentsForm(props: Props) {
+export default function TreatmentRecordForm(props: Props) {
     const defaultTreatments = props.treatmentRecord
         ? [
               {

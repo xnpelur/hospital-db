@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import { ClinicalRecord, TreatmentRecord } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import TreatmentsForm from "./treatmentsForm";
+import TreatmentRecordForm from "./treatmentRecordForm";
 
 type Props = {
     open: boolean;
@@ -15,7 +15,7 @@ type Props = {
     clinicalRecords: ClinicalRecord[];
 };
 
-export default function TreatmentsEditModal(props: Props) {
+export default function TreatmentRecordEditModal(props: Props) {
     const router = useRouter();
 
     return (
@@ -23,7 +23,7 @@ export default function TreatmentsEditModal(props: Props) {
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>Изменить процедуру</DialogTitle>
-                    <TreatmentsForm
+                    <TreatmentRecordForm
                         onFormSubmit={() => {
                             props.setOpen(false);
                             router.refresh();
