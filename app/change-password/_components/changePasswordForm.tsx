@@ -18,6 +18,7 @@ import { runFunction } from "@/lib/db";
 import { changeSessionPassword } from "@/lib/auth";
 import ConfirmationDialog from "@/components/modals/confirmationDialog";
 import { useState } from "react";
+import { requiredPassword, requiredString } from "@/lib/zodObjects";
 
 type Props = {
     currentUsername: string;
@@ -30,9 +31,9 @@ export default function ChangePasswordForm(props: Props) {
 
     const formSchema = z
         .object({
-            currentPassword: z.string().min(1),
-            newPassword: z.string().min(4),
-            confirmPassword: z.string().min(4),
+            currentPassword: requiredString,
+            newPassword: requiredPassword,
+            confirmPassword: requiredPassword,
         })
         .refine((data) => data.currentPassword === props.currentUserPassword, {
             message: "Текущий пароль введён неверно",
@@ -49,6 +50,11 @@ export default function ChangePasswordForm(props: Props) {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
+        defaultValues: {
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+        },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {

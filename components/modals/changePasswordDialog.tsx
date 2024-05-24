@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { runFunction } from "@/lib/db";
 import ConfirmationDialog from "./confirmationDialog";
+import { requiredPassword, requiredString } from "@/lib/zodObjects";
 
 type Props = {
     open: boolean;
@@ -34,9 +35,9 @@ export default function ChangePasswordDialog(props: Props) {
 
     const formSchema = z
         .object({
-            username: z.string().min(1),
-            newPassword: z.string().min(4),
-            confirmPassword: z.string().min(4),
+            username: requiredString,
+            newPassword: requiredPassword,
+            confirmPassword: requiredPassword,
         })
         .refine((data) => data.newPassword === data.confirmPassword, {
             message: "Пароли не совпадают",

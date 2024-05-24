@@ -20,6 +20,7 @@ import { Credentials, generateCredentials } from "@/lib/credentials";
 import { useMemo, useState } from "react";
 import { PhoneInput } from "./phoneInput";
 import ConfirmationDialog from "../modals/confirmationDialog";
+import { requiredDate, requiredNumber, requiredString } from "@/lib/zodObjects";
 
 type Props = {
     tableName: string;
@@ -43,10 +44,10 @@ export default function CustomForm(props: Props) {
             columns.map((column) => [
                 column.key,
                 column.type == "date"
-                    ? z.date()
+                    ? requiredDate
                     : column.type == "number"
-                      ? z.coerce.number().min(0)
-                      : z.string().min(1),
+                      ? requiredNumber
+                      : requiredString,
             ])
         )
     );

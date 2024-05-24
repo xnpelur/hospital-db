@@ -15,10 +15,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { login } from "@/lib/login";
-
-const requiredString = z.string().min(1, {
-    message: "Обязательное поле",
-});
+import { requiredString } from "@/lib/zodObjects";
 
 export default function LoginForm() {
     const formSchema = z.object({

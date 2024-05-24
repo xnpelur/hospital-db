@@ -18,6 +18,11 @@ import { Input } from "@/components/ui/input";
 import CustomCombobox from "@/components/forms/customCombobox";
 import CustomDatePicker from "@/components/forms/customDatePicker";
 import { getToday } from "@/lib/dates";
+import {
+    requiredDateFromToday,
+    requiredNumber,
+    requiredString,
+} from "@/lib/zodObjects";
 
 type Props = {
     clinicalRecords: ClinicalRecord[];
@@ -67,19 +72,14 @@ function parseRepeatInterval(s: string): {
 
 const formSchema = z
     .object({
-        treatment: z.string().min(1),
-        startDate: z.date().min(getToday(), {
-            message: "Дата начала процедуры не может быть ранее, чем сегодня",
-        }),
-        endDate: z.date().min(getToday(), {
-            message:
-                "Дата окончания процедуры не может быть ранее, чем сегодня",
-        }),
+        treatment: requiredString,
+        startDate: requiredDateFromToday,
+        endDate: requiredDateFromToday,
         repeatInterval: z.object({
-            amount: z.coerce.number().min(1),
-            unit: z.string().min(1),
+            amount: requiredNumber,
+            unit: requiredString,
         }),
-        disease: z.string().min(1),
+        disease: requiredString,
     })
     .refine((form) => form.startDate <= form.endDate, {
         message: "Дата окончания процедуры не может быть раньше даты начала",
@@ -123,11 +123,13 @@ export default function TreatmentRecordForm(props: Props) {
                   disease: props.treatmentRecord.disease,
               }
             : {
+                  treatment: "",
                   startDate: new Date(),
                   repeatInterval: {
                       amount: 1,
                       unit: "час",
                   },
+                  disease: "",
               },
     });
 
@@ -241,6 +243,7 @@ export default function TreatmentRecordForm(props: Props) {
                                     <Input
                                         className="w-20"
                                         type="number"
+                                        min={1}
                                         value={field.value.amount}
                                         onChange={(e) => {
                                             form.setValue(field.name, {
