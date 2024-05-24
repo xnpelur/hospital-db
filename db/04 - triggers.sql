@@ -199,3 +199,18 @@ CREATE TRIGGER validate_clinical_record_deletion_trigger
 BEFORE DELETE ON clinical_record
 FOR EACH ROW
 EXECUTE FUNCTION validate_clinical_record_deletion();
+
+CREATE OR REPLACE FUNCTION prevent_duplicate_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS(SELECT 1 FROM treatment_record WHERE id = NEW.id) THEN
+        RAISE EXCEPTION 'id % уже существует в таблице treatment_record', NEW.id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_duplicate_id
+BEFORE INSERT OR UPDATE ON treatment_record
+FOR EACH ROW
+EXECUTE FUNCTION prevent_duplicate_id();

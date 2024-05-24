@@ -61,13 +61,18 @@ CREATE TABLE clinical_record (
 );
 
 CREATE TABLE treatment_record (
-    id SERIAL UNIQUE,
+    id SERIAL,
     treatment_id INTEGER NOT NULL REFERENCES treatment(id),
     clinical_record_id INTEGER NOT NULL REFERENCES clinical_record(id) ON DELETE CASCADE,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     repeat_interval interval NOT NULL
-);
+) PARTITION BY HASH (clinical_record_id);
+
+CREATE TABLE treatment_record_0 PARTITION OF treatment_record FOR VALUES WITH (MODULUS 4, REMAINDER 0);
+CREATE TABLE treatment_record_1 PARTITION OF treatment_record FOR VALUES WITH (MODULUS 4, REMAINDER 1);
+CREATE TABLE treatment_record_2 PARTITION OF treatment_record FOR VALUES WITH (MODULUS 4, REMAINDER 2);
+CREATE TABLE treatment_record_3 PARTITION OF treatment_record FOR VALUES WITH (MODULUS 4, REMAINDER 3);
 
 ALTER TABLE social_status ENABLE ROW LEVEL SECURITY;
 ALTER TABLE patient ENABLE ROW LEVEL SECURITY;
