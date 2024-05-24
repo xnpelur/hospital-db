@@ -384,6 +384,20 @@ const femaleMiddleNames = [
     "Яковлевна",
 ];
 
+const units = [
+    { unit: "hour", weight: 10 },
+    { unit: "day", weight: 20 },
+    { unit: "month", weight: 1 },
+];
+
+// Create a weighted array
+const weightedUnits = [];
+units.forEach(({ unit, weight }) => {
+    for (let i = 0; i < weight; i++) {
+        weightedUnits.push(unit);
+    }
+});
+
 function getRandomInt(end) {
     return Math.floor(Math.random() * end);
 }
@@ -415,10 +429,9 @@ function getRandomDate(start, end) {
 }
 
 function getRandomInterval() {
-    const units = ["hour", "day", "month"];
-    const unit = units[getRandomInt(units.length)];
+    const unit = weightedUnits[getRandomInt(weightedUnits.length)];
 
-    const maxAmount = unit == "hour" ? 24 : unit == "day" ? 30 : 12;
+    const maxAmount = unit == "hour" ? 24 : unit == "day" ? 30 : 1;
     const amount = 1 + getRandomInt(maxAmount - 1);
 
     return `${amount} ${unit}`;
@@ -435,19 +448,19 @@ function getDateAfterInterval(firstDate, interval) {
         case "hour":
             startDate.setHours(startDate.getHours() + value);
             endDate = new Date(
-                new Date(startDate).getTime() + 2 * 30 * 24 * 60 * 60 * 1000
+                new Date(startDate).getTime() + 1 * 30 * 24 * 60 * 60 * 1000
             );
             break;
         case "day":
             startDate.setDate(startDate.getDate() + value);
             endDate = new Date(
-                new Date(startDate).getTime() + 6 * 30 * 24 * 60 * 60 * 1000
+                new Date(startDate).getTime() + 3 * 30 * 24 * 60 * 60 * 1000
             );
             break;
         case "month":
             startDate.setMonth(startDate.getMonth() + value);
             endDate = new Date(
-                new Date(startDate).getTime() + 12 * 30 * 24 * 60 * 60 * 1000
+                new Date(startDate).getTime() + 3 * 30 * 24 * 60 * 60 * 1000
             );
             break;
         default:
