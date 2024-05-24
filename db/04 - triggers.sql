@@ -66,7 +66,7 @@ DECLARE
     overlapping_record RECORD;
 BEGIN
     IF NEW.discharge_date < NEW.admission_date THEN
-        RAISE EXCEPTION 'Discharge date cannot be less than admission date for the patient record.';
+        RAISE EXCEPTION 'Дата выписки не может быть раньше даты поступления в медицинскую карту пациента.';
     END IF;
 
     SELECT MAX(end_date)
@@ -79,7 +79,7 @@ BEGIN
     );
 
     IF NEW.discharge_date < max_end_date THEN
-        RAISE EXCEPTION 'Discharge date cannot be less than the maximum treatment end date for the patient record.';
+        RAISE EXCEPTION 'Дата выписки не может быть раньше последней даты окончания процедуры пациента.';
     END IF;
 
     SELECT birth_date
@@ -93,11 +93,11 @@ BEGIN
     WHERE id = NEW.doctor_id;
 
     IF NEW.admission_date < patient_birth_date THEN
-        RAISE EXCEPTION 'Admission date cannot be earlier than the patient birth date.';
+        RAISE EXCEPTION 'Дата поступления не может быть раньше даты рождения пациента.';
     END IF;
 
     IF NEW.admission_date < doctor_enrollment_date THEN
-        RAISE EXCEPTION 'Admission date cannot be earlier than the doctor enrollment date.';
+        RAISE EXCEPTION 'Дата поступления не может быть раньше даты поступления на работу врача.';
     END IF;
 
     SELECT pr.id, pr.admission_date, pr.discharge_date
@@ -112,9 +112,9 @@ BEGIN
     );
 
     IF FOUND THEN
-        RAISE EXCEPTION 'New patient record (admission: %, discharge: %) overlaps with existing record (id: %, admission: %, discharge: %)',
+        RAISE EXCEPTION 'Новая запись о пациенте (поступление: %, выписка: %) имеет пересечение с существующей записью (поступление: %, выписка: %)',
             NEW.admission_date, NEW.discharge_date,
-            overlapping_record.id, overlapping_record.admission_date, overlapping_record.discharge_date;
+            overlapping_record.admission_date, overlapping_record.discharge_date;
     END IF;
 
     RETURN NEW;
@@ -143,7 +143,7 @@ BEGIN
     );
 
     IF NEW.start_date < patient_admission_date THEN
-        RAISE EXCEPTION 'Treatment start date cannot be earlier than the patient admission date.';
+        RAISE EXCEPTION 'Дата начала лечения не может быть раньше даты поступления пациента.';
     END IF;
 
     RETURN NEW;
@@ -159,7 +159,7 @@ CREATE OR REPLACE FUNCTION validate_patient_deletion()
 RETURNS TRIGGER AS $$
 BEGIN
     IF EXISTS (SELECT 1 FROM patient_record WHERE patient_id = OLD.id) THEN
-        RAISE EXCEPTION 'Cannot delete patient with existing patient records';
+        RAISE EXCEPTION 'Нельзя удалить пациента, у которого есть записи о лечении';
     END IF;
     RETURN OLD;
 END;
@@ -174,7 +174,7 @@ CREATE OR REPLACE FUNCTION validate_patient_record_deletion()
 RETURNS TRIGGER AS $$
 BEGIN
     IF EXISTS (SELECT 1 FROM clinical_record WHERE patient_record_id = OLD.id) THEN
-        RAISE EXCEPTION 'Cannot delete patient record with existing clinical records';
+        RAISE EXCEPTION 'Нельзя удалить запись о лечении пациента с существующими записями о болезни';
     END IF;
     RETURN OLD;
 END;
@@ -189,7 +189,7 @@ CREATE OR REPLACE FUNCTION validate_clinical_record_deletion()
 RETURNS TRIGGER AS $$
 BEGIN
     IF EXISTS (SELECT 1 FROM treatment_record WHERE clinical_record_id = OLD.id) THEN
-        RAISE EXCEPTION 'Cannot delete clinical record with existing treatment records';
+        RAISE EXCEPTION 'Нельзя удалить запись о болезни пациента с существующими процедурами';
     END IF;
     RETURN OLD;
 END;
