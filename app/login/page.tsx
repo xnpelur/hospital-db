@@ -1,10 +1,7 @@
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { login } from "@/lib/login";
+import LoginForm from "./_components/loginForm";
 
 export default async function LoginPage() {
     const session = await getSession();
@@ -19,40 +16,7 @@ export default async function LoginPage() {
                     <CardTitle className="text-2xl font-bold">Вход</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form
-                        action={async (formData: FormData) => {
-                            "use server";
-                            await login(formData);
-                        }}
-                    >
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="username">
-                                    Имя пользователя
-                                </Label>
-                                <Input
-                                    id="username"
-                                    name="username"
-                                    required
-                                    type="text"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="password">Пароль</Label>
-                                <Input
-                                    id="password"
-                                    name="password"
-                                    required
-                                    type="password"
-                                />
-                            </div>
-                            <div className="pt-2">
-                                <Button className="w-full" type="submit">
-                                    Войти
-                                </Button>
-                            </div>
-                        </div>
-                    </form>
+                    <LoginForm />
                 </CardContent>
             </Card>
         </div>

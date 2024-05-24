@@ -1,18 +1,13 @@
+"use server";
+
 import { cookies } from "next/headers";
 import { User, encrypt } from "./auth";
 import { getUserRole } from "./db";
 
-export async function login(formData: FormData) {
-    const username = formData.get("username")?.toString();
-    const password = formData.get("password")?.toString();
-
-    if (!username || !password) {
-        return;
-    }
-
+export async function login(username: string, password: string) {
     const role = await getUserRole(username, password);
     if (!role) {
-        return;
+        return false;
     }
 
     const user: User = { username: username, role: role, password: password };
@@ -22,4 +17,5 @@ export async function login(formData: FormData) {
     const session = await encrypt({ user, expires });
 
     cookies().set("session", session, { expires, httpOnly: true });
+    return true;
 }
