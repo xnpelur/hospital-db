@@ -92,7 +92,7 @@ export default function CustomForm(props: Props) {
             await runFunction<null>("add_user", [
                 credentials.username,
                 credentials.password,
-                props.tableName,
+                props.tableName === "doctor" ? "doctor" : "patient",
             ]);
 
             setCredentialsText(

@@ -166,3 +166,21 @@ BEGIN
     END LOOP;
 END;
 $$;
+
+CREATE FUNCTION update_patients_with_dependencies(
+    patient_full_name VARCHAR(255),
+    patient_birth_date DATE,
+    patient_social_status VARCHAR(255),
+    patient_username NAME,
+    patient_id INT
+)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE patients_with_dependencies 
+    SET full_name = patient_full_name,
+        birth_date = patient_birth_date,
+        social_status = patient_social_status,
+        username = patient_username
+    WHERE id = patient_id;
+END;
+$$ LANGUAGE plpgsql;

@@ -3,7 +3,9 @@ import { getTableValues } from "@/lib/db";
 import { Patient, SocialStatus } from "@/lib/types";
 
 export default async function PatientsPage() {
-    const doctors = await getTableValues<Patient>("patients_with_dependencies");
+    const patients = await getTableValues<Patient>(
+        "patients_with_dependencies"
+    );
     const socialStatuses = await getTableValues<SocialStatus>("social_status");
 
     const socialStatusValues = socialStatuses.map((status) => status.title);
@@ -11,7 +13,7 @@ export default async function PatientsPage() {
     return (
         <TablePanel
             title="Пациенты"
-            data={doctors}
+            data={patients}
             columns={[
                 {
                     key: "full_name",
@@ -39,7 +41,7 @@ export default async function PatientsPage() {
             ]}
             editable={true}
             pageSize={10}
-            tableName="patient"
+            tableName="patients_with_dependencies"
         />
     );
 }

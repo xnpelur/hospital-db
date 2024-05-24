@@ -75,3 +75,13 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
+CREATE FUNCTION delete_patients_with_dependencies(
+    patient_id INT
+) RETURNS VOID AS
+$$
+BEGIN
+    DELETE FROM patients_with_dependencies WHERE id = patient_id;
+END;
+$$
+LANGUAGE plpgsql;

@@ -109,3 +109,16 @@ BEGIN
     VALUES (patient_id_value, doctor_id_value, record_admission_date, record_discharge_date);
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION insert_patients_with_dependencies(
+    patient_full_name VARCHAR(255),
+    patient_birth_date DATE,
+    patient_social_status VARCHAR(255),
+    patient_username NAME
+)
+RETURNS VOID AS $$
+BEGIN
+    INSERT INTO patients_with_dependencies (full_name, birth_date, social_status, username, dependencies) 
+    VALUES (patient_full_name, patient_birth_date, patient_social_status, patient_username, 0);
+END;
+$$ LANGUAGE plpgsql;
