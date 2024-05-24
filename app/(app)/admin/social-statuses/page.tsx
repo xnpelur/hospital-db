@@ -4,7 +4,7 @@ import { SocialStatus } from "@/lib/types";
 
 export default async function SocialStatusesPage() {
     const socialStatuses = await getTableValues<SocialStatus>(
-        "social_statuses_with_dependencies"
+        "social_status_with_dependencies"
     );
 
     return (

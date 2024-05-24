@@ -3,9 +3,7 @@ import { getTableValues } from "@/lib/db";
 import { Patient, SocialStatus } from "@/lib/types";
 
 export default async function PatientsPage() {
-    const patients = await getTableValues<Patient>(
-        "patients_with_dependencies"
-    );
+    const patients = await getTableValues<Patient>("patient_with_dependencies");
     const socialStatuses = await getTableValues<SocialStatus>("social_status");
 
     const socialStatusValues = socialStatuses.map((status) => status.title);
@@ -41,7 +39,7 @@ export default async function PatientsPage() {
             ]}
             editable={true}
             pageSize={10}
-            tableName="patients_with_dependencies"
+            tableName="patient_with_dependencies"
         />
     );
 }

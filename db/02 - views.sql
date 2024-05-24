@@ -21,7 +21,7 @@ LEFT JOIN
 
 ALTER VIEW patient_records_view SET (security_invoker = on);
 
-CREATE VIEW treatments_with_dependencies AS
+CREATE VIEW treatment_with_dependencies AS
 SELECT 
 	t.id,
 	t.title,
@@ -31,7 +31,7 @@ FROM treatment t
 LEFT JOIN treatment_record tr ON tr.treatment_id = t.id
 GROUP BY t.id, t.title, t.cost;
 
-CREATE VIEW diseases_with_dependencies AS
+CREATE VIEW disease_with_dependencies AS
 SELECT 
 	d.id,
     d.title,
@@ -40,7 +40,7 @@ FROM disease d
 LEFT JOIN clinical_record cr ON cr.disease_id = d.id
 GROUP BY d.id, d.title;
 
-CREATE VIEW departments_with_dependencies AS
+CREATE VIEW department_with_dependencies AS
 SELECT 
 	d.id,
     d.title,
@@ -51,7 +51,7 @@ FROM department d
 LEFT JOIN doctor doc ON doc.department_id = d.id
 GROUP BY d.id, d.title, d.beds_number, d.phone;
 
-CREATE VIEW social_statuses_with_dependencies AS
+CREATE VIEW social_status_with_dependencies AS
 SELECT 
 	s.id,
     s.title,
@@ -60,7 +60,7 @@ FROM social_status s
 LEFT JOIN patient p ON p.social_status_id = s.id
 GROUP BY s.id, s.title;
 
-CREATE VIEW doctors_with_dependencies AS
+CREATE VIEW doctor_with_dependencies AS
 SELECT 
 	d.id,
     d.full_name,
@@ -75,7 +75,7 @@ LEFT JOIN patient_record pr ON pr.doctor_id = d.id
 JOIN department dep ON d.department_id = dep.id
 GROUP BY d.id, d.full_name, department, d.enrollment_date, d.category, d.salary, d.username;
 
-CREATE VIEW patients_with_dependencies AS
+CREATE VIEW patient_with_dependencies AS
 SELECT
     p.id,
     p.full_name,

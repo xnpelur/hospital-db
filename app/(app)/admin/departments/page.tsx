@@ -4,7 +4,7 @@ import { Department } from "@/lib/types";
 
 export default async function DepartmentsPage() {
     const departments = await getTableValues<Department>(
-        "departments_with_dependencies"
+        "department_with_dependencies"
     );
 
     return (

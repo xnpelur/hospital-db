@@ -3,9 +3,7 @@ import { getTableValues } from "@/lib/db";
 import { Disease } from "@/lib/types";
 
 export default async function DiseasesPage() {
-    const diseases = await getTableValues<Disease>(
-        "diseases_with_dependencies"
-    );
+    const diseases = await getTableValues<Disease>("disease_with_dependencies");
 
     return (
         <TablePanel

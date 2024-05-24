@@ -3,7 +3,7 @@ import { getTableValues } from "@/lib/db";
 import { Department, Doctor } from "@/lib/types";
 
 export default async function DoctorsPage() {
-    const doctors = await getTableValues<Doctor>("doctors_with_dependencies");
+    const doctors = await getTableValues<Doctor>("doctor_with_dependencies");
     const departments = await getTableValues<Department>("department");
 
     const departmentValues = departments.map((department) => department.title);

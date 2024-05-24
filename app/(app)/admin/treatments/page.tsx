@@ -4,7 +4,7 @@ import { Treatment } from "@/lib/types";
 
 export default async function TreatmentsPage() {
     const treatments = await getTableValues<Treatment>(
-        "treatments_with_dependencies"
+        "treatment_with_dependencies"
     );
 
     return (

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION insert_patients_with_dependencies() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION insert_patient_with_dependencies() RETURNS TRIGGER AS $$
 DECLARE
     patient_social_status_id INT;
 BEGIN
@@ -10,12 +10,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER insert_patients_with_dependencies_trigger
-INSTEAD OF INSERT ON patients_with_dependencies
+CREATE TRIGGER insert_patient_with_dependencies_trigger
+INSTEAD OF INSERT ON patient_with_dependencies
 FOR EACH ROW
-EXECUTE FUNCTION insert_patients_with_dependencies();
+EXECUTE FUNCTION insert_patient_with_dependencies();
 
-CREATE OR REPLACE FUNCTION update_patients_with_dependencies() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION update_patient_with_dependencies() RETURNS TRIGGER AS $$
 DECLARE
     patient_social_status_id INT;
 BEGIN
@@ -31,12 +31,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_patients_with_dependencies_trigger
-INSTEAD OF UPDATE ON patients_with_dependencies
+CREATE TRIGGER update_patient_with_dependencies_trigger
+INSTEAD OF UPDATE ON patient_with_dependencies
 FOR EACH ROW
-EXECUTE FUNCTION update_patients_with_dependencies();
+EXECUTE FUNCTION update_patient_with_dependencies();
 
-CREATE OR REPLACE FUNCTION delete_patients_with_dependencies() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION delete_patient_with_dependencies() RETURNS TRIGGER AS $$
 BEGIN
     DELETE FROM patient
     WHERE id = OLD.id;
@@ -44,7 +44,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER delete_patients_with_dependencies_trigger
-INSTEAD OF DELETE ON patients_with_dependencies
+CREATE TRIGGER delete_patient_with_dependencies_trigger
+INSTEAD OF DELETE ON patient_with_dependencies
 FOR EACH ROW
-EXECUTE FUNCTION delete_patients_with_dependencies();
+EXECUTE FUNCTION delete_patient_with_dependencies();

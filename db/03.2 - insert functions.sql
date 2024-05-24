@@ -110,7 +110,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION insert_patients_with_dependencies(
+CREATE FUNCTION insert_patient_with_dependencies(
     patient_full_name VARCHAR(255),
     patient_birth_date DATE,
     patient_social_status VARCHAR(255),
@@ -118,7 +118,7 @@ CREATE FUNCTION insert_patients_with_dependencies(
 )
 RETURNS VOID AS $$
 BEGIN
-    INSERT INTO patients_with_dependencies (full_name, birth_date, social_status, username, dependencies) 
+    INSERT INTO patient_with_dependencies (full_name, birth_date, social_status, username, dependencies) 
     VALUES (patient_full_name, patient_birth_date, patient_social_status, patient_username, 0);
 END;
 $$ LANGUAGE plpgsql;

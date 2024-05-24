@@ -103,7 +103,7 @@ export default function TreatmentRecordForm(props: Props) {
     useEffect(() => {
         async function fetchTreatments() {
             const data = await getTableValues<Treatment>(
-                "treatments_with_dependencies"
+                "treatment_with_dependencies"
             );
             setTreatments(data);
         }
