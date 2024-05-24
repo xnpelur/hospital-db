@@ -124,6 +124,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE FUNCTION terminate_treatment_record(
+    treatment_record_id INT
+)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE treatment_record
+    SET end_date = current_date
+    WHERE id = treatment_record_id;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE FUNCTION update_clinical_records(
     patientRecordId INTEGER,
     diseasesToInsert TEXT[],

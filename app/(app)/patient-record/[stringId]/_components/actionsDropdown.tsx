@@ -1,4 +1,5 @@
 import {
+    CrossCircledIcon,
     DotsHorizontalIcon,
     Pencil1Icon,
     TrashIcon,
@@ -26,8 +27,17 @@ type Props = {
 export default function TreatmentRecordActionsDropdown(props: Props) {
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
+    const [terminateOpen, setTerminateOpen] = useState(false);
 
     const router = useRouter();
+
+    async function terminateRecord() {
+        await runFunction<null>("terminate_treatment_record", [
+            props.treatmentRecord.id,
+        ]);
+        setTerminateOpen(false);
+        router.refresh();
+    }
 
     async function deleteRecord() {
         await runFunction<null>("delete_treatment_record", [
@@ -46,20 +56,41 @@ export default function TreatmentRecordActionsDropdown(props: Props) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-36">
-                <DropdownMenuItem onClick={() => setEditOpen(true)}>
-                    <Pencil1Icon className="mr-2 h-4 w-4" />
-                    Изменить
-                </DropdownMenuItem>
                 {isToday(props.treatmentRecord.start_date) ? (
+                    <>
+                        <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                            <Pencil1Icon className="mr-2 h-4 w-4" />
+                            Изменить
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => setDeleteOpen(true)}
+                        >
+                            <TrashIcon className="mr-2 h-4 w-4" />
+                            Удалить
+                        </DropdownMenuItem>
+                    </>
+                ) : (
                     <DropdownMenuItem
                         className="text-red-600"
-                        onClick={() => setDeleteOpen(true)}
+                        onClick={() => setTerminateOpen(true)}
+                        disabled={props.treatmentRecord.end_date < new Date()}
                     >
-                        <TrashIcon className="mr-2 h-4 w-4" />
-                        Удалить
+                        <CrossCircledIcon className="mr-2 h-4 w-4" />
+                        Прекратить
                     </DropdownMenuItem>
-                ) : null}
+                )}
             </DropdownMenuContent>
+            <ConfirmationDialog
+                variant="destructive"
+                modalTitle="Подтвердите прекращение процедуры"
+                modalDescription="Вы уверены, что хотите прекратить эту процедуру?"
+                onConfirm={terminateRecord}
+                customControls={{
+                    open: terminateOpen,
+                    setOpen: setTerminateOpen,
+                }}
+            />
             <TreatmentsEditModal
                 open={editOpen}
                 setOpen={setEditOpen}
@@ -71,7 +102,10 @@ export default function TreatmentRecordActionsDropdown(props: Props) {
                 modalTitle="Подтвердите удаление"
                 modalDescription="Вы уверены, что хотите безвозвратно удалить эту запись?"
                 onConfirm={deleteRecord}
-                customControls={{ open: deleteOpen, setOpen: setDeleteOpen }}
+                customControls={{
+                    open: deleteOpen,
+                    setOpen: setDeleteOpen,
+                }}
             />
         </DropdownMenu>
     );

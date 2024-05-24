@@ -211,6 +211,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER check_duplicate_id
-BEFORE INSERT OR UPDATE ON treatment_record
+BEFORE INSERT ON treatment_record
 FOR EACH ROW
 EXECUTE FUNCTION prevent_duplicate_id();
