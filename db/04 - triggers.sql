@@ -154,3 +154,48 @@ CREATE TRIGGER validate_treatment_record_start_date_trigger
 BEFORE INSERT OR UPDATE ON treatment_record
 FOR EACH ROW
 EXECUTE FUNCTION validate_treatment_record_start_date();
+
+CREATE OR REPLACE FUNCTION validate_patient_deletion() 
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM patient_record WHERE patient_id = OLD.id) THEN
+        RAISE EXCEPTION 'Cannot delete patient with existing patient records';
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_patient_deletion_trigger
+BEFORE DELETE ON patient
+FOR EACH ROW
+EXECUTE FUNCTION validate_patient_deletion();
+
+CREATE OR REPLACE FUNCTION validate_patient_record_deletion() 
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM clinical_record WHERE patient_record_id = OLD.id) THEN
+        RAISE EXCEPTION 'Cannot delete patient record with existing clinical records';
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_patient_record_deletion_trigger
+BEFORE DELETE ON patient_record
+FOR EACH ROW
+EXECUTE FUNCTION validate_patient_record_deletion();
+
+CREATE OR REPLACE FUNCTION validate_clinical_record_deletion() 
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM treatment_record WHERE clinical_record_id = OLD.id) THEN
+        RAISE EXCEPTION 'Cannot delete clinical record with existing treatment records';
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_clinical_record_deletion_trigger
+BEFORE DELETE ON clinical_record
+FOR EACH ROW
+EXECUTE FUNCTION validate_clinical_record_deletion();
