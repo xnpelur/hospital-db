@@ -8,6 +8,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { runFunction } from "@/lib/db";
 import { writeToExcel } from "@/lib/excel";
+import QueryChartDialog from "./queryChartDialog";
 
 type Props = {
     title: string;
@@ -73,13 +74,19 @@ export default function QueryTablePanel(props: Props) {
                         : undefined
                 }
             >
-                <div className="py-4">
+                <div className="space-x-4 py-4">
                     <Button
                         onClick={() => writeToExcel(data, props.columns)}
                         disabled={data.length === 0}
                     >
                         Экспортировать в Excel
                     </Button>
+                    <QueryChartDialog
+                        title={props.title}
+                        data={data}
+                        columns={props.columns}
+                        disabled={data.length === 0}
+                    />
                 </div>
             </DataTable>
         </div>
