@@ -22,12 +22,20 @@ export default function QueryTablePanel(props: Props) {
     const [parameter, setParameter] = useState("");
     const [data, setData] = useState<any[]>([]);
 
+    const [loading, setLoading] = useState(!props.withParameter);
+    const [tableUninitialized, setTableUninitialized] = useState(
+        props.withParameter
+    );
+
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const fetchData = useCallback(
         async (params: any[]) => {
+            setLoading(true);
             const temp = await runFunction<any>(props.functionName, params);
             setData(temp);
+            setLoading(false);
+            setTableUninitialized(false);
         },
         [props.functionName]
     );
@@ -68,11 +76,8 @@ export default function QueryTablePanel(props: Props) {
                 data={data}
                 columnDefs={getColumnDefs("", props.columns, false)}
                 pageSize={props.pageSize}
-                customEmptyTableText={
-                    props.withParameter
-                        ? 'Введите параметр в поле выше и нажмите кнопку "Подтвердить".'
-                        : undefined
-                }
+                tableUninitialized={tableUninitialized}
+                loading={loading}
             >
                 <div className="space-x-4 py-4">
                     <Button

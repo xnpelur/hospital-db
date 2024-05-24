@@ -35,8 +35,9 @@ type Props = {
         key: string;
         value: string;
     };
-    customEmptyTableText?: string;
     children?: React.ReactNode;
+    loading?: boolean;
+    tableUninitialized?: boolean;
 };
 
 export function DataTable(props: Props) {
@@ -126,7 +127,16 @@ export function DataTable(props: Props) {
                             ))}
                         </TableHeader>
                         <TableBody>
-                            {table.getRowModel().rows?.length ? (
+                            {props.loading ? (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={props.columnDefs.length}
+                                        className="h-24 text-center text-base"
+                                    >
+                                        Загрузка...
+                                    </TableCell>
+                                </TableRow>
+                            ) : table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row, i) => (
                                     <TableRow
                                         key={i}
@@ -156,10 +166,11 @@ export function DataTable(props: Props) {
                                 <TableRow>
                                     <TableCell
                                         colSpan={props.columnDefs.length}
-                                        className="h-24 text-center"
+                                        className="h-24 text-center text-base"
                                     >
-                                        {props.customEmptyTableText ??
-                                            "Записи не найдены."}
+                                        {props.tableUninitialized
+                                            ? 'Введите параметр в поле выше и нажмите кнопку "Подтвердить".'
+                                            : "Записи не найдены."}
                                     </TableCell>
                                 </TableRow>
                             )}
