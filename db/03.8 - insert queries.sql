@@ -362,7 +362,7 @@ VALUES (
 INSERT INTO query (function_name, title, description, with_parameters, columns) 
 VALUES (
     'patient_count_by_doctors_with_salary_higher_than_average', 
-    'Количество пациентов у врачей, с зарплатой выше средней', 
+    'Количество пациентов у врачей с зарплатой выше средней', 
     'Врачи, у которых зарплата выше средней по больнице, и их количество пациентов за всё время',
     'false',
     '[
@@ -466,7 +466,7 @@ VALUES (
 INSERT INTO query (function_name, title, description, with_parameters, columns) 
 VALUES (
     'total_cost_of_treatments_from', 
-    'Стоимость всех процедур проведенных после ...', 
+    'Стоимость всех процедур, проведенных после ...', 
     'Процедуры и количество денег, потраченное на них пациентами после заданной даты',
     'true',
     '[

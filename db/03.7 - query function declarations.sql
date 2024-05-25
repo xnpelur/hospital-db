@@ -215,7 +215,7 @@ BEGIN
     RETURN QUERY
     SELECT
         d.title as department,
-        COUNT(*)::INT as patient_count
+        COUNT(pr.id)::INT as patient_count
     FROM department d
     LEFT JOIN doctor doc ON doc.department_id = d.id
     LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
@@ -235,7 +235,8 @@ BEGIN
     SELECT
         d.title as department,
         COUNT(CASE WHEN pr.id IS NOT NULL THEN 1 END)::INT as patient_count,
-        COUNT(CASE WHEN pr.admission_date <= current_date AND pr.discharge_date >= current_date	THEN 1 END)::INT as current_patient_count
+        COUNT(CASE WHEN pr.admission_date <= current_date AND pr.discharge_date >= current_date	
+            THEN 1 END)::INT as current_patient_count
     FROM department d
     LEFT JOIN doctor doc ON doc.department_id = d.id
     LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
@@ -253,11 +254,11 @@ BEGIN
     RETURN QUERY
     SELECT
         d.title as department,
-        COUNT(*)::INT as patient_count
+        COUNT(pr.id)::INT as patient_count
     FROM department d
     LEFT JOIN doctor doc ON doc.department_id = d.id
     LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
-    WHERE pr.admission_date <= current_date AND pr.discharge_date >= current_date
+    WHERE pr.id IS NULL OR pr.admission_date <= current_date AND pr.discharge_date >= current_date
     GROUP BY d.title;
 END;
 $$ LANGUAGE plpgsql;
@@ -271,7 +272,7 @@ BEGIN
     RETURN QUERY
     SELECT
         d.title as department,
-        COUNT(*)::INT as patient_count
+        COUNT(pr.id)::INT as patient_count
     FROM department d
     LEFT JOIN doctor doc ON doc.department_id = d.id
     LEFT JOIN patient_record pr ON pr.doctor_id = doc.id
@@ -291,7 +292,7 @@ BEGIN
     RETURN QUERY
     SELECT
         d.full_name as doctor,
-        COUNT(*)::INT as patient_count
+        COUNT(pr.id)::INT as patient_count
     FROM doctor d
     LEFT JOIN patient_record pr ON pr.doctor_id = d.id
     LEFT JOIN department dep ON d.department_id = dep.id
@@ -309,7 +310,7 @@ BEGIN
     RETURN QUERY
     SELECT
         d.full_name as doctor,
-        COUNT(*)::INT as patient_count
+        COUNT(pr.id)::INT as patient_count
     FROM doctor d
     LEFT JOIN patient_record pr ON pr.doctor_id = d.id
     WHERE d.salary > (
@@ -331,11 +332,11 @@ BEGIN
     RETURN QUERY
     SELECT
         d.full_name as doctor,
-        COUNT(*)::INT as patient_count
+        COUNT(pr.id)::INT as patient_count
     FROM doctor d
     LEFT JOIN patient_record pr ON pr.doctor_id = d.id
     GROUP BY d.full_name
-    HAVING COUNT(*) > patient_count_value;
+    HAVING COUNT(pr.id) > patient_count_value;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -351,12 +352,12 @@ BEGIN
     RETURN QUERY
     SELECT
         d.full_name as doctor,
-        COUNT(*)::INT as patient_count
+        COUNT(pr.id)::INT as patient_count
     FROM doctor d
     LEFT JOIN patient_record pr ON pr.doctor_id = d.id
     WHERE pr.admission_date <= current_date AND pr.discharge_date >= current_date
     GROUP BY d.full_name
-    HAVING COUNT(*) > patient_count_value;
+    HAVING COUNT(pr.id) > patient_count_value;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -469,7 +470,8 @@ BEGIN
         pr.discharge_date,
         CASE
             WHEN pr.discharge_date < CURRENT_DATE THEN 'Выписан'
-            WHEN NOT EXISTS (SELECT 1 FROM public.clinical_record cr WHERE cr.patient_record_id = pr.id) THEN 'К оформлению'
+            WHEN NOT EXISTS (SELECT 1 FROM public.clinical_record cr WHERE cr.patient_record_id = pr.id) 
+                THEN 'К оформлению'
             ELSE 'На лечении'
         END AS status
     FROM
