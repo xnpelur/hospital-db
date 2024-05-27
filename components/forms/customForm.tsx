@@ -78,30 +78,34 @@ export default function CustomForm(props: Props) {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const args: any[] = [];
-        columns.forEach((column) => {
-            args.push(values[column.key]);
-        });
-        if (props.row) {
-            args.push(props.row.id);
-            await runFunction<null>(`update_${props.tableName}`, args);
-        } else {
-            await runFunction<null>(`insert_${props.tableName}`, args);
-        }
+        try {
+            const args: any[] = [];
+            columns.forEach((column) => {
+                args.push(values[column.key]);
+            });
+            if (props.row) {
+                args.push(props.row.id);
+                await runFunction<null>(`update_${props.tableName}`, args);
+            } else {
+                await runFunction<null>(`insert_${props.tableName}`, args);
+            }
 
-        if (credentials) {
-            await runFunction<null>("add_user", [
-                credentials.username,
-                credentials.password,
-                props.tableName === "doctor" ? "doctor" : "patient",
-            ]);
+            if (credentials) {
+                await runFunction<null>("add_user", [
+                    credentials.username,
+                    credentials.password,
+                    props.tableName === "doctor" ? "doctor" : "patient",
+                ]);
 
-            setCredentialsText(
-                `Имя пользователя: ${credentials.username}\nПароль: ${credentials.password}`
-            );
-            setConfirmationOpen(true);
-        } else {
-            props.onFormSubmit?.();
+                setCredentialsText(
+                    `Имя пользователя: ${credentials.username}\nПароль: ${credentials.password}`
+                );
+                setConfirmationOpen(true);
+            } else {
+                props.onFormSubmit?.();
+            }
+        } catch (e) {
+            form.setError("root", { message: (e as Error).message });
         }
     }
 
@@ -184,6 +188,11 @@ export default function CustomForm(props: Props) {
                             />
                         );
                     })}
+                    {form.formState.errors.root && (
+                        <p className="text-[0.8rem] font-medium text-destructive">
+                            {form.formState.errors.root.message}
+                        </p>
+                    )}
                     <DialogFooter>
                         <Button type="submit">Подтвердить</Button>
                     </DialogFooter>
