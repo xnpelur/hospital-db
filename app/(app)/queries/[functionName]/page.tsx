@@ -24,7 +24,7 @@ export default async function QueryPage({
                 columns={query.columns}
                 functionName={query.function_name}
                 title={query.title}
-                pageSize={10}
+                pageSize={9}
                 withParameter={query.with_parameter}
             />
         </div>
