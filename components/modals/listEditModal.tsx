@@ -23,6 +23,7 @@ type Props = {
     open: boolean;
     setOpen: (value: boolean) => void;
     items: RecordDependencies[];
+    allowedItems: string[];
     onSave: (
         itemsToInsert: RecordDependencies[],
         itemsToRemove: RecordDependencies[]
@@ -32,6 +33,8 @@ type Props = {
 export default function ListEditModal(props: Props) {
     const [items, setItems] = useState(props.items);
     useEffect(() => setItems(props.items), [props.items]);
+
+    const [tooltipVisible, setTooltipVisible] = useState(false);
 
     const [editing, setEditing] = useState(false);
     const [newItem, setNewItem] = useState("");
@@ -67,6 +70,9 @@ export default function ListEditModal(props: Props) {
     async function save() {
         props.onSave(itemsToInsert, itemsToRemove);
         props.setOpen(false);
+        setEditing(false);
+        setTooltipVisible(false);
+        setNewItem("");
         router.refresh();
     }
 
@@ -93,11 +99,18 @@ export default function ListEditModal(props: Props) {
     }
 
     function cancelAdd() {
+        setTooltipVisible(false);
         setEditing(false);
         setNewItem("");
     }
 
     function confirmAdd() {
+        if (
+            !props.allowedItems.some((allowedItem) => allowedItem === newItem)
+        ) {
+            setTooltipVisible(true);
+            return;
+        }
         if (!items.some((item) => item.title === newItem)) {
             setItems([
                 ...items,
@@ -107,6 +120,7 @@ export default function ListEditModal(props: Props) {
                 },
             ]);
         }
+        setTooltipVisible(false);
         setEditing(false);
         setNewItem("");
     }
@@ -162,35 +176,55 @@ export default function ListEditModal(props: Props) {
                         ))}
                     </div>
                     {editing ? (
-                        <div className="flex items-center justify-between gap-1 rounded-md bg-gray-100 px-4 py-3 dark:bg-gray-800">
-                            <div className="flex flex-1 items-center gap-3">
-                                <input
-                                    ref={inputRef}
-                                    className="w-full bg-inherit font-medium outline-none"
-                                    value={newItem}
-                                    onChange={(e) => setNewItem(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                />
+                        <div className="relative">
+                            <div
+                                className={
+                                    "absolute rounded-sm bg-slate-800 px-4 py-2 text-sm transition-all " +
+                                    (tooltipVisible
+                                        ? "-top-11 opacity-90"
+                                        : "-top-8 opacity-0")
+                                }
+                            >
+                                <span className="text-white">
+                                    Этой болезни нет в базе данных, попробуйте
+                                    ещё раз
+                                </span>
                             </div>
-                            <div className="space-x-1">
-                                <Button
-                                    className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={cancelAdd}
-                                >
-                                    <Cross2Icon className="h-5 w-5" />
-                                    <span className="sr-only">Убрать</span>
-                                </Button>
-                                <Button
-                                    className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={confirmAdd}
-                                >
-                                    <CheckIcon className="h-6 w-6" />
-                                    <span className="sr-only">Подтвердить</span>
-                                </Button>
+                            <div className="flex items-center justify-between gap-1 rounded-md bg-gray-100 px-4 py-3 dark:bg-gray-800">
+                                <div className="flex flex-1 items-center gap-3">
+                                    <input
+                                        ref={inputRef}
+                                        className="w-full bg-inherit font-medium outline-none"
+                                        value={newItem}
+                                        onChange={(e) => {
+                                            setTooltipVisible(false);
+                                            setNewItem(e.target.value);
+                                        }}
+                                        onKeyDown={handleKeyDown}
+                                    />
+                                </div>
+                                <div className="space-x-1">
+                                    <Button
+                                        className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={cancelAdd}
+                                    >
+                                        <Cross2Icon className="h-5 w-5" />
+                                        <span className="sr-only">Убрать</span>
+                                    </Button>
+                                    <Button
+                                        className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={confirmAdd}
+                                    >
+                                        <CheckIcon className="h-6 w-6" />
+                                        <span className="sr-only">
+                                            Подтвердить
+                                        </span>
+                                    </Button>
+                                </div>
                             </div>
                         </div>
                     ) : (

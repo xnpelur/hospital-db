@@ -1,6 +1,7 @@
-import { runFunction } from "@/lib/db";
+import { getTableValues, runFunction } from "@/lib/db";
 import {
     ClinicalRecord,
+    Disease,
     PatientRecord,
     RecordDependencies,
     TreatmentRecord,
@@ -39,6 +40,7 @@ export default async function PatientRecordPage({
         "get_clinical_records_with_dependencies",
         [patientRecordId]
     );
+    const diseases = await getTableValues<Disease>("disease");
 
     return (
         <div className="flex h-full flex-col space-y-6">
@@ -91,6 +93,7 @@ export default async function PatientRecordPage({
                             clinicalRecordsDependencies={
                                 clinicalRecordsDependencies
                             }
+                            diseases={diseases}
                             patientRecordId={patientRecordId}
                         />
                     </div>
