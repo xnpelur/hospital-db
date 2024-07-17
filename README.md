@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Система управления больницей
 
-## Getting Started
+Система предоставляет весь необходимый функционал для нескольких ролей потенциальных пользователей:
 
-First, run the development server:
+-   Пациент (просмотр текущего лечения)
+-   Врач (управление лечением всех назначенных ему пациентов)
+-   Администратор (управление справочными таблицами базы данных и пользователями)
+-   Главный врач (получение отчётов в виде таблиц и диаграмм)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Возможности
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+-   Организация лечения пациентов от момента поступления до выписки
+-   Учёт всех проведённых лечений и процедур
+-   Генерация диаграмм по табличным данным
+-   Экспорт отчётов в формате Excel
+-   Защита данных пользователей на уровне БД
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Требования
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+    - Node.js
+    - PostgreSQL
 
-## Learn More
+## Использование
 
-To learn more about Next.js, take a look at the following resources:
+Для работы системы необходимо заполнить **.env** файл по примеру файла **.env.example**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Для заполнения базы данных случайными данными (в том числе пользователями) необходимо выполнить команду `npm run reinit`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Данные сгенерированных пользователей
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+-   Пациент - находятся в файле `db/credentials/patients.csv` (только после генерации)
+-   Врач - находятся в файле `db/credentials/doctors.csv` (только после генерации)
+-   Администратор - `admin1:admin`
+-   Главный врач `head_doctor1:head_doctor`
